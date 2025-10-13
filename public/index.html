@@ -11,27 +11,7 @@
   <body>
     <!-- Login Screen -->
     <div id="loginScreen">
-      <div class="card" id="loginCard">
-        <div style="text-align: center; margin-bottom: 2rem;">
-          <h1 style="font-weight: 200; color: var(--accent-light); margin-bottom: 0.5rem;">Aspire Design Lab</h1>
-          <p style="color: var(--text-muted);">Admin Dashboard</p>
-        </div>
-        <h3 style="text-align: center; margin-bottom: 1.5rem; font-weight: 300;">Login to Dashboard</h3>
-        <div class="input-group">
-          <label for="username">Username</label>
-          <input id="username" placeholder="Enter username" value="admin" />
-        </div>
-        <div class="input-group">
-          <label for="password">Password</label>
-          <input id="password" placeholder="Enter password" type="password" value="changeme" />
-        </div>
-        <div class="button-group" style="justify-content: center;">
-          <button id="loginBtn" class="btn-primary">
-            <i class="fas fa-sign-in-alt"></i> Login
-          </button>
-        </div>
-        <div id="loginMsg" style="text-align: center; margin-top: 1rem;"></div>
-      </div>
+      <!-- ... existing login code ... -->
     </div>
 
     <!-- Dashboard -->
@@ -39,497 +19,143 @@
       <div class="dashboard-container">
         <!-- Sidebar -->
         <div class="sidebar" id="sidebar">
-          <div class="sidebar-header">
-            <h1>Aspire Design Lab</h1>
-            <div class="subtitle">Admin Dashboard</div>
-          </div>
-          <div class="nav-menu">
-            <div class="nav-item active" data-section="dashboard">
-              <i class="fas fa-chart-line"></i>
-              <span>Dashboard</span>
-            </div>
-            <div class="nav-item" data-section="content">
-              <i class="fas fa-plus-circle"></i>
-              <span>Create Content</span>
-            </div>
-            <div class="nav-item" data-section="manage">
-              <i class="fas fa-edit"></i>
-              <span>Manage Content</span>
-            </div>
-            <div class="nav-item" data-section="contact">
-              <i class="fas fa-envelope"></i>
-              <span>Contact Management</span>
-            </div>
-            <!-- NEW: Get Involved Management -->
-            <div class="nav-item" data-section="getinvolved">
-              <i class="fas fa-handshake"></i>
-              <span>Get Involved</span>
-            </div>
-            <div class="nav-item" data-section="media">
-              <i class="fas fa-images"></i>
-              <span>Media Library</span>
-            </div>
-            <div class="nav-item" data-section="settings">
-              <i class="fas fa-cog"></i>
-              <span>Settings</span>
-            </div>
-          </div>
+          <!-- ... existing sidebar code ... -->
         </div>
 
         <!-- Main Content -->
         <div class="main-content">
           <!-- Header -->
           <div class="header">
-            <div class="header-left">
-              <button class="mobile-menu-btn" id="mobileMenuBtn">
-                <i class="fas fa-bars"></i>
-              </button>
-              <h2 id="pageTitle">Dashboard</h2>
-            </div>
-            <div class="header-right">
-              <div class="user-info">
-                <div class="user-avatar">
-                  <i class="fas fa-user"></i>
-                </div>
-                <div>
-                  <div style="font-weight: 300;">Admin User</div>
-                  <div style="font-size: 0.8rem; color: var(--text-muted);">Administrator</div>
-                </div>
-              </div>
-              <button id="logoutBtn" class="btn-secondary">
-                <i class="fas fa-sign-out-alt"></i> Logout
-              </button>
-            </div>
+            <!-- ... existing header code ... -->
           </div>
 
           <!-- Content Sections -->
           <div class="content">
-            <!-- Dashboard Section -->
-            <div id="dashboardSection" class="section">
-              <div class="stats-grid">
-                <div class="stat-card">
-                  <div class="stat-icon">
-                    <i class="fas fa-newspaper"></i>
-                  </div>
-                  <div class="stat-value" id="newsCount">0</div>
-                  <div class="stat-label">News Items</div>
-                </div>
-                <div class="stat-card">
-                  <div class="stat-icon">
-                    <i class="fas fa-project-diagram"></i>
-                  </div>
-                  <div class="stat-value" id="projectCount">0</div>
-                  <div class="stat-label">Projects</div>
-                </div>
-                <div class="stat-card">
-                  <div class="stat-icon">
-                    <i class="fas fa-lightbulb"></i>
-                  </div>
-                  <div class="stat-value" id="insightCount">0</div>
-                  <div class="stat-label">Research Insights</div>
-                </div>
-                <div class="stat-card">
-                  <div class="stat-icon">
-                    <i class="fas fa-envelope"></i>
-                  </div>
-                  <div class="stat-value" id="contactCount">0</div>
-                  <div class="stat-label">Contact Submissions</div>
-                </div>
-              </div>
+            <!-- ... other sections ... -->
 
+            <!-- Design Projects Management Section -->
+            <div id="designSection" class="section hidden">
               <div class="card">
                 <div class="card-header">
-                  <h3 class="card-title">Recent Activity</h3>
-                </div>
-                <div id="recentItems" class="items-grid">
-                  <!-- Recent items will be loaded here -->
-                </div>
-              </div>
-            </div>
-
-            <!-- Create Content Section -->
-            <div id="contentSection" class="section hidden">
-              <div class="card">
-                <div class="card-header">
-                  <h3 class="card-title">Create New Content</h3>
-                </div>
-                <form id="contentForm">
-                  <div class="form-grid">
-                    <div class="input-group">
-                      <label for="title">Title *</label>
-                      <input id="title" placeholder="Enter item title" required />
-                    </div>
-                    <div class="input-group">
-                      <label for="type">Content Type *</label>
-                      <select id="type" required>
-                        <option value="news">News</option>
-                        <option value="project">Project</option>
-                        <option value="insight">Research Insight</option>
-                        <option value="event">Event</option>
-                        <option value="course">Course</option>
-                      </select>
-                    </div>
-                    <div class="input-group full-width">
-                      <label for="content">Content *</label>
-                      <textarea id="content" placeholder="Enter detailed content" required></textarea>
-                    </div>
-                    <div class="input-group">
-                      <label for="image">Cover Image</label>
-                      <input type="file" id="image" accept="image/*" />
-                      <small style="color: var(--text-muted);">Main image for the item (max 5MB)</small>
-                    </div>
-                    <div class="input-group">
-                      <label for="files">Additional Files</label>
-                      <input type="file" id="files" multiple accept="image/*,application/pdf" />
-                      <small style="color: var(--text-muted);">Upload additional images or PDFs (max 5 files, 5MB each)</small>
-                    </div>
-                  </div>
-                  <div id="uploadProgress" class="progress" style="display:none">
-                    <div class="progress-bar"></div>
-                  </div>
-                  <div class="button-group">
-                    <button type="submit" id="uploadBtn" class="btn-primary">
-                      <i class="fas fa-upload"></i> Publish Content
-                    </button>
-                    <button type="reset" class="btn-secondary">
-                      <i class="fas fa-undo"></i> Reset Form
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
-
-            <!-- Manage Content Section -->
-            <div id="manageSection" class="section hidden">
-              <div class="card">
-                <div class="card-header">
-                  <h3 class="card-title">Manage Content</h3>
+                  <h3 class="card-title">Design Projects Management</h3>
                   <div class="button-group" style="margin: 0;">
-                    <button id="refreshBtn" class="btn-secondary">
-                      <i class="fas fa-sync-alt"></i> Refresh
-                    </button>
-                  </div>
-                </div>
-                <div id="items" class="items-grid">
-                  <!-- Items will be loaded here -->
-                </div>
-              </div>
-            </div>
-
-            <!-- Contact Management Section -->
-            <div id="contactSection" class="section hidden">
-              <div class="card">
-                <div class="card-header">
-                  <h3 class="card-title">Contact Form Submissions</h3>
-                  <div class="button-group" style="margin: 0;">
-                    <button id="refreshSubmissions" class="btn-secondary">
-                      <i class="fas fa-sync-alt"></i> Refresh
-                    </button>
-                  </div>
-                </div>
-                <div class="stats-row">
-                  <div class="stat-mini-card">
-                    <div class="stat-mini-value" id="totalSubmissions">0</div>
-                    <div class="stat-mini-label">Total Submissions</div>
-                  </div>
-                  <div class="stat-mini-card">
-                    <div class="stat-mini-value" id="newSubmissions">0</div>
-                    <div class="stat-mini-label">New</div>
-                  </div>
-                  <div class="stat-mini-card">
-                    <div class="stat-mini-value" id="repliedSubmissions">0</div>
-                    <div class="stat-mini-label">Replied</div>
-                  </div>
-                  <div class="stat-mini-card">
-                    <div class="stat-mini-value" id="recentSubmissions">0</div>
-                    <div class="stat-mini-label">Last 7 Days</div>
-                  </div>
-                </div>
-                <div id="submissionsList">
-                  <!-- Submissions will be loaded here -->
-                </div>
-              </div>
-
-              <div class="card">
-                <div class="card-header">
-                  <h3 class="card-title">Contact Information</h3>
-                </div>
-                <div id="contactInfoList">
-                  <!-- Contact info will be loaded here -->
-                </div>
-              </div>
-
-              <div class="card">
-                <div class="card-header">
-                  <h3 class="card-title">Email Settings</h3>
-                </div>
-                <div id="emailSettingsList">
-                  <!-- Email settings will be loaded here -->
-                </div>
-              </div>
-            </div>
-
-            <!-- NEW: Get Involved Management Section -->
-            <div id="getinvolvedSection" class="section hidden">
-              <div class="card">
-                <div class="card-header">
-                  <h3 class="card-title">Get Involved Management</h3>
-                  <div class="button-group" style="margin: 0;">
-                    <button id="refreshGetInvolved" class="btn-secondary">
+                    <button id="refreshDesign" class="btn-secondary">
                       <i class="fas fa-sync-alt"></i> Refresh All
                     </button>
                   </div>
                 </div>
 
-                <div class="get-involved-tabs">
-                  <button class="get-involved-tab active" data-tab="membership">
-                    <i class="fas fa-users"></i> Membership Applications
-                  </button>
-                  <button class="get-involved-tab" data-tab="donations">
-                    <i class="fas fa-donate"></i> Donations
-                  </button>
-                  <button class="get-involved-tab" data-tab="feedback">
-                    <i class="fas fa-comment"></i> Feedback
-                  </button>
-                  <button class="get-involved-tab" data-tab="ideas">
-                    <i class="fas fa-lightbulb"></i> Ideas
-                  </button>
-                  <button class="get-involved-tab" data-tab="partnerships">
-                    <i class="fas fa-handshake"></i> Partnerships
-                  </button>
-                  <button class="get-involved-tab" data-tab="stories">
-                    <i class="fas fa-book"></i> Community Stories
-                  </button>
-                </div>
-
-                <!-- Membership Applications -->
-                <div id="membershipTab" class="get-involved-content active">
-                  <div class="card-header">
-                    <h4 class="card-title">Membership Applications</h4>
-                    <button onclick="loadMembershipApplications()" class="btn-secondary">
-                      <i class="fas fa-sync-alt"></i> Refresh
-                    </button>
-                  </div>
-                  <div id="membershipList" class="items-grid">
-                    <!-- Membership applications will be loaded here -->
-                  </div>
-                </div>
-
-                <!-- Donations -->
-                <div id="donationsTab" class="get-involved-content">
-                  <div class="card-header">
-                    <h4 class="card-title">Donations</h4>
-                    <button onclick="loadDonations()" class="btn-secondary">
-                      <i class="fas fa-sync-alt"></i> Refresh
-                    </button>
-                  </div>
-                  <div id="donationsList" class="items-grid">
-                    <!-- Donations will be loaded here -->
-                  </div>
-                </div>
-
-                <!-- Feedback -->
-                <div id="feedbackTab" class="get-involved-content">
-                  <div class="card-header">
-                    <h4 class="card-title">Feedback Submissions</h4>
-                    <button onclick="loadFeedback()" class="btn-secondary">
-                      <i class="fas fa-sync-alt"></i> Refresh
-                    </button>
-                  </div>
-                  <div id="feedbackList" class="items-grid">
-                    <!-- Feedback will be loaded here -->
-                  </div>
-                </div>
-
-                <!-- Ideas -->
-                <div id="ideasTab" class="get-involved-content">
-                  <div class="card-header">
-                    <h4 class="card-title">Idea Submissions</h4>
-                    <button onclick="loadIdeas()" class="btn-secondary">
-                      <i class="fas fa-sync-alt"></i> Refresh
-                    </button>
-                  </div>
-                  <div id="ideasList" class="items-grid">
-                    <!-- Ideas will be loaded here -->
-                  </div>
-                </div>
-
-                <!-- Partnerships -->
-                <div id="partnershipsTab" class="get-involved-content">
-                  <div class="card-header">
-                    <h4 class="card-title">Partnership Inquiries</h4>
-                    <button onclick="loadPartnerships()" class="btn-secondary">
-                      <i class="fas fa-sync-alt"></i> Refresh
-                    </button>
-                  </div>
-                  <div id="partnershipsList" class="items-grid">
-                    <!-- Partnerships will be loaded here -->
-                  </div>
-                </div>
-
-                <!-- Community Stories -->
-                <div id="storiesTab" class="get-involved-content">
-                  <div class="card-header">
-                    <h4 class="card-title">Community Stories</h4>
-                    <div class="button-group" style="margin: 0;">
-                      <button onclick="loadStories()" class="btn-secondary">
-                        <i class="fas fa-sync-alt"></i> Refresh
-                      </button>
-                      <button onclick="showCreateStoryModal()" class="btn-primary">
-                        <i class="fas fa-plus"></i> Add Story
-                      </button>
-                    </div>
-                  </div>
-                  <div id="storiesList" class="items-grid">
-                    <!-- Stories will be loaded here -->
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Media Library Section -->
-            <div id="mediaSection" class="section hidden">
-              <div class="card">
-                <div class="card-header">
-                  <h3 class="card-title">Media Library Management</h3>
-                  <div class="button-group" style="margin: 0;">
-                    <button id="refreshMedia" class="btn-secondary">
-                      <i class="fas fa-sync-alt"></i> Refresh All
-                    </button>
-                  </div>
-                </div>
-
-                <!-- Media Stats -->
+                <!-- Design Projects Stats -->
                 <div class="stats-row">
                   <div class="stat-mini-card">
-                    <div class="stat-mini-value" id="photosCount">0</div>
-                    <div class="stat-mini-label">Photos</div>
+                    <div class="stat-mini-value" id="designTotalProjects">0</div>
+                    <div class="stat-mini-label">Total Projects</div>
                   </div>
                   <div class="stat-mini-card">
-                    <div class="stat-mini-value" id="videosCount">0</div>
-                    <div class="stat-mini-label">Videos</div>
+                    <div class="stat-mini-value" id="designAcademicProjects">0</div>
+                    <div class="stat-mini-label">Academic Projects</div>
                   </div>
                   <div class="stat-mini-card">
-                    <div class="stat-mini-value" id="designsCount">0</div>
-                    <div class="stat-mini-label">Designs</div>
+                    <div class="stat-mini-value" id="designProfessionalProjects">0</div>
+                    <div class="stat-mini-label">Professional Projects</div>
                   </div>
                   <div class="stat-mini-card">
-                    <div class="stat-mini-value" id="testimonialsCount">0</div>
-                    <div class="stat-mini-label">Testimonials</div>
+                    <div class="stat-mini-value" id="designCompetitionProjects">0</div>
+                    <div class="stat-mini-label">Competition Projects</div>
                   </div>
                 </div>
 
-                <!-- Media Tabs -->
+                <!-- Design Projects Tabs -->
                 <div class="get-involved-tabs">
-                  <button class="get-involved-tab active" data-tab="photos">
-                    <i class="fas fa-camera"></i> Photos
+                  <button class="get-involved-tab active" data-tab="design-all">
+                    <i class="fas fa-th"></i> All Projects
                   </button>
-                  <button class="get-involved-tab" data-tab="videos">
-                    <i class="fas fa-video"></i> Videos
+                  <button class="get-involved-tab" data-tab="design-academic">
+                    <i class="fas fa-graduation-cap"></i> Academic
                   </button>
-                  <button class="get-involved-tab" data-tab="designs">
-                    <i class="fas fa-paint-brush"></i> Designs
+                  <button class="get-involved-tab" data-tab="design-professional">
+                    <i class="fas fa-briefcase"></i> Professional
                   </button>
-                  <button class="get-involved-tab" data-tab="testimonials">
-                    <i class="fas fa-quote-left"></i> Testimonials
+                  <button class="get-involved-tab" data-tab="design-competition">
+                    <i class="fas fa-trophy"></i> Competition
                   </button>
                 </div>
 
-                <!-- Photos Tab -->
-                <div id="photosTab" class="get-involved-content active">
+                <!-- All Projects Tab -->
+                <div id="design-allTab" class="get-involved-content active">
                   <div class="card-header">
-                    <h4 class="card-title">Photo Albums Management</h4>
+                    <h4 class="card-title">All Design Projects</h4>
                     <div class="button-group" style="margin: 0;">
-                      <button onclick="loadPhotos()" class="btn-secondary">
+                      <button onclick="loadDesignProjects()" class="btn-secondary">
                         <i class="fas fa-sync-alt"></i> Refresh
                       </button>
-                      <button onclick="showAddPhotoModal()" class="btn-primary">
-                        <i class="fas fa-plus"></i> Add Photo
+                      <button onclick="showAddDesignProjectModal()" class="btn-primary">
+                        <i class="fas fa-plus"></i> Add Project
                       </button>
                     </div>
                   </div>
-
-                  <!-- Photo Categories -->
-                  <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem;">
-                    <button class="filter-btn active" data-category="All">All</button>
-                    <button class="filter-btn" data-category="Architecture">Architecture</button>
-                    <button class="filter-btn" data-category="Nature">Nature</button>
-                    <button class="filter-btn" data-category="Residential">Residential</button>
-                    <button class="filter-btn" data-category="Public">Public</button>
-                    <button class="filter-btn" data-category="Commercial">Commercial</button>
-                    <button class="filter-btn" data-category="Cultural">Cultural</button>
-                  </div>
-
-                  <div id="photosList" class="items-grid">
-                    <!-- Photos will be loaded here -->
+                  <div id="designProjectsList" class="items-grid">
+                    <!-- Design projects will be loaded here -->
                   </div>
                 </div>
 
-                <!-- Videos Tab -->
-                <div id="videosTab" class="get-involved-content">
+                <!-- Academic Projects Tab -->
+                <div id="design-academicTab" class="get-involved-content">
                   <div class="card-header">
-                    <h4 class="card-title">Video Stories Management</h4>
+                    <h4 class="card-title">Academic Design Projects</h4>
                     <div class="button-group" style="margin: 0;">
-                      <button onclick="loadVideos()" class="btn-secondary">
+                      <button onclick="loadAcademicProjects()" class="btn-secondary">
                         <i class="fas fa-sync-alt"></i> Refresh
                       </button>
-                      <button onclick="showAddVideoModal()" class="btn-primary">
-                        <i class="fas fa-plus"></i> Add Video
+                      <button onclick="showAddDesignProjectModal('academic')" class="btn-primary">
+                        <i class="fas fa-plus"></i> Add Academic Project
                       </button>
                     </div>
                   </div>
-
-                  <div id="videosList" class="items-grid">
-                    <!-- Videos will be loaded here -->
+                  <div id="academicProjectsList" class="items-grid">
+                    <!-- Academic projects will be loaded here -->
                   </div>
                 </div>
 
-                <!-- Designs Tab -->
-                <div id="designsTab" class="get-involved-content">
+                <!-- Professional Projects Tab -->
+                <div id="design-professionalTab" class="get-involved-content">
                   <div class="card-header">
-                    <h4 class="card-title">Design Visualizations Management</h4>
+                    <h4 class="card-title">Professional Design Projects</h4>
                     <div class="button-group" style="margin: 0;">
-                      <button onclick="loadDesigns()" class="btn-secondary">
+                      <button onclick="loadProfessionalProjects()" class="btn-secondary">
                         <i class="fas fa-sync-alt"></i> Refresh
                       </button>
-                      <button onclick="showAddDesignModal()" class="btn-primary">
-                        <i class="fas fa-plus"></i> Add Design
+                      <button onclick="showAddDesignProjectModal('professional')" class="btn-primary">
+                        <i class="fas fa-plus"></i> Add Professional Project
                       </button>
                     </div>
                   </div>
-
-                  <div id="designsList" class="items-grid">
-                    <!-- Designs will be loaded here -->
+                  <div id="professionalProjectsList" class="items-grid">
+                    <!-- Professional projects will be loaded here -->
                   </div>
                 </div>
 
-                <!-- Testimonials Tab -->
-                <div id="testimonialsTab" class="get-involved-content">
+                <!-- Competition Projects Tab -->
+                <div id="design-competitionTab" class="get-involved-content">
                   <div class="card-header">
-                    <h4 class="card-title">Community Testimonials Management</h4>
+                    <h4 class="card-title">Competition Design Projects</h4>
                     <div class="button-group" style="margin: 0;">
-                      <button onclick="loadTestimonials()" class="btn-secondary">
+                      <button onclick="loadCompetitionProjects()" class="btn-secondary">
                         <i class="fas fa-sync-alt"></i> Refresh
                       </button>
-                      <button onclick="showAddTestimonialModal()" class="btn-primary">
-                        <i class="fas fa-plus"></i> Add Testimonial
+                      <button onclick="showAddDesignProjectModal('competition')" class="btn-primary">
+                        <i class="fas fa-plus"></i> Add Competition Project
                       </button>
                     </div>
                   </div>
-
-                  <div id="testimonialsList" class="items-grid">
-                    <!-- Testimonials will be loaded here -->
+                  <div id="competitionProjectsList" class="items-grid">
+                    <!-- Competition projects will be loaded here -->
                   </div>
                 </div>
               </div>
             </div>
 
-            <div id="settingsSection" class="section hidden">
-              <div class="card">
-                <h3 class="card-title">Settings</h3>
-                <p style="color: var(--text-muted); text-align: center; padding: 2rem;">Settings panel coming soon...</p>
-              </div>
-            </div>
+            <!-- ... other sections ... -->
           </div>
         </div>
       </div>
@@ -538,71 +164,85 @@
     <!-- Mobile Overlay -->
     <div class="overlay" id="overlay"></div>
 
-    <!-- Create Story Modal -->
-    <div id="createStoryModal" class="hidden" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; align-items: center; justify-content: center;">
-      <div class="card" style="max-width: 600px; max-height: 90vh; overflow-y: auto;">
+    <!-- Design Project Modals -->
+    <!-- Add Design Project Modal -->
+    <div id="addDesignProjectModal" class="modal hidden">
+      <div class="card">
         <div class="card-header">
-          <h3 class="card-title">Create Community Story</h3>
-          <button onclick="hideCreateStoryModal()" class="btn-secondary">
+          <h3 class="card-title">Add Design Project</h3>
+          <button onclick="hideAddDesignProjectModal()" class="btn-secondary">
             <i class="fas fa-times"></i>
           </button>
         </div>
-        <form id="createStoryForm">
+        <form id="addDesignProjectForm">
           <div class="form-grid">
-            <div class="input-group">
-              <label for="storyAuthor">Author Name *</label>
-              <input id="storyAuthor" type="text" required />
-            </div>
-            <div class="input-group">
-              <label for="storyTitle">Author Title</label>
-              <input id="storyTitle" type="text" />
-            </div>
-            <div class="input-group">
-              <label for="storyOrganization">Organization</label>
-              <input id="storyOrganization" type="text" />
+            <div class="input-group full-width">
+              <label for="designProjectTitle">Title *</label>
+              <input id="designProjectTitle" type="text" required />
             </div>
             <div class="input-group full-width">
-              <label for="storyStoryTitle">Story Title *</label>
-              <input id="storyStoryTitle" type="text" required />
+              <label for="designProjectSummary">Summary *</label>
+              <textarea id="designProjectSummary" required></textarea>
             </div>
             <div class="input-group full-width">
-              <label for="storyContent">Story Content *</label>
-              <textarea id="storyContent" required></textarea>
+              <label for="designProjectDescription">Description *</label>
+              <textarea id="designProjectDescription" required></textarea>
             </div>
             <div class="input-group">
-              <label for="storyCategory">Category</label>
-              <select id="storyCategory">
-                <option value="workshop">Workshop</option>
-                <option value="mentorship">Mentorship</option>
-                <option value="membership">Membership</option>
-                <option value="event">Event</option>
-                <option value="other">Other</option>
+              <label for="designProjectCategory">Category *</label>
+              <select id="designProjectCategory" required>
+                <option value="academic">Academic</option>
+                <option value="professional">Professional</option>
+                <option value="competition">Competition</option>
               </select>
             </div>
+            
+            <!-- Image Upload Section -->
+            <div class="input-group full-width">
+              <label for="designProjectMainImage">Main Image *</label>
+              <div class="image-upload-container">
+                <input type="file" id="designProjectMainImage" accept="image/*" required />
+                <div id="mainImagePreview" class="image-preview"></div>
+                <small style="color: var(--text-muted);">Upload main image for the project (max 5MB)</small>
+              </div>
+            </div>
+            
+            <div class="input-group full-width">
+              <label for="designProjectGalleryImages">Gallery Images</label>
+              <div class="image-upload-container">
+                <input type="file" id="designProjectGalleryImages" multiple accept="image/*" />
+                <div id="galleryImagesPreview" class="gallery-preview"></div>
+                <small style="color: var(--text-muted);">Upload additional images for gallery (max 5 files, 5MB each)</small>
+              </div>
+            </div>
+            
             <div class="input-group">
-              <label for="storyFeaturedImage">Featured Image URL</label>
-              <input id="storyFeaturedImage" type="url" />
+              <label for="designProjectDisplayOrder">Display Order</label>
+              <input id="designProjectDisplayOrder" type="number" min="0" value="0" />
             </div>
             <div class="input-group">
               <label class="toggle-switch" style="display: flex; align-items: center; gap: 1rem;">
-                <input type="checkbox" id="storyFeatured">
+                <input type="checkbox" id="designProjectFeatured" checked>
                 <span class="toggle-slider"></span>
-                <span>Featured Story</span>
+                <span>Featured</span>
               </label>
             </div>
             <div class="input-group">
               <label class="toggle-switch" style="display: flex; align-items: center; gap: 1rem;">
-                <input type="checkbox" id="storyPublished" checked>
+                <input type="checkbox" id="designProjectPublished" checked>
                 <span class="toggle-slider"></span>
                 <span>Published</span>
               </label>
             </div>
           </div>
+          <div id="uploadProgress" class="progress" style="display:none">
+            <div class="progress-bar"></div>
+          </div>
           <div class="button-group">
             <button type="submit" class="btn-primary">
-              <i class="fas fa-save"></i> Create Story
+              <i class="fas fa-save"></i> Add Project
             </button>
-            <button type="button" onclick="hideCreateStoryModal()" class="btn-secondary">
+            <button type="button" onclick="hideAddDesignProjectModal()" class="btn-secondary">
               <i class="fas fa-times"></i> Cancel
             </button>
           </div>
@@ -610,306 +250,22 @@
       </div>
     </div>
 
-    <!-- Add Photo Modal -->
-    <!-- Add Photo Modal -->
-    <div id="addPhotoModal" class="hidden" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; align-items: center; justify-content: center;">
-      <div class="card" style="max-width: 600px; max-height: 90vh; overflow-y: auto;">
-        <div class="card-header">
-          <h3 class="card-title">Add New Photo</h3>
-          <button onclick="hideAddPhotoModal()" class="btn-secondary">
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-        <form id="addPhotoForm">
-          <div class="form-grid">
-            <div class="input-group">
-              <label for="photoTitle">Title *</label>
-              <input id="photoTitle" type="text" required />
-            </div>
-            <div class="input-group">
-              <label for="photoCategory">Category *</label>
-              <select id="photoCategory" required>
-                <option value="Architecture">Architecture</option>
-                <option value="Nature">Nature</option>
-                <option value="Residential">Residential</option>
-                <option value="Public">Public</option>
-                <option value="Commercial">Commercial</option>
-                <option value="Cultural">Cultural</option>
-              </select>
-            </div>
-            <div class="input-group full-width">
-              <label for="photoDescription">Description</label>
-              <textarea id="photoDescription"></textarea>
-            </div>
-            <div class="input-group">
-              <label for="photoAlbum">Album Name</label>
-              <input id="photoAlbum" type="text" />
-            </div>
-            <div class="input-group full-width">
-              <label for="photoFile">Upload Photo *</label>
-              <input type="file" id="photoFile" accept="image/*" required />
-              <small style="color: var(--text-muted);">Supported formats: JPG, PNG, GIF, WebP (max 10MB)</small>
-            </div>
-            <div class="input-group">
-              <label class="toggle-switch" style="display: flex; align-items: center; gap: 1rem;">
-                <input type="checkbox" id="photoFeatured">
-                <span class="toggle-slider"></span>
-                <span>Featured Photo</span>
-              </label>
-            </div>
-            <div class="input-group">
-              <label class="toggle-switch" style="display: flex; align-items: center; gap: 1rem;">
-                <input type="checkbox" id="photoPublished" checked>
-                <span class="toggle-slider"></span>
-                <span>Published</span>
-              </label>
-            </div>
-          </div>
-          <div class="button-group">
-            <button type="submit" class="btn-primary">
-              <i class="fas fa-save"></i> Upload Photo
-            </button>
-            <button type="button" onclick="hideAddPhotoModal()" class="btn-secondary">
-              <i class="fas fa-times"></i> Cancel
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-
-    <!-- Add Video Modal -->
-    <div id="addVideoModal" class="hidden" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; align-items: center; justify-content: center;">
-      <div class="card" style="max-width: 600px; max-height: 90vh; overflow-y: auto;">
-        <div class="card-header">
-          <h3 class="card-title">Add New Video</h3>
-          <button onclick="hideAddVideoModal()" class="btn-secondary">
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-        <form id="addVideoForm">
-          <div class="form-grid">
-            <div class="input-group">
-              <label for="videoTitle">Title *</label>
-              <input id="videoTitle" type="text" required />
-            </div>
-            <div class="input-group">
-              <label for="videoCategory">Category</label>
-              <input id="videoCategory" type="text" />
-            </div>
-            <div class="input-group full-width">
-              <label for="videoDescription">Description</label>
-              <textarea id="videoDescription"></textarea>
-            </div>
-            <div class="input-group full-width">
-              <label for="videoFile">Upload Video *</label>
-              <input type="file" id="videoFile" accept="video/*" required />
-              <small style="color: var(--text-muted);">Supported formats: MP4, WebM, MOV (max 50MB)</small>
-            </div>
-            <div class="input-group">
-              <label for="videoThumbnailFile">Upload Thumbnail</label>
-              <input type="file" id="videoThumbnailFile" accept="image/*" />
-              <small style="color: var(--text-muted);">Optional: Custom thumbnail image</small>
-            </div>
-            <div class="input-group">
-              <label for="videoThumbnailUrl">Or Thumbnail URL</label>
-              <input id="videoThumbnailUrl" type="url" />
-            </div>
-            <div class="input-group">
-              <label for="videoDuration">Duration</label>
-              <input id="videoDuration" type="text" placeholder="e.g., 2:45" />
-            </div>
-            <div class="input-group">
-              <label class="toggle-switch" style="display: flex; align-items: center; gap: 1rem;">
-                <input type="checkbox" id="videoFeatured">
-                <span class="toggle-slider"></span>
-                <span>Featured Video</span>
-              </label>
-            </div>
-            <div class="input-group">
-              <label class="toggle-switch" style="display: flex; align-items: center; gap: 1rem;">
-                <input type="checkbox" id="videoPublished" checked>
-                <span class="toggle-slider"></span>
-                <span>Published</span>
-              </label>
-            </div>
-          </div>
-          <div class="button-group">
-            <button type="submit" class="btn-primary">
-              <i class="fas fa-save"></i> Upload Video
-            </button>
-            <button type="button" onclick="hideAddVideoModal()" class="btn-secondary">
-              <i class="fas fa-times"></i> Cancel
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <!-- Add Design Modal -->
-    <div id="addDesignModal" class="hidden" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; align-items: center; justify-content: center;">
-      <div class="card" style="max-width: 600px; max-height: 90vh; overflow-y: auto;">
-        <div class="card-header">
-          <h3 class="card-title">Add New Design</h3>
-          <button onclick="hideAddDesignModal()" class="btn-secondary">
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-        <form id="addDesignForm">
-          <div class="form-grid">
-            <div class="input-group">
-              <label for="designTitle">Title *</label>
-              <input id="designTitle" type="text" required />
-            </div>
-            <div class="input-group">
-              <label for="designType">Design Type *</label>
-              <select id="designType" required>
-                <option value="Exterior">Exterior</option>
-                <option value="Interior">Interior</option>
-                <option value="Landscape">Landscape</option>
-                <option value="Masterplan">Masterplan</option>
-                <option value="Concept">Concept</option>
-              </select>
-            </div>
-            <div class="input-group full-width">
-              <label for="designDescription">Description</label>
-              <textarea id="designDescription"></textarea>
-            </div>
-            <div class="input-group">
-              <label for="designCategory">Category</label>
-              <input id="designCategory" type="text" />
-            </div>
-            <div class="input-group">
-              <label for="designProject">Project Name</label>
-              <input id="designProject" type="text" />
-            </div>
-            <div class="input-group full-width">
-              <label for="designFile">Upload Design Image *</label>
-              <input type="file" id="designFile" accept="image/*" required />
-              <small style="color: var(--text-muted);">Supported formats: JPG, PNG, GIF, WebP (max 10MB)</small>
-            </div>
-            <div class="input-group">
-              <label class="toggle-switch" style="display: flex; align-items: center; gap: 1rem;">
-                <input type="checkbox" id="designFeatured">
-                <span class="toggle-slider"></span>
-                <span>Featured Design</span>
-              </label>
-            </div>
-            <div class="input-group">
-              <label class="toggle-switch" style="display: flex; align-items: center; gap: 1rem;">
-                <input type="checkbox" id="designPublished" checked>
-                <span class="toggle-slider"></span>
-                <span>Published</span>
-              </label>
-            </div>
-          </div>
-          <div class="button-group">
-            <button type="submit" class="btn-primary">
-              <i class="fas fa-save"></i> Upload Design
-            </button>
-            <button type="button" onclick="hideAddDesignModal()" class="btn-secondary">
-              <i class="fas fa-times"></i> Cancel
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-     <!-- Add Testimonial Modal -->
-    <div id="addTestimonialModal" class="hidden" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; align-items: center; justify-content: center;">
-      <div class="card" style="max-width: 600px; max-height: 90vh; overflow-y: auto;">
-        <div class="card-header">
-          <h3 class="card-title">Add New Testimonial</h3>
-          <button onclick="hideAddTestimonialModal()" class="btn-secondary">
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-        <form id="addTestimonialForm">
-          <div class="form-grid">
-            <div class="input-group">
-              <label for="testimonialName">Name *</label>
-              <input id="testimonialName" type="text" required />
-            </div>
-            <div class="input-group">
-              <label for="testimonialRole">Role *</label>
-              <input id="testimonialRole" type="text" required />
-            </div>
-            <div class="input-group">
-              <label for="testimonialOrganization">Organization</label>
-              <input id="testimonialOrganization" type="text" />
-            </div>
-            <div class="input-group full-width">
-              <label for="testimonialQuote">Quote *</label>
-              <textarea id="testimonialQuote" required></textarea>
-            </div>
-            <div class="input-group">
-              <label for="testimonialProject">Project Name</label>
-              <input id="testimonialProject" type="text" />
-            </div>
-            <div class="input-group">
-              <label for="testimonialImageFile">Upload Image</label>
-              <input type="file" id="testimonialImageFile" accept="image/*" />
-              <small style="color: var(--text-muted);">Optional: Person's photo</small>
-            </div>
-            <div class="input-group">
-              <label for="testimonialImageUrl">Or Image URL</label>
-              <input id="testimonialImageUrl" type="url" />
-            </div>
-            <div class="input-group">
-              <label for="testimonialRating">Rating (1-5)</label>
-              <select id="testimonialRating">
-                <option value="5">5 Stars</option>
-                <option value="4">4 Stars</option>
-                <option value="3">3 Stars</option>
-                <option value="2">2 Stars</option>
-                <option value="1">1 Star</option>
-              </select>
-            </div>
-            <div class="input-group">
-              <label class="toggle-switch" style="display: flex; align-items: center; gap: 1rem;">
-                <input type="checkbox" id="testimonialFeatured">
-                <span class="toggle-slider"></span>
-                <span>Featured Testimonial</span>
-              </label>
-            </div>
-            <div class="input-group">
-              <label class="toggle-switch" style="display: flex; align-items: center; gap: 1rem;">
-                <input type="checkbox" id="testimonialPublished" checked>
-                <span class="toggle-slider"></span>
-                <span>Published</span>
-              </label>
-            </div>
-          </div>
-          <div class="button-group">
-            <button type="submit" class="btn-primary">
-              <i class="fas fa-save"></i> Add Testimonial
-            </button>
-            <button type="button" onclick="hideAddTestimonialModal()" class="btn-secondary">
-              <i class="fas fa-times"></i> Cancel
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <!-- JavaScript Section -->
     <!-- JavaScript Section -->
     <script>
       const API_BASE_URL = 'http://localhost:4000/api';
       let authToken = null;
-      let allItems = [];
-      let contactSubmissions = [];
-      let contactInfo = [];
-      let emailSettings = [];
-      let currentGetInvolvedTab = 'membership';
-      let currentMediaTab = 'photos';
-      let currentPhotoCategory = 'All';
-      let mediaStats = {
-        photos: 0,
-        videos: 0,
-        designs: 0,
-        testimonials: 0
+      let currentDesignTab = 'design-all';
+      let designStats = {
+        total: 0,
+        academic: 0,
+        professional: 0,
+        competition: 0,
+        featured: 0
       };
+
+      // Image upload variables
+      let mainImageFile = null;
+      let galleryImageFiles = [];
 
       // DOM Elements
       const loginScreen = document.getElementById('loginScreen');
@@ -982,33 +338,518 @@
         }
       }
 
-// In your admin JavaScript, update the uploadFile function:
-async function uploadFile(file, type) {
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('type', type);
+      // Enhanced uploadFile function with better error handling
+      async function uploadFile(file, type) {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('type', type);
 
-    try {
-        const response = await fetch(`${API_BASE_URL}/upload`, {
+        try {
+          console.log(`📤 Uploading ${type} file:`, file.name, file.size, file.type);
+          
+          const response = await fetch(`${API_BASE_URL}/upload`, {
             method: 'POST',
             headers: {
-                'Authorization': `Bearer ${authToken || localStorage.getItem('aspire_token')}`
+              'Authorization': `Bearer ${authToken || localStorage.getItem('aspire_token')}`
             },
             body: formData
-        });
+          });
 
-        if (!response.ok) {
-            throw new Error(`Upload failed: ${response.status}`);
+          console.log('📤 Upload response status:', response.status);
+          
+          if (!response.ok) {
+            const errorText = await response.text();
+            console.error('❌ Upload failed with response:', errorText);
+            throw new Error(`Upload failed: ${response.status} - ${errorText}`);
+          }
+
+          const data = await response.json();
+          console.log('📤 Upload response data:', data);
+          
+          // Handle different response formats
+          const fileUrl = data.fileUrl || data.url || data.path || data.filePath;
+          if (!fileUrl) {
+            console.error('❌ No file URL in response:', data);
+            throw new Error('Upload response missing file URL');
+          }
+          
+          console.log('✅ Upload successful, file URL:', fileUrl);
+          return fileUrl;
+        } catch (error) {
+          console.error('❌ File upload error:', error);
+          throw error;
+        }
+      }
+
+      // Image Upload Functions
+      function handleMainImageUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        // Validate file size (5MB max)
+        if (file.size > 5 * 1024 * 1024) {
+          alert('Main image must be less than 5MB');
+          event.target.value = '';
+          return;
         }
 
-        const data = await response.json();
-        console.log('Upload response:', data); // Debug log
-        return data.fileUrl; // Now this is the full URL
-    } catch (error) {
-        console.error('File upload error:', error);
-        throw error;
-    }
-}
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+          alert('Please select an image file');
+          event.target.value = '';
+          return;
+        }
+
+        mainImageFile = file;
+        previewImage(file, 'mainImagePreview');
+      }
+
+      function handleGalleryImagesUpload(event) {
+        const files = Array.from(event.target.files);
+        galleryImageFiles = [];
+
+        // Validate files
+        for (let file of files) {
+          if (file.size > 5 * 1024 * 1024) {
+            alert(`File ${file.name} is too large. Max size is 5MB.`);
+            continue;
+          }
+          if (!file.type.startsWith('image/')) {
+            alert(`File ${file.name} is not an image.`);
+            continue;
+          }
+          galleryImageFiles.push(file);
+        }
+
+        // Update preview
+        previewGalleryImages(galleryImageFiles);
+      }
+
+      function previewImage(file, previewElementId) {
+        const reader = new FileReader();
+        const preview = document.getElementById(previewElementId);
+        
+        reader.onload = function(e) {
+          preview.innerHTML = `
+            <div class="preview-item">
+              <img src="${e.target.result}" alt="Preview" />
+              <button type="button" onclick="removeImage('${previewElementId}')" class="btn-danger">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          `;
+        };
+        
+        reader.readAsDataURL(file);
+      }
+
+      function previewGalleryImages(files) {
+        const preview = document.getElementById('galleryImagesPreview');
+        preview.innerHTML = '';
+
+        files.forEach((file, index) => {
+          const reader = new FileReader();
+          
+          reader.onload = function(e) {
+            const previewItem = document.createElement('div');
+            previewItem.className = 'preview-item';
+            previewItem.innerHTML = `
+              <img src="${e.target.result}" alt="Gallery preview ${index + 1}" />
+              <button type="button" onclick="removeGalleryImage(${index})" class="btn-danger">
+                <i class="fas fa-times"></i>
+              </button>
+            `;
+            preview.appendChild(previewItem);
+          };
+          
+          reader.readAsDataURL(file);
+        });
+      }
+
+      function removeImage(previewElementId) {
+        const preview = document.getElementById(previewElementId);
+        preview.innerHTML = '';
+        mainImageFile = null;
+        document.getElementById('designProjectMainImage').value = '';
+      }
+
+      function removeGalleryImage(index) {
+        galleryImageFiles.splice(index, 1);
+        previewGalleryImages(galleryImageFiles);
+        // Reset file input to reflect removed files
+        document.getElementById('designProjectGalleryImages').value = '';
+      }
+
+      // Design Projects Management Functions
+      document.querySelectorAll('.get-involved-tab[data-tab]').forEach(tab => {
+        tab.addEventListener('click', () => {
+          const tabName = tab.getAttribute('data-tab');
+          if (tabName.startsWith('design-')) {
+            showDesignTab(tabName);
+          }
+        });
+      });
+
+      function showDesignTab(tabName) {
+        // Hide all design tabs
+        document.querySelectorAll('.get-involved-content').forEach(content => {
+          content.classList.remove('active');
+        });
+        document.querySelectorAll('.get-involved-tab').forEach(tab => {
+          tab.classList.remove('active');
+        });
+
+        // Show selected tab
+        document.getElementById(tabName + 'Tab').classList.add('active');
+        document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+        currentDesignTab = tabName;
+
+        // Load data for the tab
+        switch(tabName) {
+          case 'design-all':
+            loadDesignProjects();
+            break;
+          case 'design-academic':
+            loadAcademicProjects();
+            break;
+          case 'design-professional':
+            loadProfessionalProjects();
+            break;
+          case 'design-competition':
+            loadCompetitionProjects();
+            break;
+        }
+      }
+
+      // Load Design Stats for Dashboard
+      async function loadDesignStats() {
+        try {
+          const data = await apiRequest('/design/admin/stats');
+          designStats.total = data.data.total || 0;
+          designStats.academic = data.data.academic || 0;
+          designStats.professional = data.data.professional || 0;
+          designStats.competition = data.data.competition || 0;
+          designStats.featured = data.data.featured || 0;
+
+          // Update dashboard stats
+          document.getElementById('designProjectsCount').textContent = designStats.total;
+          document.getElementById('designTotalProjects').textContent = designStats.total;
+          document.getElementById('designAcademicProjects').textContent = designStats.academic;
+          document.getElementById('designProfessionalProjects').textContent = designStats.professional;
+          document.getElementById('designCompetitionProjects').textContent = designStats.competition;
+        } catch (error) {
+          console.error('Failed to load design stats:', error);
+        }
+      }
+
+      // Load All Design Projects
+      async function loadDesignProjects() {
+        try {
+          const data = await apiRequest('/design/admin/projects');
+          const container = document.getElementById('designProjectsList');
+          container.innerHTML = '';
+
+          if (!data.data || data.data.length === 0) {
+            container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">No design projects found.</p>';
+            return;
+          }
+
+          data.data.forEach(project => {
+            const el = createDesignProjectElement(project);
+            container.appendChild(el);
+          });
+        } catch (error) {
+          console.error('Failed to load design projects:', error);
+        }
+      }
+
+      // Load Academic Projects
+      async function loadAcademicProjects() {
+        try {
+          const data = await apiRequest('/design/projects/academic');
+          const container = document.getElementById('academicProjectsList');
+          container.innerHTML = '';
+
+          if (!data.data || data.data.length === 0) {
+            container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">No academic projects found.</p>';
+            return;
+          }
+
+          data.data.forEach(project => {
+            const el = createDesignProjectElement(project);
+            container.appendChild(el);
+          });
+        } catch (error) {
+          console.error('Failed to load academic projects:', error);
+        }
+      }
+
+      // Load Professional Projects
+      async function loadProfessionalProjects() {
+        try {
+          const data = await apiRequest('/design/projects/professional');
+          const container = document.getElementById('professionalProjectsList');
+          container.innerHTML = '';
+
+          if (!data.data || data.data.length === 0) {
+            container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">No professional projects found.</p>';
+            return;
+          }
+
+          data.data.forEach(project => {
+            const el = createDesignProjectElement(project);
+            container.appendChild(el);
+          });
+        } catch (error) {
+          console.error('Failed to load professional projects:', error);
+        }
+      }
+
+      // Load Competition Projects
+      async function loadCompetitionProjects() {
+        try {
+          const data = await apiRequest('/design/projects/competition');
+          const container = document.getElementById('competitionProjectsList');
+          container.innerHTML = '';
+
+          if (!data.data || data.data.length === 0) {
+            container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">No competition projects found.</p>';
+            return;
+          }
+
+          data.data.forEach(project => {
+            const el = createDesignProjectElement(project);
+            container.appendChild(el);
+          });
+        } catch (error) {
+          console.error('Failed to load competition projects:', error);
+        }
+      }
+
+      function createDesignProjectElement(project) {
+        const el = document.createElement('div');
+        el.className = 'item';
+        
+        const content = document.createElement('div');
+        content.className = 'item-content';
+        
+        const title = document.createElement('h4');
+        title.className = 'item-title';
+        title.textContent = project.title;
+        
+        const meta = document.createElement('div');
+        meta.className = 'item-meta';
+        
+        const category = document.createElement('span');
+        category.className = 'item-type';
+        category.textContent = project.category;
+        
+        const status = document.createElement('span');
+        status.className = 'item-date';
+        status.textContent = project.is_published ? 'Published' : 'Draft';
+        
+        meta.appendChild(category);
+        meta.appendChild(status);
+        
+        const preview = document.createElement('div');
+        preview.className = 'item-preview';
+        preview.textContent = project.summary || 'No summary available';
+        
+        // Add image preview if available
+        if (project.main_image) {
+          const img = document.createElement('img');
+          img.src = project.main_image;
+          img.alt = project.title;
+          img.style.width = '100px';
+          img.style.height = '80px';
+          img.style.objectFit = 'cover';
+          img.style.borderRadius = '6px';
+          img.style.marginLeft = '1rem';
+          img.style.border = '1px solid var(--border-light)';
+          el.appendChild(img);
+        }
+        
+        content.appendChild(title);
+        content.appendChild(meta);
+        content.appendChild(preview);
+
+        const actions = document.createElement('div');
+        actions.className = 'item-actions';
+        
+        const editBtn = document.createElement('button');
+        editBtn.className = 'btn-secondary';
+        editBtn.innerHTML = '<i class="fas fa-edit"></i> Edit';
+        editBtn.onclick = () => editDesignProject(project);
+        
+        const toggleBtn = document.createElement('button');
+        toggleBtn.className = project.is_published ? 'btn-warning' : 'btn-primary';
+        toggleBtn.innerHTML = `<i class="fas ${project.is_published ? 'fa-eye-slash' : 'fa-eye'}"></i> ${project.is_published ? 'Unpublish' : 'Publish'}`;
+        toggleBtn.onclick = async () => {
+          await toggleDesignProject(project.id, !project.is_published);
+        };
+        
+        const del = document.createElement('button');
+        del.className = 'btn-danger';
+        del.innerHTML = '<i class="fas fa-trash"></i> Delete';
+        del.onclick = async () => {
+          if (confirm('Are you sure you want to delete this design project?')) {
+            await deleteDesignProject(project.id);
+          }
+        };
+        
+        actions.appendChild(editBtn);
+        actions.appendChild(toggleBtn);
+        actions.appendChild(del);
+        content.appendChild(actions);
+        
+        el.appendChild(content);
+        return el;
+      }
+
+      // Modal Functions for Design Projects
+      function showAddDesignProjectModal(category = null) {
+        if (category) {
+          document.getElementById('designProjectCategory').value = category;
+        }
+        document.getElementById('addDesignProjectModal').classList.remove('hidden');
+        
+        // Set up image upload event listeners
+        document.getElementById('designProjectMainImage').addEventListener('change', handleMainImageUpload);
+        document.getElementById('designProjectGalleryImages').addEventListener('change', handleGalleryImagesUpload);
+      }
+
+      function hideAddDesignProjectModal() {
+        document.getElementById('addDesignProjectModal').classList.add('hidden');
+        document.getElementById('addDesignProjectForm').reset();
+        
+        // Reset image previews and files
+        document.getElementById('mainImagePreview').innerHTML = '';
+        document.getElementById('galleryImagesPreview').innerHTML = '';
+        mainImageFile = null;
+        galleryImageFiles = [];
+        
+        // Remove event listeners to prevent duplicates
+        document.getElementById('designProjectMainImage').removeEventListener('change', handleMainImageUpload);
+        document.getElementById('designProjectGalleryImages').removeEventListener('change', handleGalleryImagesUpload);
+      }
+
+      // Form Submissions for Design Projects
+      document.getElementById('addDesignProjectForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const submitBtn = document.getElementById('addDesignProjectForm').querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
+        submitBtn.disabled = true;
+
+        // Show upload progress
+        const progressBar = document.querySelector('#uploadProgress .progress-bar');
+        document.getElementById('uploadProgress').style.display = 'block';
+        progressBar.style.width = '0%';
+
+        try {
+          // Validate main image
+          if (!mainImageFile) {
+            throw new Error('Please upload a main image for the project');
+          }
+
+          // Upload main image
+          progressBar.style.width = '25%';
+          const mainImageUrl = await uploadFile(mainImageFile, 'design-main');
+          
+          // Upload gallery images
+          progressBar.style.width = '50%');
+          const galleryImageUrls = [];
+          for (let i = 0; i < galleryImageFiles.length; i++) {
+            const url = await uploadFile(galleryImageFiles[i], 'design-gallery');
+            galleryImageUrls.push(url);
+            
+            // Update progress
+            const progress = 50 + (i / galleryImageFiles.length) * 50;
+            progressBar.style.width = `${progress}%`;
+          }
+
+          progressBar.style.width = '100%');
+
+          const projectData = {
+            title: document.getElementById('designProjectTitle').value,
+            summary: document.getElementById('designProjectSummary').value,
+            description: document.getElementById('designProjectDescription').value,
+            category: document.getElementById('designProjectCategory').value,
+            main_image: mainImageUrl,
+            gallery_images: galleryImageUrls,
+            display_order: parseInt(document.getElementById('designProjectDisplayOrder').value) || 0,
+            is_featured: document.getElementById('designProjectFeatured').checked,
+            is_published: document.getElementById('designProjectPublished').checked
+          };
+
+          await apiRequest('/design/projects', {
+            method: 'POST',
+            body: JSON.stringify(projectData)
+          });
+          
+          hideAddDesignProjectModal();
+          loadDesignStats();
+          showDesignTab(currentDesignTab);
+          alert('Design project added successfully!');
+        } catch (error) {
+          console.error('Failed to add design project:', error);
+          alert('Failed to add design project: ' + error.message);
+        } finally {
+          submitBtn.innerHTML = originalText;
+          submitBtn.disabled = false;
+          document.getElementById('uploadProgress').style.display = 'none';
+        }
+      });
+
+      // Placeholder functions for future implementation
+      async function toggleDesignProject(id, published) {
+        try {
+          await apiRequest(`/design/projects/${id}/toggle`, {
+            method: 'PATCH'
+          });
+          loadDesignStats();
+          showDesignTab(currentDesignTab);
+        } catch (error) {
+          console.error('Failed to toggle design project:', error);
+          alert('Failed to toggle design project: ' + error.message);
+        }
+      }
+
+      async function deleteDesignProject(id) {
+        try {
+          await apiRequest(`/design/projects/${id}`, {
+            method: 'DELETE'
+          });
+          loadDesignStats();
+          showDesignTab(currentDesignTab);
+          alert('Design project deleted successfully!');
+        } catch (error) {
+          console.error('Failed to delete design project:', error);
+          alert('Failed to delete design project: ' + error.message);
+        }
+      }
+
+      function editDesignProject(project) {
+        alert('Edit design project functionality coming soon!');
+      }
+
+      // Add to the refresh buttons
+      document.getElementById('refreshDesign').onclick = () => {
+        loadDesignStats();
+        showDesignTab(currentDesignTab);
+      };
+
+      // Load Dashboard Data
+      async function loadDashboardData() {
+        try {
+          console.log('📊 Loading dashboard data...');
+          await loadDesignStats();
+        } catch (error) {
+          console.error('Failed to load dashboard data:', error);
+        }
+      }
+
       // Navigation
       navItems.forEach(item => {
         item.addEventListener('click', () => {
@@ -1023,17 +864,9 @@ async function uploadFile(file, type) {
           pageTitle.textContent = item.querySelector('span').textContent;
           
           // Load section-specific data
-          if (section === 'contact') {
-            loadContactData();
-          } else if (section === 'dashboard') {
-            loadDashboardData();
-          } else if (section === 'manage') {
-            loadItems();
-          } else if (section === 'getinvolved') {
-            showGetInvolvedTab('membership');
-          } else if (section === 'media') {
-            loadMediaStats();
-            showMediaTab('photos');
+          if (section === 'design') {
+            loadDesignStats();
+            showDesignTab('design-all');
           }
           
           // Close mobile menu
@@ -1053,1880 +886,6 @@ async function uploadFile(file, type) {
           targetSection.classList.remove('hidden');
         }
       }
-
-      function showLogin() {
-        dashboard.classList.add('hidden');
-        loginScreen.classList.remove('hidden');
-        authToken = null;
-        localStorage.removeItem('aspire_token');
-      }
-
-      // Mobile menu
-      mobileMenuBtn.addEventListener('click', () => {
-        sidebar.classList.add('open');
-        overlay.classList.add('active');
-      });
-
-      overlay.addEventListener('click', () => {
-        sidebar.classList.remove('open');
-        overlay.classList.remove('active');
-      });
-
-      // Login functionality
-      document.getElementById('loginBtn').onclick = async () => {
-        const u = document.getElementById('username').value;
-        const p = document.getElementById('password').value;
-        const loginMsg = document.getElementById('loginMsg');
-        
-        try {
-          loginMsg.innerHTML = '<span class="text-warning">Logging in...</span>';
-          
-          const result = await fetch(`${API_BASE_URL}/auth/login`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ username: u, password: p })
-          });
-
-          if (!result.ok) {
-            const errorData = await result.json().catch(() => ({}));
-            throw new Error(errorData.error || `Login failed: ${result.status}`);
-          }
-
-          const data = await result.json();
-          
-          if (data.token) {
-            authToken = data.token; 
-            localStorage.setItem('aspire_token', data.token);
-            console.log('✅ Login successful, token stored');
-            showDashboard();
-          } else {
-            throw new Error('No token received from server');
-          }
-        } catch (error) {
-          console.error('Login error:', error);
-          loginMsg.innerHTML = `<span class="text-danger">${error.message || 'Login failed. Check credentials.'}</span>`;
-        }
-      };
-
-      // Load Dashboard Data
-      async function loadDashboardData() {
-        try {
-          console.log('📊 Loading dashboard data...');
-          await loadItems();
-          await loadContactStats();
-        } catch (error) {
-          console.error('Failed to load dashboard data:', error);
-          setDefaultStats();
-        }
-      }
-
-      // Load Items
-      async function loadItems() {
-        try {
-          console.log('📝 Loading items...');
-          const data = await apiRequest('/items');
-          allItems = Array.isArray(data) ? data : [];
-          renderItems(allItems);
-          updateStats(allItems);
-        } catch (error) {
-          console.error('Failed to load items:', error);
-          allItems = [];
-          renderItems([]);
-          updateStats([]);
-        }
-      }
-
-      function setDefaultStats() {
-        document.getElementById('newsCount').textContent = '0';
-        document.getElementById('projectCount').textContent = '0';
-        document.getElementById('insightCount').textContent = '0';
-        document.getElementById('contactCount').textContent = '0';
-        
-        const recentContainer = document.getElementById('recentItems');
-        recentContainer.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">No recent activity</p>';
-      }
-
-      function updateStats(items) {
-        const counts = {
-          news: items.filter(item => item.type === 'news').length,
-          project: items.filter(item => item.type === 'project').length,
-          insight: items.filter(item => item.type === 'insight').length,
-          event: items.filter(item => item.type === 'event').length,
-          course: items.filter(item => item.type === 'course').length
-        };
-
-        document.getElementById('newsCount').textContent = counts.news;
-        document.getElementById('projectCount').textContent = counts.project;
-        document.getElementById('insightCount').textContent = counts.insight;
-
-        // Update recent items
-        const recentItems = items.slice(0, 5);
-        const recentContainer = document.getElementById('recentItems');
-        recentContainer.innerHTML = '';
-        
-        if (recentItems.length === 0) {
-          recentContainer.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">No recent activity</p>';
-          return;
-        }
-        
-        recentItems.forEach(item => {
-          const el = createItemElement(item);
-          recentContainer.appendChild(el);
-        });
-      }
-
-      function renderItems(items) {
-        const container = document.getElementById('items'); 
-        container.innerHTML = '';
-        
-        if (items.length === 0) {
-          container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">No content items found.</p>';
-          return;
-        }
-        
-        items.forEach(item => {
-          const el = createItemElement(item);
-          container.appendChild(el);
-        });
-      }
-
-      function createItemElement(item) {
-        const el = document.createElement('div'); 
-        el.className = 'item';
-        
-        const content = document.createElement('div');
-        content.className = 'item-content';
-        
-        const title = document.createElement('h4');
-        title.className = 'item-title';
-        title.textContent = item.title || 'Untitled';
-        
-        const meta = document.createElement('div');
-        meta.className = 'item-meta';
-        
-        const type = document.createElement('span');
-        type.className = 'item-type';
-        type.textContent = item.type || 'unknown';
-        
-        const date = document.createElement('span');
-        date.className = 'item-date';
-        date.textContent = item.created_at ? new Date(item.created_at).toLocaleDateString() : 'Unknown date';
-        
-        meta.appendChild(type);
-        meta.appendChild(date);
-        
-        const preview = document.createElement('div');
-        preview.className = 'item-preview';
-        const contentText = item.content || '';
-        preview.textContent = contentText.substring(0, 150) + (contentText.length > 150 ? '...' : '');
-        
-        content.appendChild(title);
-        content.appendChild(meta);
-        content.appendChild(preview);
-
-        // Add files list if any
-        if (item.files && Array.isArray(item.files) && item.files.length > 0) {
-          const filesList = document.createElement('div');
-          filesList.className = 'files-list';
-          item.files.forEach(file => {
-            const fileItem = document.createElement('div');
-            fileItem.className = 'file-item';
-            const icon = document.createElement('span');
-            icon.innerHTML = file.type && file.type.startsWith('image/') ? '📷' : '📄';
-            const link = document.createElement('a');
-            link.href = file.path || '#';
-            link.target = '_blank';
-            link.textContent = file.name || 'File';
-            fileItem.appendChild(icon);
-            fileItem.appendChild(link);
-            filesList.appendChild(fileItem);
-          });
-          content.appendChild(filesList);
-        }
-
-        const actions = document.createElement('div');
-        actions.className = 'item-actions';
-        
-        const del = document.createElement('button');
-        del.className = 'btn-danger';
-        del.innerHTML = '<i class="fas fa-trash"></i> Delete';
-        del.onclick = async () => {
-          if (confirm('Are you sure you want to delete this item?')) {
-            try {
-              await apiRequest(`/items/${item.id}`, { method: 'DELETE' });
-              await loadItems();
-            } catch (error) {
-              console.error('Delete failed:', error);
-              alert('Failed to delete item: ' + error.message);
-            }
-          }
-        };
-        actions.appendChild(del);
-        content.appendChild(actions);
-        
-        if (item.image) {
-          const img = document.createElement('img');
-          img.src = item.image;
-          img.alt = item.title || 'Item image';
-          el.appendChild(img);
-        }
-        
-        el.appendChild(content);
-        return el;
-      }
-
-      // Contact Management Functions
-      async function loadContactData() {
-        try {
-          console.log('📧 Loading contact data...');
-          await Promise.all([
-            loadContactSubmissions(),
-            loadContactInfo(),
-            loadEmailSettings()
-          ]);
-        } catch (error) {
-          console.error('Failed to load contact data:', error);
-        }
-      }
-
-      async function loadContactSubmissions() {
-        try {
-          console.log('📧 Loading contact submissions...');
-          const data = await apiRequest('/contact/submissions');
-          console.log('📧 Raw submissions data:', data);
-          
-          // Handle different response formats
-          contactSubmissions = Array.isArray(data) ? data : 
-                              Array.isArray(data.data) ? data.data : 
-                              [];
-          
-          console.log(`📧 Processed ${contactSubmissions.length} submissions`);
-          
-          renderContactSubmissions(contactSubmissions);
-          updateContactStats(contactSubmissions);
-        } catch (error) {
-          console.error('Failed to load contact submissions:', error);
-          contactSubmissions = [];
-          renderContactSubmissions([]);
-          updateContactStats([]);
-        }
-      }
-
-      async function loadContactStats() {
-        try {
-          const stats = await apiRequest('/contact/submissions/stats');
-          if (stats && typeof stats.total !== 'undefined') {
-            document.getElementById('contactCount').textContent = stats.total;
-          }
-        } catch (error) {
-          console.error('Failed to load contact stats:', error);
-          document.getElementById('contactCount').textContent = '0';
-        }
-      }
-
-      function updateContactStats(submissions) {
-        const total = submissions.length;
-        const newCount = submissions.filter(s => s.status === 'new').length;
-        const repliedCount = submissions.filter(s => s.status === 'replied').length;
-        const recentCount = submissions.filter(s => {
-          if (!s.created_at) return false;
-          const sevenDaysAgo = new Date();
-          sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-          return new Date(s.created_at) >= sevenDaysAgo;
-        }).length;
-
-        document.getElementById('totalSubmissions').textContent = total;
-        document.getElementById('newSubmissions').textContent = newCount;
-        document.getElementById('repliedSubmissions').textContent = repliedCount;
-        document.getElementById('recentSubmissions').textContent = recentCount;
-      }
-
-      function renderContactSubmissions(submissions) {
-        const container = document.getElementById('submissionsList');
-        container.innerHTML = '';
-
-        if (submissions.length === 0) {
-          container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">No contact submissions found.</p>';
-          return;
-        }
-
-        submissions.forEach(submission => {
-          const el = document.createElement('div');
-          el.className = 'submission-item';
-          
-          const header = document.createElement('div');
-          header.className = 'submission-header';
-          
-          const left = document.createElement('div');
-          left.innerHTML = `
-            <h4 style="margin: 0 0 0.5rem 0; color: var(--accent-light);">${submission.name || 'No name'}</h4>
-            <p style="margin: 0; color: var(--text-muted);">${submission.email || 'No email'}</p>
-          `;
-          
-          const right = document.createElement('div');
-          right.innerHTML = `
-            <span class="status-badge status-${submission.status || 'new'}">${submission.status || 'new'}</span>
-            <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">
-              ${submission.created_at ? new Date(submission.created_at).toLocaleDateString() : 'Unknown date'}
-            </div>
-          `;
-          
-          header.appendChild(left);
-          header.appendChild(right);
-          
-          const meta = document.createElement('div');
-          meta.className = 'submission-meta';
-          
-          const statusSelect = document.createElement('select');
-          statusSelect.innerHTML = `
-            <option value="new" ${(submission.status || 'new') === 'new' ? 'selected' : ''}>New</option>
-            <option value="read" ${(submission.status || 'new') === 'read' ? 'selected' : ''}>Read</option>
-            <option value="replied" ${(submission.status || 'new') === 'replied' ? 'selected' : ''}>Replied</option>
-            <option value="archived" ${(submission.status || 'new') === 'archived' ? 'selected' : ''}>Archived</option>
-          `;
-          statusSelect.onchange = async (e) => {
-            await updateSubmissionStatus(submission.id, e.target.value);
-          };
-          
-          const deleteBtn = document.createElement('button');
-          deleteBtn.className = 'btn-danger';
-          deleteBtn.innerHTML = '<i class="fas fa-trash"></i> Delete';
-          deleteBtn.onclick = async () => {
-            if (confirm('Delete this submission?')) {
-              await deleteSubmission(submission.id);
-            }
-          };
-          
-          meta.appendChild(statusSelect);
-          meta.appendChild(deleteBtn);
-          
-          const message = document.createElement('div');
-          message.style.padding = '1rem';
-          message.style.background = 'rgba(255,255,255,0.03)';
-          message.style.borderRadius = '8px';
-          message.style.marginTop = '1rem';
-          message.textContent = submission.message || 'No message';
-          
-          el.appendChild(header);
-          el.appendChild(meta);
-          el.appendChild(message);
-          container.appendChild(el);
-        });
-      }
-
-      async function updateSubmissionStatus(id, status) {
-        try {
-          await apiRequest(`/contact/submissions/${id}/status`, {
-            method: 'PUT',
-            body: JSON.stringify({ status })
-          });
-          await loadContactSubmissions();
-        } catch (error) {
-          console.error('Failed to update status:', error);
-          alert('Failed to update status: ' + error.message);
-        }
-      }
-
-      async function deleteSubmission(id) {
-        try {
-          await apiRequest(`/contact/submissions/${id}`, { method: 'DELETE' });
-          await loadContactSubmissions();
-        } catch (error) {
-          console.error('Failed to delete submission:', error);
-          alert('Failed to delete submission: ' + error.message);
-        }
-      }
-
-      async function loadContactInfo() {
-        try {
-          const data = await apiRequest('/contact/admin/info');
-          // Handle different response formats
-          contactInfo = Array.isArray(data) ? data : 
-                       Array.isArray(data.data) ? data.data : 
-                       [];
-          renderContactInfo(contactInfo);
-        } catch (error) {
-          console.error('Failed to load contact info:', error);
-          contactInfo = [];
-          renderContactInfo([]);
-        }
-      }
-
-      function renderContactInfo(info) {
-        const container = document.getElementById('contactInfoList');
-        container.innerHTML = '';
-
-        if (info.length === 0) {
-          container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">No contact information found.</p>';
-          return;
-        }
-
-        info.forEach(item => {
-          const el = document.createElement('div');
-          el.className = 'contact-info-item';
-          
-          const header = document.createElement('div');
-          header.className = 'contact-info-header';
-          
-          const left = document.createElement('div');
-          left.innerHTML = `
-            <h4 style="margin: 0 0 0.5rem 0; color: var(--accent-light);">${item.title || 'No title'}</h4>
-            <p style="margin: 0; color: var(--text-muted); font-size: 0.9rem;">${item.type || 'No type'}</p>
-          `;
-          
-          const right = document.createElement('label');
-          right.className = 'toggle-switch';
-          right.innerHTML = `
-            <input type="checkbox" ${item.is_active ? 'checked' : ''} onchange="updateContactInfo(${item.id}, this.checked)">
-            <span class="toggle-slider"></span>
-          `;
-          
-          header.appendChild(left);
-          header.appendChild(right);
-          
-          const value = document.createElement('div');
-          value.style.marginTop = '1rem';
-          value.innerHTML = `
-            <textarea style="width: 100%; min-height: 80px; padding: 0.8rem; background: rgba(255,255,255,0.05); border: 1px solid var(--border-light); border-radius: 8px; color: var(--text-light);" 
-                      onblur="updateContactInfoValue(${item.id}, this.value)">${item.value || ''}</textarea>
-          `;
-          
-          el.appendChild(header);
-          el.appendChild(value);
-          container.appendChild(el);
-        });
-      }
-
-      // Make these functions globally available for the inline event handlers
-      window.updateContactInfo = async function(id, isActive) {
-        try {
-          const item = contactInfo.find(i => i.id === id);
-          if (item) {
-            await apiRequest(`/contact/info/${id}`, {
-              method: 'PUT',
-              body: JSON.stringify({ ...item, is_active: isActive })
-            });
-          }
-        } catch (error) {
-          console.error('Failed to update contact info:', error);
-          alert('Failed to update contact info: ' + error.message);
-        }
-      };
-
-      window.updateContactInfoValue = async function(id, value) {
-        try {
-          const item = contactInfo.find(i => i.id === id);
-          if (item) {
-            await apiRequest(`/contact/info/${id}`, {
-              method: 'PUT',
-              body: JSON.stringify({ ...item, value })
-            });
-          }
-        } catch (error) {
-          console.error('Failed to update contact info value:', error);
-          alert('Failed to update contact info: ' + error.message);
-        }
-      };
-
-      async function loadEmailSettings() {
-        try {
-          const data = await apiRequest('/contact/email-settings');
-          // Handle different response formats
-          emailSettings = Array.isArray(data) ? data : 
-                         Array.isArray(data.data) ? data.data : 
-                         [];
-          renderEmailSettings(emailSettings);
-        } catch (error) {
-          console.error('Failed to load email settings:', error);
-          emailSettings = [];
-          renderEmailSettings([]);
-        }
-      }
-
-      function renderEmailSettings(settings) {
-        const container = document.getElementById('emailSettingsList');
-        container.innerHTML = '';
-
-        if (settings.length === 0) {
-          container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">No email settings found.</p>';
-          return;
-        }
-
-        settings.forEach(setting => {
-          const el = document.createElement('div');
-          el.className = 'email-setting-item';
-          
-          el.innerHTML = `
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
-              <div class="input-group">
-                <label>Recipient Email</label>
-                <input type="email" value="${setting.recipient_email || ''}" 
-                       onblur="updateEmailSetting(${setting.id}, 'recipient_email', this.value)"
-                       style="width: 100%;">
-              </div>
-              <div class="input-group">
-                <label>Subject Template</label>
-                <input type="text" value="${setting.subject_template || ''}" 
-                       onblur="updateEmailSetting(${setting.id}, 'subject_template', this.value)"
-                       style="width: 100%;">
-              </div>
-            </div>
-            <div class="input-group">
-              <label class="toggle-switch" style="display: flex; align-items: center; gap: 1rem;">
-                <span>Enabled</span>
-                <input type="checkbox" ${setting.enabled ? 'checked' : ''} 
-                       onchange="updateEmailSetting(${setting.id}, 'enabled', this.checked)">
-                <span class="toggle-slider"></span>
-              </label>
-            </div>
-          `;
-          
-          container.appendChild(el);
-        });
-      }
-
-      window.updateEmailSetting = async function(id, field, value) {
-        try {
-          const setting = emailSettings.find(s => s.id === id);
-          if (setting) {
-            await apiRequest(`/contact/email-settings/${id}`, {
-              method: 'PUT',
-              body: JSON.stringify({ ...setting, [field]: value })
-            });
-          }
-        } catch (error) {
-          console.error('Failed to update email setting:', error);
-          alert('Failed to update email setting: ' + error.message);
-        }
-      };
-
-      // Form submission
-      document.getElementById('contentForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const title = document.getElementById('title').value;
-        const type = document.getElementById('type').value;
-        const content = document.getElementById('content').value;
-        
-        if (!title || !type || !content) {
-          alert('Please fill in all required fields');
-          return;
-        }
-
-        const form = new FormData();
-        form.append('title', title);
-        form.append('type', type);
-        form.append('content', content);
-
-        const imageFile = document.getElementById('image').files[0];
-        if (imageFile) {
-          if (imageFile.size > 5 * 1024 * 1024) {
-            alert('Cover image must be less than 5MB');
-            return;
-          }
-          form.append('image', imageFile);
-        }
-
-        const additionalFiles = document.getElementById('files').files;
-        if (additionalFiles.length > 5) {
-          alert('Maximum 5 additional files allowed');
-          return;
-        }
-
-        for (let file of additionalFiles) {
-          if (file.size > 5 * 1024 * 1024) {
-            alert('Each file must be less than 5MB');
-            return;
-          }
-          form.append('files', file);
-        }
-
-        // Show progress bar
-        const progress = document.getElementById('uploadProgress');
-        const progressBar = progress.querySelector('.progress-bar');
-        progress.style.display = 'block';
-        progressBar.style.width = '0%';
-
-        try {
-          // Use direct fetch for FormData
-          const response = await fetch(`${API_BASE_URL}/items`, {
-            method: 'POST',
-            headers: { 
-              'Authorization': `Bearer ${authToken || localStorage.getItem('aspire_token')}` 
-            },
-            body: form
-          });
-
-          if (response.ok) {
-            document.getElementById('contentForm').reset();
-            progressBar.style.width = '100%';
-            setTimeout(() => {
-              progress.style.display = 'none';
-              progressBar.style.width = '0%';
-            }, 500);
-
-            await loadItems();
-            showSection('manage');
-            navItems.forEach(nav => {
-              nav.classList.remove('active');
-              if (nav.getAttribute('data-section') === 'manage') {
-                nav.classList.add('active');
-                pageTitle.textContent = nav.querySelector('span').textContent;
-              }
-            });
-          } else {
-            const errorData = await response.json().catch(() => ({}));
-            alert(errorData.error || 'Upload failed');
-          }
-        } catch (err) {
-          console.error('Upload error:', err);
-          alert('Upload failed: ' + (err.message || 'Unknown error'));
-        }
-      });
-
-      // Get Involved Management Functions
-      document.querySelectorAll('.get-involved-tab').forEach(tab => {
-        tab.addEventListener('click', () => {
-          const tabName = tab.getAttribute('data-tab');
-          showGetInvolvedTab(tabName);
-        });
-      });
-
-      function showGetInvolvedTab(tabName) {
-        // Hide all tabs
-        document.querySelectorAll('.get-involved-content').forEach(content => {
-          content.classList.remove('active');
-        });
-        document.querySelectorAll('.get-involved-tab').forEach(tab => {
-          tab.classList.remove('active');
-        });
-
-        // Show selected tab
-        document.getElementById(tabName + 'Tab').classList.add('active');
-        document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
-        currentGetInvolvedTab = tabName;
-
-        // Load data for the tab
-        switch(tabName) {
-          case 'membership':
-            loadMembershipApplications();
-            break;
-          case 'donations':
-            loadDonations();
-            break;
-          case 'feedback':
-            loadFeedback();
-            break;
-          case 'ideas':
-            loadIdeas();
-            break;
-          case 'partnerships':
-            loadPartnerships();
-            break;
-          case 'stories':
-            loadStories();
-            break;
-        }
-      }
-
-      // Load Membership Applications
-      async function loadMembershipApplications() {
-        try {
-          const data = await apiRequest('/get-involved/admin/membership');
-          const container = document.getElementById('membershipList');
-          container.innerHTML = '';
-
-          if (data.length === 0) {
-            container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">No membership applications found.</p>';
-            return;
-          }
-
-          data.forEach(application => {
-            const el = createSubmissionElement(application, 'membership');
-            container.appendChild(el);
-          });
-        } catch (error) {
-          console.error('Failed to load membership applications:', error);
-        }
-      }
-
-      // Load Donations
-      async function loadDonations() {
-        try {
-          const data = await apiRequest('/get-involved/admin/donations');
-          const container = document.getElementById('donationsList');
-          container.innerHTML = '';
-
-          if (data.length === 0) {
-            container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">No donations found.</p>';
-            return;
-          }
-
-          data.forEach(donation => {
-            const el = createSubmissionElement(donation, 'donations');
-            container.appendChild(el);
-          });
-        } catch (error) {
-          console.error('Failed to load donations:', error);
-        }
-      }
-
-      // Load Feedback
-      async function loadFeedback() {
-        try {
-          const data = await apiRequest('/get-involved/admin/feedback');
-          const container = document.getElementById('feedbackList');
-          container.innerHTML = '';
-
-          if (data.length === 0) {
-            container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">No feedback submissions found.</p>';
-            return;
-          }
-
-          data.forEach(feedback => {
-            const el = createSubmissionElement(feedback, 'feedback');
-            container.appendChild(el);
-          });
-        } catch (error) {
-          console.error('Failed to load feedback:', error);
-        }
-      }
-
-      // Load Ideas
-      async function loadIdeas() {
-        try {
-          const data = await apiRequest('/get-involved/admin/ideas');
-          const container = document.getElementById('ideasList');
-          container.innerHTML = '';
-
-          if (data.length === 0) {
-            container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">No idea submissions found.</p>';
-            return;
-          }
-
-          data.forEach(idea => {
-            const el = createSubmissionElement(idea, 'ideas');
-            container.appendChild(el);
-          });
-        } catch (error) {
-          console.error('Failed to load ideas:', error);
-        }
-      }
-
-      // Load Partnerships
-      async function loadPartnerships() {
-        try {
-          const data = await apiRequest('/get-involved/admin/partnerships');
-          const container = document.getElementById('partnershipsList');
-          container.innerHTML = '';
-
-          if (data.length === 0) {
-            container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">No partnership inquiries found.</p>';
-            return;
-          }
-
-          data.forEach(partnership => {
-            const el = createSubmissionElement(partnership, 'partnerships');
-            container.appendChild(el);
-          });
-        } catch (error) {
-          console.error('Failed to load partnerships:', error);
-        }
-      }
-
-      // Load Stories
-      async function loadStories() {
-        try {
-          const data = await apiRequest('/get-involved/admin/stories');
-          const container = document.getElementById('storiesList');
-          container.innerHTML = '';
-
-          if (data.length === 0) {
-            container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">No community stories found.</p>';
-            return;
-          }
-
-          data.forEach(story => {
-            const el = createStoryElement(story);
-            container.appendChild(el);
-          });
-        } catch (error) {
-          console.error('Failed to load stories:', error);
-        }
-      }
-
-      // Generic submission element creator
-      function createSubmissionElement(submission, type) {
-        const el = document.createElement('div');
-        el.className = 'submission-item';
-        
-        const header = document.createElement('div');
-        header.className = 'submission-header';
-        
-        const left = document.createElement('div');
-        left.innerHTML = `
-          <h4 style="margin: 0 0 0.5rem 0; color: var(--accent-light);">${submission.full_name || 'No name'}</h4>
-          <p style="margin: 0; color: var(--text-muted);">${submission.email || 'No email'}</p>
-        `;
-        
-        const right = document.createElement('div');
-        
-        // Add type-specific badges
-        let badges = '';
-        if (type === 'donations' && submission.amount) {
-          badges += `<span class="amount-badge">$${submission.amount}</span>`;
-        }
-        if (type === 'ideas' && submission.priority) {
-          badges += `<span class="priority-badge priority-${submission.priority}">${submission.priority}</span>`;
-        }
-        
-        right.innerHTML = `
-          <span class="status-badge status-${submission.status || 'new'}">${submission.status || 'new'}</span>
-          ${badges}
-          <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">
-            ${submission.created_at ? new Date(submission.created_at).toLocaleDateString() : 'Unknown date'}
-          </div>
-        `;
-        
-        header.appendChild(left);
-        header.appendChild(right);
-        
-        const meta = document.createElement('div');
-        meta.className = 'submission-meta';
-        
-        const statusSelect = document.createElement('select');
-        statusSelect.innerHTML = getStatusOptions(type, submission.status);
-        statusSelect.onchange = async (e) => {
-          await updateGetInvolvedStatus(type, submission.id, e.target.value);
-        };
-        
-        const deleteBtn = document.createElement('button');
-        deleteBtn.className = 'btn-danger';
-        deleteBtn.innerHTML = '<i class="fas fa-trash"></i> Delete';
-        deleteBtn.onclick = async () => {
-          if (confirm('Delete this submission?')) {
-            await deleteGetInvolvedSubmission(type, submission.id);
-          }
-        };
-        
-        meta.appendChild(statusSelect);
-        meta.appendChild(deleteBtn);
-        
-        const content = document.createElement('div');
-        content.style.padding = '1rem';
-        content.style.background = 'rgba(255,255,255,0.03)';
-        content.style.borderRadius = '8px';
-        content.style.marginTop = '1rem';
-        content.innerHTML = getSubmissionContent(submission, type);
-        
-        el.appendChild(header);
-        el.appendChild(meta);
-        el.appendChild(content);
-        return el;
-      }
-
-      // Story element creator
-      function createStoryElement(story) {
-        const el = document.createElement('div');
-        el.className = `submission-item ${story.is_featured ? 'story-featured' : ''} ${story.is_published ? 'story-published' : 'story-draft'}`;
-        
-        const header = document.createElement('div');
-        header.className = 'submission-header';
-        
-        const left = document.createElement('div');
-        left.innerHTML = `
-          <h4 style="margin: 0 0 0.5rem 0; color: var(--accent-light);">${story.story_title}</h4>
-          <p style="margin: 0; color: var(--text-muted);">By ${story.author_name}${story.author_title ? `, ${story.author_title}` : ''}</p>
-        `;
-        
-        const right = document.createElement('div');
-        right.innerHTML = `
-          <span class="status-badge status-${story.status || 'published'}">${story.status || 'published'}</span>
-          ${story.is_featured ? '<span class="priority-badge priority-high" style="margin-left: 0.5rem;">Featured</span>' : ''}
-          <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">
-            ${story.created_at ? new Date(story.created_at).toLocaleDateString() : 'Unknown date'}
-          </div>
-        `;
-        
-        header.appendChild(left);
-        header.appendChild(right);
-        
-        const meta = document.createElement('div');
-        meta.className = 'submission-meta';
-        
-        const statusSelect = document.createElement('select');
-        statusSelect.innerHTML = getStatusOptions('stories', story.status);
-        statusSelect.onchange = async (e) => {
-          await updateGetInvolvedStatus('stories', story.id, e.target.value);
-        };
-        
-        const editBtn = document.createElement('button');
-        editBtn.className = 'btn-secondary';
-        editBtn.innerHTML = '<i class="fas fa-edit"></i> Edit';
-        editBtn.onclick = () => editStory(story);
-        
-        const deleteBtn = document.createElement('button');
-        deleteBtn.className = 'btn-danger';
-        deleteBtn.innerHTML = '<i class="fas fa-trash"></i> Delete';
-        deleteBtn.onclick = async () => {
-          if (confirm('Delete this story?')) {
-            await deleteGetInvolvedSubmission('stories', story.id);
-          }
-        };
-        
-        meta.appendChild(statusSelect);
-        meta.appendChild(editBtn);
-        meta.appendChild(deleteBtn);
-        
-        const content = document.createElement('div');
-        content.style.padding = '1rem';
-        content.style.background = 'rgba(255,255,255,0.03)';
-        content.style.borderRadius = '8px';
-        content.style.marginTop = '1rem';
-        content.textContent = story.story_content.substring(0, 200) + (story.story_content.length > 200 ? '...' : '');
-        
-        el.appendChild(header);
-        el.appendChild(meta);
-        el.appendChild(content);
-        return el;
-      }
-
-      // Helper functions
-      function getStatusOptions(type, currentStatus) {
-        const baseOptions = {
-          membership: `
-            <option value="pending" ${currentStatus === 'pending' ? 'selected' : ''}>Pending</option>
-            <option value="approved" ${currentStatus === 'approved' ? 'selected' : ''}>Approved</option>
-            <option value="rejected" ${currentStatus === 'rejected' ? 'selected' : ''}>Rejected</option>
-            <option value="archived" ${currentStatus === 'archived' ? 'selected' : ''}>Archived</option>
-          `,
-          donations: `
-            <option value="pending" ${currentStatus === 'pending' ? 'selected' : ''}>Pending</option>
-            <option value="verified" ${currentStatus === 'verified' ? 'selected' : ''}>Verified</option>
-            <option value="completed" ${currentStatus === 'completed' ? 'selected' : ''}>Completed</option>
-            <option value="archived" ${currentStatus === 'archived' ? 'selected' : ''}>Archived</option>
-          `,
-          feedback: `
-            <option value="new" ${currentStatus === 'new' ? 'selected' : ''}>New</option>
-            <option value="read" ${currentStatus === 'read' ? 'selected' : ''}>Read</option>
-            <option value="replied" ${currentStatus === 'replied' ? 'selected' : ''}>Replied</option>
-            <option value="archived" ${currentStatus === 'archived' ? 'selected' : ''}>Archived</option>
-          `,
-          ideas: `
-            <option value="under_review" ${currentStatus === 'under_review' ? 'selected' : ''}>Under Review</option>
-            <option value="approved" ${currentStatus === 'approved' ? 'selected' : ''}>Approved</option>
-            <option value="implemented" ${currentStatus === 'implemented' ? 'selected' : ''}>Implemented</option>
-            <option value="rejected" ${currentStatus === 'rejected' ? 'selected' : ''}>Rejected</option>
-            <option value="archived" ${currentStatus === 'archived' ? 'selected' : ''}>Archived</option>
-          `,
-          partnerships: `
-            <option value="pending" ${currentStatus === 'pending' ? 'selected' : ''}>Pending</option>
-            <option value="under_review" ${currentStatus === 'under_review' ? 'selected' : ''}>Under Review</option>
-            <option value="approved" ${currentStatus === 'approved' ? 'selected' : ''}>Approved</option>
-            <option value="rejected" ${currentStatus === 'rejected' ? 'selected' : ''}>Rejected</option>
-            <option value="archived" ${currentStatus === 'archived' ? 'selected' : ''}>Archived</option>
-          `,
-          stories: `
-            <option value="draft" ${currentStatus === 'draft' ? 'selected' : ''}>Draft</option>
-            <option value="published" ${currentStatus === 'published' ? 'selected' : ''}>Published</option>
-            <option value="archived" ${currentStatus === 'archived' ? 'selected' : ''}>Archived</option>
-          `
-        };
-        
-        return baseOptions[type] || baseOptions.feedback;
-      }
-
-      function getSubmissionContent(submission, type) {
-        switch(type) {
-          case 'membership':
-            return `
-              <p><strong>Type:</strong> ${submission.membership_type}</p>
-              <p><strong>Organization:</strong> ${submission.organization || 'Not specified'}</p>
-              <p><strong>Position:</strong> ${submission.position || 'Not specified'}</p>
-              ${submission.message ? `<p><strong>Message:</strong> ${submission.message}</p>` : ''}
-            `;
-          case 'donations':
-            return `
-              <p><strong>Amount:</strong> $${submission.amount} ${submission.currency}</p>
-              <p><strong>Payment Method:</strong> ${submission.payment_method}</p>
-              ${submission.bank_name ? `<p><strong>Bank:</strong> ${submission.bank_name}</p>` : ''}
-              ${submission.mtn_mobile_number ? `<p><strong>MTN Number:</strong> ${submission.mtn_mobile_number}</p>` : ''}
-            `;
-          case 'feedback':
-            return `
-              <p><strong>Category:</strong> ${submission.category}</p>
-              ${submission.subject ? `<p><strong>Subject:</strong> ${submission.subject}</p>` : ''}
-              <p><strong>Message:</strong> ${submission.message}</p>
-              ${submission.rating ? `<p><strong>Rating:</strong> ${'★'.repeat(submission.rating)}${'☆'.repeat(5-submission.rating)}</p>` : ''}
-            `;
-          case 'ideas':
-            return `
-              <p><strong>Title:</strong> ${submission.idea_title}</p>
-              <p><strong>Category:</strong> ${submission.category}</p>
-              <p><strong>Description:</strong> ${submission.description.substring(0, 200)}${submission.description.length > 200 ? '...' : ''}</p>
-              ${submission.target_audience ? `<p><strong>Target Audience:</strong> ${submission.target_audience}</p>` : ''}
-            `;
-          case 'partnerships':
-            return `
-              <p><strong>Organization:</strong> ${submission.organization}</p>
-              <p><strong>Partnership Type:</strong> ${submission.partnership_type}</p>
-              ${submission.position ? `<p><strong>Position:</strong> ${submission.position}</p>` : ''}
-              <p><strong>Proposal:</strong> ${submission.proposal ? submission.proposal.substring(0, 200) + (submission.proposal.length > 200 ? '...' : '') : 'No proposal provided'}</p>
-            `;
-          default:
-            return '<p>No content available</p>';
-        }
-      }
-
-      async function updateGetInvolvedStatus(type, id, status) {
-        try {
-          await apiRequest(`/get-involved/admin/${type}/${id}/status`, {
-            method: 'PUT',
-            body: JSON.stringify({ status })
-          });
-          // Reload the current tab
-          showGetInvolvedTab(currentGetInvolvedTab);
-        } catch (error) {
-          console.error('Failed to update status:', error);
-          alert('Failed to update status: ' + error.message);
-        }
-      }
-
-      async function deleteGetInvolvedSubmission(type, id) {
-        try {
-          await apiRequest(`/get-involved/admin/${type}/${id}`, { method: 'DELETE' });
-          // Reload the current tab
-          showGetInvolvedTab(currentGetInvolvedTab);
-        } catch (error) {
-          console.error('Failed to delete submission:', error);
-          alert('Failed to delete submission: ' + error.message);
-        }
-      }
-
-      // Story management functions
-      function showCreateStoryModal() {
-        document.getElementById('createStoryModal').classList.remove('hidden');
-      }
-
-      function hideCreateStoryModal() {
-        document.getElementById('createStoryModal').classList.add('hidden');
-        document.getElementById('createStoryForm').reset();
-      }
-
-      document.getElementById('createStoryForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const storyData = {
-          author_name: document.getElementById('storyAuthor').value,
-          author_title: document.getElementById('storyTitle').value,
-          author_organization: document.getElementById('storyOrganization').value,
-          story_title: document.getElementById('storyStoryTitle').value,
-          story_content: document.getElementById('storyContent').value,
-          category: document.getElementById('storyCategory').value,
-          featured_image: document.getElementById('storyFeaturedImage').value,
-          is_featured: document.getElementById('storyFeatured').checked,
-          is_published: document.getElementById('storyPublished').checked
-        };
-
-        try {
-          await apiRequest('/get-involved/admin/stories', {
-            method: 'POST',
-            body: JSON.stringify(storyData)
-          });
-          
-          hideCreateStoryModal();
-          loadStories();
-          alert('Story created successfully!');
-        } catch (error) {
-          console.error('Failed to create story:', error);
-          alert('Failed to create story: ' + error.message);
-        }
-      });
-
-      function editStory(story) {
-        // Implementation for editing stories
-        alert('Edit story functionality coming soon!');
-      }
-
-      // Media Management Functions
-      document.querySelectorAll('.get-involved-tab[data-tab]').forEach(tab => {
-        tab.addEventListener('click', () => {
-          const tabName = tab.getAttribute('data-tab');
-          if (['photos', 'videos', 'designs', 'testimonials'].includes(tabName)) {
-            showMediaTab(tabName);
-          }
-        });
-      });
-
-      function showMediaTab(tabName) {
-        // Hide all media tabs
-        document.querySelectorAll('.get-involved-content').forEach(content => {
-          content.classList.remove('active');
-        });
-        document.querySelectorAll('.get-involved-tab').forEach(tab => {
-          tab.classList.remove('active');
-        });
-
-        // Show selected tab
-        document.getElementById(tabName + 'Tab').classList.add('active');
-        document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
-        currentMediaTab = tabName;
-
-        // Load data for the tab
-        switch(tabName) {
-          case 'photos':
-            loadPhotos();
-            break;
-          case 'videos':
-            loadVideos();
-            break;
-          case 'designs':
-            loadDesigns();
-            break;
-          case 'testimonials':
-            loadTestimonials();
-            break;
-        }
-      }
-
-      // Photo Category Filter
-      document.querySelectorAll('.filter-btn[data-category]').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const category = btn.getAttribute('data-category');
-          currentPhotoCategory = category;
-          
-          // Update active category
-          document.querySelectorAll('.filter-btn').forEach(b => {
-            b.classList.remove('active');
-          });
-          btn.classList.add('active');
-          
-          // Filter photos
-          filterPhotosByCategory(category);
-        });
-      });
-
-      // Load Media Stats
-      async function loadMediaStats() {
-        try {
-          const stats = await apiRequest('/media/stats');
-          mediaStats = stats;
-          
-          document.getElementById('photosCount').textContent = stats.photos || 0;
-          document.getElementById('videosCount').textContent = stats.videos || 0;
-          document.getElementById('designsCount').textContent = stats.designs || 0;
-          document.getElementById('testimonialsCount').textContent = stats.testimonials || 0;
-        } catch (error) {
-          console.error('Failed to load media stats:', error);
-        }
-      }
-
-      // Photos Management
-      async function loadPhotos() {
-        try {
-          const data = await apiRequest('/media/photos');
-          const container = document.getElementById('photosList');
-          container.innerHTML = '';
-
-          if (data.length === 0) {
-            container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">No photos found.</p>';
-            return;
-          }
-
-          data.forEach(photo => {
-            const el = createPhotoElement(photo);
-            container.appendChild(el);
-          });
-          
-          // Update stats
-          mediaStats.photos = data.length;
-          document.getElementById('photosCount').textContent = data.length;
-        } catch (error) {
-          console.error('Failed to load photos:', error);
-        }
-      }
-
-      function createPhotoElement(photo) {
-        const el = document.createElement('div');
-        el.className = 'item';
-        
-        const content = document.createElement('div');
-        content.className = 'item-content';
-        
-        const title = document.createElement('h4');
-        title.className = 'item-title';
-        title.textContent = photo.title;
-        
-        const meta = document.createElement('div');
-        meta.className = 'item-meta';
-        
-        const type = document.createElement('span');
-        type.className = 'item-type';
-        type.textContent = photo.category;
-        
-        const date = document.createElement('span');
-        date.className = 'item-date';
-        date.textContent = photo.created_at ? new Date(photo.created_at).toLocaleDateString() : 'Unknown date';
-        
-        meta.appendChild(type);
-        meta.appendChild(date);
-        
-        const preview = document.createElement('div');
-        preview.className = 'item-preview';
-        preview.textContent = photo.description || 'No description available';
-        
-        content.appendChild(title);
-        content.appendChild(meta);
-        content.appendChild(preview);
-
-        const actions = document.createElement('div');
-        actions.className = 'item-actions';
-        
-        const featuredBtn = document.createElement('button');
-        featuredBtn.className = photo.is_featured ? 'btn-primary' : 'btn-secondary';
-        featuredBtn.innerHTML = `<i class="fas ${photo.is_featured ? 'fa-star' : 'fa-star'}"></i> ${photo.is_featured ? 'Featured' : 'Feature'}`;
-        featuredBtn.onclick = async () => {
-          await toggleFeatured('photos', photo.id, !photo.is_featured);
-        };
-        
-        const del = document.createElement('button');
-        del.className = 'btn-danger';
-        del.innerHTML = '<i class="fas fa-trash"></i> Delete';
-        del.onclick = async () => {
-          if (confirm('Are you sure you want to delete this photo?')) {
-            await deleteMediaItem('photos', photo.id);
-          }
-        };
-        
-        actions.appendChild(featuredBtn);
-        actions.appendChild(del);
-        content.appendChild(actions);
-        
-        if (photo.image) {
-          const img = document.createElement('img');
-          img.src = photo.image;
-          img.alt = photo.title;
-          el.appendChild(img);
-        }
-        
-        el.appendChild(content);
-        return el;
-      }
-
-      function filterPhotosByCategory(category) {
-        const container = document.getElementById('photosList');
-        const items = container.querySelectorAll('.item');
-        
-        items.forEach(item => {
-          const typeElement = item.querySelector('.item-type');
-          if (typeElement) {
-            const itemCategory = typeElement.textContent;
-            if (category === 'All' || itemCategory === category) {
-              item.style.display = 'flex';
-            } else {
-              item.style.display = 'none';
-            }
-          }
-        });
-      }
-
-      // Videos Management
-      async function loadVideos() {
-        try {
-          const data = await apiRequest('/media/videos');
-          const container = document.getElementById('videosList');
-          container.innerHTML = '';
-
-          if (data.length === 0) {
-            container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">No videos found.</p>';
-            return;
-          }
-
-          data.forEach(video => {
-            const el = createVideoElement(video);
-            container.appendChild(el);
-          });
-          
-          mediaStats.videos = data.length;
-          document.getElementById('videosCount').textContent = data.length;
-        } catch (error) {
-          console.error('Failed to load videos:', error);
-        }
-      }
-
-      function createVideoElement(video) {
-        const el = document.createElement('div');
-        el.className = 'item';
-        
-        const content = document.createElement('div');
-        content.className = 'item-content';
-        
-        const title = document.createElement('h4');
-        title.className = 'item-title';
-        title.textContent = video.title;
-        
-        const meta = document.createElement('div');
-        meta.className = 'item-meta';
-        
-        const type = document.createElement('span');
-        type.className = 'item-type';
-        type.textContent = video.category || 'Video';
-        
-        const date = document.createElement('span');
-        date.className = 'item-date';
-        date.textContent = video.created_at ? new Date(video.created_at).toLocaleDateString() : 'Unknown date';
-        
-        meta.appendChild(type);
-        meta.appendChild(date);
-        
-        const preview = document.createElement('div');
-        preview.className = 'item-preview';
-        preview.textContent = video.description || 'No description available';
-        
-        if (video.duration) {
-          const duration = document.createElement('div');
-          duration.style.color = 'var(--accent-light)';
-          duration.style.fontSize = '0.8rem';
-          duration.style.marginTop = '0.5rem';
-          duration.textContent = `Duration: ${video.duration}`;
-          preview.appendChild(duration);
-        }
-        
-        content.appendChild(title);
-        content.appendChild(meta);
-        content.appendChild(preview);
-
-        const actions = document.createElement('div');
-        actions.className = 'item-actions';
-        
-        const featuredBtn = document.createElement('button');
-        featuredBtn.className = video.is_featured ? 'btn-primary' : 'btn-secondary';
-        featuredBtn.innerHTML = `<i class="fas ${video.is_featured ? 'fa-star' : 'fa-star'}"></i> ${video.is_featured ? 'Featured' : 'Feature'}`;
-        featuredBtn.onclick = async () => {
-          await toggleFeatured('videos', video.id, !video.is_featured);
-        };
-        
-        const del = document.createElement('button');
-        del.className = 'btn-danger';
-        del.innerHTML = '<i class="fas fa-trash"></i> Delete';
-        del.onclick = async () => {
-          if (confirm('Are you sure you want to delete this video?')) {
-            await deleteMediaItem('videos', video.id);
-          }
-        };
-        
-        actions.appendChild(featuredBtn);
-        actions.appendChild(del);
-        content.appendChild(actions);
-        
-        if (video.thumbnail) {
-          const img = document.createElement('img');
-          img.src = video.thumbnail;
-          img.alt = video.title;
-          el.appendChild(img);
-        }
-        
-        el.appendChild(content);
-        return el;
-      }
-
-      // Designs Management
-      async function loadDesigns() {
-        try {
-          const data = await apiRequest('/media/designs');
-          const container = document.getElementById('designsList');
-          container.innerHTML = '';
-
-          if (data.length === 0) {
-            container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">No designs found.</p>';
-            return;
-          }
-
-          data.forEach(design => {
-            const el = createDesignElement(design);
-            container.appendChild(el);
-          });
-          
-          mediaStats.designs = data.length;
-          document.getElementById('designsCount').textContent = data.length;
-        } catch (error) {
-          console.error('Failed to load designs:', error);
-        }
-      }
-
-      function createDesignElement(design) {
-        const el = document.createElement('div');
-        el.className = 'item';
-        
-        const content = document.createElement('div');
-        content.className = 'item-content';
-        
-        const title = document.createElement('h4');
-        title.className = 'item-title';
-        title.textContent = design.title;
-        
-        const meta = document.createElement('div');
-        meta.className = 'item-meta';
-        
-        const type = document.createElement('span');
-        type.className = 'item-type';
-        type.textContent = design.type;
-        
-        const date = document.createElement('span');
-        date.className = 'item-date';
-        date.textContent = design.created_at ? new Date(design.created_at).toLocaleDateString() : 'Unknown date';
-        
-        meta.appendChild(type);
-        meta.appendChild(date);
-        
-        const preview = document.createElement('div');
-        preview.className = 'item-preview';
-        preview.textContent = design.description || 'No description available';
-        
-        if (design.project) {
-          const project = document.createElement('div');
-          project.style.color = 'var(--accent-light)';
-          project.style.fontSize = '0.8rem';
-          project.style.marginTop = '0.5rem';
-          project.textContent = `Project: ${design.project}`;
-          preview.appendChild(project);
-        }
-        
-        content.appendChild(title);
-        content.appendChild(meta);
-        content.appendChild(preview);
-
-        const actions = document.createElement('div');
-        actions.className = 'item-actions';
-        
-        const featuredBtn = document.createElement('button');
-        featuredBtn.className = design.is_featured ? 'btn-primary' : 'btn-secondary';
-        featuredBtn.innerHTML = `<i class="fas ${design.is_featured ? 'fa-star' : 'fa-star'}"></i> ${design.is_featured ? 'Featured' : 'Feature'}`;
-        featuredBtn.onclick = async () => {
-          await toggleFeatured('designs', design.id, !design.is_featured);
-        };
-        
-        const del = document.createElement('button');
-        del.className = 'btn-danger';
-        del.innerHTML = '<i class="fas fa-trash"></i> Delete';
-        del.onclick = async () => {
-          if (confirm('Are you sure you want to delete this design?')) {
-            await deleteMediaItem('designs', design.id);
-          }
-        };
-        
-        actions.appendChild(featuredBtn);
-        actions.appendChild(del);
-        content.appendChild(actions);
-        
-        if (design.image) {
-          const img = document.createElement('img');
-          img.src = design.image;
-          img.alt = design.title;
-          el.appendChild(img);
-        }
-        
-        el.appendChild(content);
-        return el;
-      }
-
-      // Testimonials Management
-      async function loadTestimonials() {
-        try {
-          const data = await apiRequest('/media/testimonials');
-          const container = document.getElementById('testimonialsList');
-          container.innerHTML = '';
-
-          if (data.length === 0) {
-            container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">No testimonials found.</p>';
-            return;
-          }
-
-          data.forEach(testimonial => {
-            const el = createTestimonialElement(testimonial);
-            container.appendChild(el);
-          });
-          
-          mediaStats.testimonials = data.length;
-          document.getElementById('testimonialsCount').textContent = data.length;
-        } catch (error) {
-          console.error('Failed to load testimonials:', error);
-        }
-      }
-
-      function createTestimonialElement(testimonial) {
-        const el = document.createElement('div');
-        el.className = 'submission-item';
-        
-        const stars = testimonial.rating ? '★'.repeat(testimonial.rating) + '☆'.repeat(5 - testimonial.rating) : '';
-        
-        el.innerHTML = `
-          <div class="submission-header">
-            <div>
-              <h4 style="margin: 0 0 0.5rem 0; color: var(--accent-light);">${testimonial.name}</h4>
-              <p style="margin: 0; color: var(--text-muted);">${testimonial.role}${testimonial.organization ? ` at ${testimonial.organization}` : ''}</p>
-            </div>
-            <div>
-              <span class="status-badge status-${testimonial.status || 'published'}">${testimonial.status || 'published'}</span>
-              ${testimonial.is_featured ? '<span class="priority-badge priority-high" style="margin-left: 0.5rem;">Featured</span>' : ''}
-              <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">
-                ${testimonial.created_at ? new Date(testimonial.created_at).toLocaleDateString() : 'Unknown date'}
-              </div>
-            </div>
-          </div>
-          ${stars ? `<div class="testimonial-rating">${stars}</div>` : ''}
-          <div style="padding: 1rem; background: rgba(255,255,255,0.03); border-radius: 8px; margin-top: 1rem;">
-            <p style="margin: 0; font-style: italic;">"${testimonial.quote}"</p>
-            ${testimonial.project ? `<p style="margin: 0.5rem 0 0 0; color: var(--text-muted); font-size: 0.9rem;">Project: ${testimonial.project}</p>` : ''}
-          </div>
-          <div class="submission-meta">
-            <select onchange="updateTestimonialStatus(${testimonial.id}, this.value)">
-              <option value="published" ${testimonial.status === 'published' ? 'selected' : ''}>Published</option>
-            <option value="draft" ${testimonial.status === 'draft' ? 'selected' : ''}>Draft</option>
-            <option value="archived" ${testimonial.status === 'archived' ? 'selected' : ''}>Archived</option>
-            </select>
-            <button class="btn-secondary" onclick="toggleFeatured('testimonials', ${testimonial.id}, ${!testimonial.is_featured})">
-              <i class="fas ${testimonial.is_featured ? 'fa-star' : 'fa-star'}"></i> ${testimonial.is_featured ? 'Unfeature' : 'Feature'}
-            </button>
-            <button class="btn-danger" onclick="deleteMediaItem('testimonials', ${testimonial.id})">
-              <i class="fas fa-trash"></i> Delete
-            </button>
-          </div>
-        `;
-        
-        return el;
-      }
-
-      // Modal Functions
-      function showAddPhotoModal() {
-        document.getElementById('addPhotoModal').classList.remove('hidden');
-      }
-
-      function hideAddPhotoModal() {
-        document.getElementById('addPhotoModal').classList.add('hidden');
-        document.getElementById('addPhotoForm').reset();
-      }
-
-      function showAddVideoModal() {
-        document.getElementById('addVideoModal').classList.remove('hidden');
-      }
-
-      function hideAddVideoModal() {
-        document.getElementById('addVideoModal').classList.add('hidden');
-        document.getElementById('addVideoForm').reset();
-      }
-
-      function showAddDesignModal() {
-        document.getElementById('addDesignModal').classList.remove('hidden');
-      }
-
-      function hideAddDesignModal() {
-        document.getElementById('addDesignModal').classList.add('hidden');
-        document.getElementById('addDesignForm').reset();
-      }
-
-      function showAddTestimonialModal() {
-        document.getElementById('addTestimonialModal').classList.remove('hidden');
-      }
-
-      function hideAddTestimonialModal() {
-        document.getElementById('addTestimonialModal').classList.add('hidden');
-        document.getElementById('addTestimonialForm').reset();
-      }
-
-      // Form Submissions for Media with File Upload
-      document.getElementById('addPhotoForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const photoFile = document.getElementById('photoFile').files[0];
-        if (!photoFile) {
-          alert('Please select a photo file');
-          return;
-        }
-
-        // Show progress
-        const submitBtn = document.getElementById('addPhotoForm').querySelector('button[type="submit"]');
-        const originalText = submitBtn.innerHTML;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
-        submitBtn.disabled = true;
-
-        try {
-          // Upload the file first
-          const fileUrl = await uploadFile(photoFile, 'photo');
-          
-          // Then create the photo record
-          const photoData = {
-            title: document.getElementById('photoTitle').value,
-            description: document.getElementById('photoDescription').value,
-            image_url: fileUrl,
-            category: document.getElementById('photoCategory').value,
-            album_name: document.getElementById('photoAlbum').value || null,
-            tags: [],
-            is_featured: document.getElementById('photoFeatured').checked,
-            is_published: document.getElementById('photoPublished').checked,
-            status: document.getElementById('photoPublished').checked ? 'published' : 'draft'
-          };
-
-          await apiRequest('/media/photos', {
-            method: 'POST',
-            body: JSON.stringify(photoData)
-          });
-          
-          hideAddPhotoModal();
-          loadPhotos();
-          loadMediaStats();
-          alert('Photo uploaded successfully!');
-        } catch (error) {
-          console.error('Failed to add photo:', error);
-          alert('Failed to add photo: ' + error.message);
-        } finally {
-          submitBtn.innerHTML = originalText;
-          submitBtn.disabled = false;
-        }
-      });
-
-      document.getElementById('addVideoForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const videoFile = document.getElementById('videoFile').files[0];
-        const thumbnailFile = document.getElementById('videoThumbnailFile').files[0];
-        
-        if (!videoFile) {
-          alert('Please select a video file');
-          return;
-        }
-
-        // Show progress
-        const submitBtn = document.getElementById('addVideoForm').querySelector('button[type="submit"]');
-        const originalText = submitBtn.innerHTML;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
-        submitBtn.disabled = true;
-
-        try {
-          // Upload video file
-          const videoUrl = await uploadFile(videoFile, 'video');
-          
-          let thumbnailUrl = '';
-          if (thumbnailFile) {
-            // Upload thumbnail file
-            thumbnailUrl = await uploadFile(thumbnailFile, 'image');
-          }
-
-          // Then create the video record
-          const videoData = {
-            title: document.getElementById('videoTitle').value,
-            description: document.getElementById('videoDescription').value,
-            video_url: videoUrl,
-            thumbnail_url: thumbnailUrl || document.getElementById('videoThumbnailUrl').value,
-            duration: document.getElementById('videoDuration').value || null,
-            category: document.getElementById('videoCategory').value || null,
-            tags: [],
-            is_featured: document.getElementById('videoFeatured').checked,
-            is_published: document.getElementById('videoPublished').checked,
-            status: document.getElementById('videoPublished').checked ? 'published' : 'draft'
-          };
-
-          await apiRequest('/media/videos', {
-            method: 'POST',
-            body: JSON.stringify(videoData)
-          });
-          
-          hideAddVideoModal();
-          loadVideos();
-          loadMediaStats();
-          alert('Video uploaded successfully!');
-        } catch (error) {
-          console.error('Failed to add video:', error);
-          alert('Failed to add video: ' + error.message);
-        } finally {
-          submitBtn.innerHTML = originalText;
-          submitBtn.disabled = false;
-        }
-      });
-
-      document.getElementById('addDesignForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const designFile = document.getElementById('designFile').files[0];
-        if (!designFile) {
-          alert('Please select a design image file');
-          return;
-        }
-
-        // Show progress
-        const submitBtn = document.getElementById('addDesignForm').querySelector('button[type="submit"]');
-        const originalText = submitBtn.innerHTML;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
-        submitBtn.disabled = true;
-
-        try {
-          // Upload the design file
-          const fileUrl = await uploadFile(designFile, 'image');
-          
-          // Then create the design record
-          const designData = {
-            title: document.getElementById('designTitle').value,
-            description: document.getElementById('designDescription').value,
-            image_url: fileUrl,
-            design_type: document.getElementById('designType').value,
-            category: document.getElementById('designCategory').value || null,
-            project_name: document.getElementById('designProject').value || null,
-            tags: [],
-            is_featured: document.getElementById('designFeatured').checked,
-            is_published: document.getElementById('designPublished').checked,
-            status: document.getElementById('designPublished').checked ? 'published' : 'draft'
-          };
-
-          await apiRequest('/media/designs', {
-            method: 'POST',
-            body: JSON.stringify(designData)
-          });
-          
-          hideAddDesignModal();
-          loadDesigns();
-          loadMediaStats();
-          alert('Design uploaded successfully!');
-        } catch (error) {
-          console.error('Failed to add design:', error);
-          alert('Failed to add design: ' + error.message);
-        } finally {
-          submitBtn.innerHTML = originalText;
-          submitBtn.disabled = false;
-        }
-      });
-
-      document.getElementById('addTestimonialForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const testimonialImageFile = document.getElementById('testimonialImageFile').files[0];
-
-        // Show progress
-        const submitBtn = document.getElementById('addTestimonialForm').querySelector('button[type="submit"]');
-        const originalText = submitBtn.innerHTML;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
-        submitBtn.disabled = true;
-
-        try {
-          let imageUrl = '';
-          if (testimonialImageFile) {
-            // Upload the image file
-            imageUrl = await uploadFile(testimonialImageFile, 'image');
-          }
-
-          // Then create the testimonial record
-          const testimonialData = {
-            name: document.getElementById('testimonialName').value,
-            role: document.getElementById('testimonialRole').value,
-            organization: document.getElementById('testimonialOrganization').value || null,
-            quote: document.getElementById('testimonialQuote').value,
-            project_name: document.getElementById('testimonialProject').value || null,
-            image_url: imageUrl || document.getElementById('testimonialImageUrl').value,
-            rating: parseInt(document.getElementById('testimonialRating').value) || null,
-            is_featured: document.getElementById('testimonialFeatured').checked,
-            is_published: document.getElementById('testimonialPublished').checked,
-            status: document.getElementById('testimonialPublished').checked ? 'published' : 'draft'
-          };
-
-          await apiRequest('/media/testimonials', {
-            method: 'POST',
-            body: JSON.stringify(testimonialData)
-          });
-          
-          hideAddTestimonialModal();
-          loadTestimonials();
-          loadMediaStats();
-          alert('Testimonial added successfully!');
-        } catch (error) {
-          console.error('Failed to add testimonial:', error);
-          alert('Failed to add testimonial: ' + error.message);
-        } finally {
-          submitBtn.innerHTML = originalText;
-          submitBtn.disabled = false;
-        }
-      });
-
-      // Media Management Functions
-      async function toggleFeatured(type, id, featured) {
-        try {
-          await apiRequest(`/media/${type}/${id}`, {
-            method: 'PUT',
-            body: JSON.stringify({ is_featured: featured })
-          });
-          
-          // Reload current tab to reflect changes
-          switch(type) {
-            case 'photos':
-              loadPhotos();
-              break;
-            case 'videos':
-              loadVideos();
-              break;
-            case 'designs':
-              loadDesigns();
-              break;
-            case 'testimonials':
-              loadTestimonials();
-              break;
-          }
-        } catch (error) {
-          console.error('Failed to toggle featured status:', error);
-          alert('Failed to update featured status: ' + error.message);
-        }
-      }
-
-      async function updateTestimonialStatus(id, status) {
-        try {
-          await apiRequest(`/media/testimonials/${id}/status`, {
-            method: 'PUT',
-            body: JSON.stringify({ status })
-          });
-          loadTestimonials();
-        } catch (error) {
-          console.error('Failed to update testimonial status:', error);
-          alert('Failed to update status: ' + error.message);
-        }
-      }
-
-      async function deleteMediaItem(type, id) {
-        if (confirm('Are you sure you want to delete this item?')) {
-          try {
-            await apiRequest(`/media/${type}/${id}`, { method: 'DELETE' });
-            
-            // Reload current tab and stats to reflect changes
-            switch(type) {
-              case 'photos':
-                loadPhotos();
-                break;
-              case 'videos':
-                loadVideos();
-                break;
-              case 'designs':
-                loadDesigns();
-                break;
-              case 'testimonials':
-                loadTestimonials();
-                break;
-            }
-            loadMediaStats();
-          } catch (error) {
-            console.error('Failed to delete media item:', error);
-            alert('Failed to delete item: ' + error.message);
-          }
-        }
-      }
-
-      // Refresh buttons
-      document.getElementById('refreshBtn').onclick = loadItems;
-      document.getElementById('refreshSubmissions').onclick = loadContactSubmissions;
-      document.getElementById('refreshGetInvolved').onclick = () => {
-        showGetInvolvedTab(currentGetInvolvedTab);
-      };
-      document.getElementById('refreshMedia').onclick = () => {
-        loadMediaStats();
-        showMediaTab(currentMediaTab);
-      };
 
       // Logout
       document.getElementById('logoutBtn').onclick = () => { 

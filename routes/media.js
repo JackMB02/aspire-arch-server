@@ -83,7 +83,7 @@ router.get('/photos', async (req, res) => {
   }
 });
 
-// Get all videos
+// Get all videos - FIXED
 router.get('/videos', async (req, res) => {
   try {
     const result = await query(`
@@ -91,7 +91,7 @@ router.get('/videos', async (req, res) => {
         id,
         title,
         description,
-        video_url as videoSrc,
+        video_url as "videoSrc",
         thumbnail_url as thumbnail,
         duration,
         category,
@@ -108,7 +108,7 @@ router.get('/videos', async (req, res) => {
       title: video.title,
       thumbnail: getFullImageUrl(video.thumbnail),
       duration: video.duration,
-      videoSrc: getFullImageUrl(video.videosrc),
+      videoSrc: getFullImageUrl(video.videoSrc),
       category: video.category,
       description: video.description,
       tags: video.tags,
@@ -250,7 +250,7 @@ router.get('/photos/:id', async (req, res) => {
   }
 });
 
-// Get single video by ID
+// Get single video by ID - FIXED
 router.get('/videos/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -259,7 +259,7 @@ router.get('/videos/:id', async (req, res) => {
         id,
         title,
         description,
-        video_url as videoSrc,
+        video_url as "videoSrc",
         thumbnail_url as thumbnail,
         duration,
         category,
@@ -280,7 +280,7 @@ router.get('/videos/:id', async (req, res) => {
       title: video.title,
       thumbnail: getFullImageUrl(video.thumbnail),
       duration: video.duration,
-      videoSrc: getFullImageUrl(video.videosrc),
+      videoSrc: getFullImageUrl(video.videoSrc),
       category: video.category,
       description: video.description,
       tags: video.tags,

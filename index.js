@@ -7,8 +7,11 @@ const authRoutes = require('./routes/auth');
 const itemsRoutes = require('./routes/items');
 const contactRoutes = require('./routes/contact');
 const getInvolvedRoutes = require('./routes/get-involved');
-const mediaRoutes = require('./routes/media'); // ADDED
+const mediaRoutes = require('./routes/media');
+const educationRoutes = require('./routes/education'); // NEW: Education routes
 const uploadRoutes = require('./routes/upload');
+const theColleagueUniRoutes = require('./routes/thecolleagueuni'); // NEW: Architecture Colleagues Lab routes
+const researchRoutes = require('./routes/research'); // NEW: Research routes
 const { initDb, testConnection } = require('./db');
 
 const app = express();
@@ -37,7 +40,11 @@ app.get('/api', (req, res) => {
       items: "/api/items", 
       contact: "/api/contact",
       getInvolved: "/api/get-involved",
-      media: "/api/media" // ADDED
+      media: "/api/media",
+      education: "/api/education", // NEW
+      upload: "/api/upload",
+      thecolleagueuni: "/api/thecolleagueuni", // NEW: Architecture Colleagues Lab
+      research: "/api/research" // NEW: Research routes
     },
     documentation: "Check /api/health for server status"
   });
@@ -54,14 +61,20 @@ app.get('/api/test', (req, res) => {
 
 // Serve uploads directory
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/images', express.static(path.join(__dirname, 'public/images'))); // NEW: Serve images
+app.use('/videos', express.static(path.join(__dirname, 'public/videos'))); // NEW: Serve videos
+app.use('/documents', express.static(path.join(__dirname, 'public/documents'))); // NEW: Serve documents
 
 // API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/items', itemsRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/get-involved', getInvolvedRoutes);
-app.use('/api/media', mediaRoutes); // ADDED
+app.use('/api/media', mediaRoutes);
+app.use('/api/education', educationRoutes); // NEW: Education routes
 app.use('/api/upload', uploadRoutes);
+app.use('/api/thecolleagueuni', theColleagueUniRoutes); // NEW: Architecture Colleagues Lab routes
+app.use('/api/research', researchRoutes); // NEW: Research routes
 
 // Root endpoint
 app.get('/', (req, res) => {
@@ -74,21 +87,212 @@ app.get('/', (req, res) => {
       items: "/api/items", 
       contact: "/api/contact",
       getInvolved: "/api/get-involved",
-      media: "/api/media" // ADDED
+      media: "/api/media",
+      education: "/api/education", // NEW
+      upload: "/api/upload",
+      thecolleagueuni: "/api/thecolleagueuni", // NEW: Architecture Colleagues Lab
+      research: "/api/research" // NEW: Research routes
     }
   });
 });
 
-// Health check endpoint
+// Health check endpoint with detailed database info
 app.get('/api/health', async (req, res) => {
-  const dbStatus = await testConnection();
-  res.json({
-    status: 'OK',
-    timestamp: new Date().toISOString(),
-    database: dbStatus ? 'Connected' : 'Disconnected',
-    environment: process.env.NODE_ENV || 'development',
-    server: 'ASPIRE Design Lab Backend'
-  });
+  try {
+    const dbStatus = await testConnection();
+    const { getPool } = require('./db');
+    const pool = getPool();
+    
+    let tableCounts = {};
+    if (dbStatus) {
+      // Get counts from major tables to verify data integrity
+      const tables = [
+        'items', 'contact_submissions', 'contact_info', 'admins',
+        'membership_applications', 'donations', 'feedback_submissions', 'idea_submissions',
+        'community_stories', 'partnership_inquiries',
+        'media_photos', 'media_videos', 'media_designs', 'media_testimonials',
+        'education_workshops', 'education_tutorials', 'education_exhibitions',
+        'architecture_colleagues_contact', 'architecture_colleagues_team', // NEW: Architecture Colleagues Lab tables
+        'architecture_colleagues_initiatives', 'architecture_colleagues_values', 
+        'architecture_colleagues_mission',
+        'research_articles', 'sustainable_practices', 'climate_strategies', 'social_studies', 'research_stats' // NEW: Research tables
+      ];
+      
+      for (let table of tables) {
+        try {
+          const result = await pool.query(`SELECT COUNT(*) FROM ${table}`);
+          tableCounts[table] = parseInt(result.rows[0].count);
+        } catch (error) {
+          tableCounts[table] = 'Error: ' + error.message;
+        }
+      }
+    }
+    
+    res.json({
+      status: 'OK',
+      timestamp: new Date().toISOString(),
+      database: dbStatus ? 'Connected' : 'Disconnected',
+      environment: process.env.NODE_ENV || 'development',
+      server: 'ASPIRE Design Lab Backend',
+      modules: {
+        main: 'ASPIRE Design Lab',
+        architecture_colleagues: 'The Architecture Colleagues Lab', // NEW
+        research: 'Research & Insights' // NEW
+      },
+      tables: tableCounts
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'Error',
+      timestamp: new Date().toISOString(),
+      database: 'Check failed',
+      error: error.message
+    });
+  }
+});
+
+// Database status endpoint
+app.get('/api/database/status', async (req, res) => {
+  try {
+    const { getPool } = require('./db');
+    const pool = getPool();
+    const client = await pool.connect();
+    
+    // Get database version and connection info
+    const versionResult = await client.query('SELECT version()');
+    const dbSizeResult = await client.query('SELECT pg_size_pretty(pg_database_size(current_database())) as size');
+    
+    // Get table statistics
+    const tableStats = await client.query(`
+      SELECT 
+        schemaname,
+        tablename,
+        tableowner,
+        tablespace,
+        hasindexes,
+        hasrules,
+        hastriggers
+      FROM pg_tables 
+      WHERE schemaname = 'public'
+      ORDER BY tablename
+    `);
+    
+    client.release();
+    
+    res.json({
+      database: {
+        version: versionResult.rows[0].version,
+        size: dbSizeResult.rows[0].size,
+        connection: 'Healthy'
+      },
+      tables: tableStats.rows,
+      totalTables: tableStats.rows.length,
+      modules: {
+        aspire_design_lab: 'Active',
+        architecture_colleagues_lab: 'Active', // NEW
+        research_insights: 'Active' // NEW
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: 'Failed to get database status',
+      details: error.message
+    });
+  }
+});
+
+// Architecture Colleagues Lab specific health check
+app.get('/api/thecolleagueuni/health', async (req, res) => {
+  try {
+    const { getPool } = require('./db');
+    const pool = getPool();
+    
+    const tables = [
+      'architecture_colleagues_contact',
+      'architecture_colleagues_team',
+      'architecture_colleagues_initiatives',
+      'architecture_colleagues_values',
+      'architecture_colleagues_mission'
+    ];
+    
+    let tableCounts = {};
+    for (let table of tables) {
+      try {
+        const result = await pool.query(`SELECT COUNT(*) FROM ${table}`);
+        tableCounts[table] = parseInt(result.rows[0].count);
+      } catch (error) {
+        tableCounts[table] = 'Error: ' + error.message;
+      }
+    }
+    
+    res.json({
+      status: 'OK',
+      module: 'The Architecture Colleagues Lab',
+      timestamp: new Date().toISOString(),
+      tables: tableCounts,
+      endpoints: {
+        contact: 'POST /api/thecolleagueuni/contact',
+        team: 'GET /api/thecolleagueuni/team',
+        mission: 'GET /api/thecolleagueuni/mission',
+        initiatives: 'GET /api/thecolleagueuni/initiatives',
+        about: 'GET /api/thecolleagueuni/about',
+        contacts_admin: 'GET /api/thecolleagueuni/contacts'
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'Error',
+      module: 'The Architecture Colleagues Lab',
+      error: error.message
+    });
+  }
+});
+
+// Research specific health check
+app.get('/api/research/health', async (req, res) => {
+  try {
+    const { getPool } = require('./db');
+    const pool = getPool();
+    
+    const tables = [
+      'research_articles',
+      'sustainable_practices',
+      'climate_strategies',
+      'social_studies',
+      'research_stats'
+    ];
+    
+    let tableCounts = {};
+    for (let table of tables) {
+      try {
+        const result = await pool.query(`SELECT COUNT(*) FROM ${table}`);
+        tableCounts[table] = parseInt(result.rows[0].count);
+      } catch (error) {
+        tableCounts[table] = 'Error: ' + error.message;
+      }
+    }
+    
+    res.json({
+      status: 'OK',
+      module: 'Research & Insights',
+      timestamp: new Date().toISOString(),
+      tables: tableCounts,
+      endpoints: {
+        overview: 'GET /api/research/overview',
+        articles: 'GET /api/research/articles',
+        sustainable_practices: 'GET /api/research/sustainable-practices',
+        climate_strategies: 'GET /api/research/climate-strategies',
+        social_studies: 'GET /api/research/social-studies',
+        admin: 'GET /api/research/admin'
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'Error',
+      module: 'Research & Insights',
+      error: error.message
+    });
+  }
 });
 
 // Serve admin panel
@@ -109,15 +313,32 @@ app.use('/api/*', (req, res) => {
       items: "/api/items",
       contact: "/api/contact",
       getInvolved: "/api/get-involved",
-      media: "/api/media" // ADDED
+      media: "/api/media",
+      education: "/api/education", // NEW
+      upload: "/api/upload",
+      database: "/api/database/status",
+      thecolleagueuni: "/api/thecolleagueuni", // NEW
+      thecolleagueuni_health: "/api/thecolleagueuni/health", // NEW
+      research: "/api/research", // NEW
+      research_health: "/api/research/health" // NEW
     }
+  });
+});
+
+// Error handling middleware
+app.use((error, req, res, next) => {
+  console.error('Server Error:', error);
+  res.status(500).json({
+    error: 'Internal Server Error',
+    message: error.message,
+    ...(process.env.NODE_ENV === 'development' && { stack: error.stack })
   });
 });
 
 // Start server
 async function startServer() {
   try {
-    console.log('🔄 Starting server...');
+    console.log('🔄 Starting ASPIRE Design Lab server...');
     
     const dbConnected = await testConnection();
     if (!dbConnected) {
@@ -126,20 +347,59 @@ async function startServer() {
     }
 
     console.log('🔄 Initializing database...');
-    await initDb();
+    const dbInitialized = await initDb();
+    
+    if (!dbInitialized) {
+      console.error('❌ Database initialization failed');
+      process.exit(1);
+    }
 
     app.listen(PORT, () => {
-      console.log(`✅ Server running on http://localhost:${PORT}`);
-      console.log(`📊 Admin dashboard: http://localhost:${PORT}/admin`);
-      console.log(`🔗 API base URL: http://localhost:${PORT}/api`);
+      console.log(`\n🎉 ASPIRE Design Lab Server Started Successfully!`);
+      console.log(`=========================================`);
+      console.log(`✅ Server URL: http://localhost:${PORT}`);
+      console.log(`📊 Admin Dashboard: http://localhost:${PORT}/admin`);
+      console.log(`🔗 API Base URL: http://localhost:${PORT}/api`);
       console.log(`🌐 Environment: ${process.env.NODE_ENV || 'development'}`);
-      console.log(`🎯 Get Involved API: http://localhost:${PORT}/api/get-involved`);
-      console.log(`🖼️ Media API: http://localhost:${PORT}/api/media`); // ADDED
+      console.log(`\n📋 Available Modules:`);
+      console.log(`   🏠 Main Content: http://localhost:${PORT}/api/items`);
+      console.log(`   📞 Contact System: http://localhost:${PORT}/api/contact`);
+      console.log(`   🤝 Get Involved: http://localhost:${PORT}/api/get-involved`);
+      console.log(`   🖼️ Media Gallery: http://localhost:${PORT}/api/media`);
+      console.log(`   📚 Education: http://localhost:${PORT}/api/education`);
+      console.log(`   ⬆️ File Upload: http://localhost:${PORT}/api/upload`);
+      console.log(`   🛡️ Authentication: http://localhost:${PORT}/api/auth`);
+      console.log(`   🏛️ Architecture Colleagues Lab: http://localhost:${PORT}/api/thecolleagueuni`);
+      console.log(`   🔬 Research & Insights: http://localhost:${PORT}/api/research`); // NEW
+      console.log(`\n🔍 Health Check: http://localhost:${PORT}/api/health`);
+      console.log(`📊 Database Status: http://localhost:${PORT}/api/database/status`);
+      console.log(`🏛️ Architecture Colleagues Health: http://localhost:${PORT}/api/thecolleagueuni/health`);
+      console.log(`🔬 Research Health: http://localhost:${PORT}/api/research/health`); // NEW
+      console.log(`=========================================\n`);
     });
   } catch (error) {
     console.error('❌ Failed to start server:', error);
     process.exit(1);
   }
 }
+
+// Handle graceful shutdown
+process.on('SIGINT', async () => {
+  console.log('\n🔄 Shutting down server gracefully...');
+  const { getPool } = require('./db');
+  const pool = getPool();
+  await pool.end();
+  console.log('✅ Database connections closed');
+  process.exit(0);
+});
+
+process.on('SIGTERM', async () => {
+  console.log('\n🔄 Server termination requested...');
+  const { getPool } = require('./db');
+  const pool = getPool();
+  await pool.end();
+  console.log('✅ Database connections closed');
+  process.exit(0);
+});
 
 startServer();

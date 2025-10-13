@@ -4,268 +4,321 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-// Ensure uploads directory exists
+// Create uploads directory if it doesn't exist
 const uploadsDir = path.join(__dirname, '../uploads');
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
+  console.log('✅ Created uploads directory:', uploadsDir);
 }
 
-// Configure multer for file storage
+// Enhanced storage configuration with organized folders
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, uploadsDir);
-  },
-  filename: (req, file, cb) => {
-    // Generate unique filename with timestamp
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    const extension = path.extname(file.originalname);
-    
-    // Create more organized filenames based on file type
-    let prefix = 'file';
+    // Create subdirectories based on file type
+    let subDir = 'general';
     if (file.mimetype.startsWith('image/')) {
-      prefix = 'image';
+      subDir = 'images';
     } else if (file.mimetype.startsWith('video/')) {
-      prefix = 'video';
+      subDir = 'videos';
+    } else if (file.mimetype.startsWith('application/')) {
+      subDir = 'documents';
     }
     
-    cb(null, `${prefix}-${uniqueSuffix}${extension}`);
+    const targetDir = path.join(uploadsDir, subDir);
+    if (!fs.existsSync(targetDir)) {
+      fs.mkdirSync(targetDir, { recursive: true });
+    }
+    
+    cb(null, targetDir);
+  },
+  filename: (req, file, cb) => {
+    // Clean filename and create SEO-friendly name
+    const originalName = path.parse(file.originalname).name;
+    const cleanName = originalName
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '');
+    
+    const timestamp = Date.now();
+    const random = Math.round(Math.random() * 1E9);
+    const extension = path.extname(file.originalname).toLowerCase();
+    
+    cb(null, `${cleanName}-${timestamp}-${random}${extension}`);
   }
 });
 
-// File filter
+// Enhanced file filter
 const fileFilter = (req, file, cb) => {
   const allowedTypes = {
+    // Images
     'image/jpeg': true,
     'image/jpg': true,
     'image/png': true,
     'image/gif': true,
     'image/webp': true,
+    'image/svg+xml': true,
+    
+    // Videos
     'video/mp4': true,
     'video/webm': true,
-    'video/quicktime': true
+    'video/ogg': true,
+    'video/quicktime': true,
+    
+    // Documents
+    'application/pdf': true,
+    'application/msword': true,
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': true,
+    'application/vnd.ms-excel': true,
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': true,
+    'application/vnd.ms-powerpoint': true,
+    'application/vnd.openxmlformats-officedocument.presentationml.presentation': true,
+    'text/plain': true
   };
 
   if (allowedTypes[file.mimetype]) {
     cb(null, true);
   } else {
-    cb(new Error(`Invalid file type: ${file.mimetype}. Only images (JPEG, PNG, GIF, WebP) and videos (MP4, WebM, MOV) are allowed.`), false);
+    cb(new Error(`File type '${file.mimetype}' is not supported. Please upload images, videos, or documents.`), false);
   }
 };
 
 const upload = multer({
   storage: storage,
   limits: {
-    fileSize: 50 * 1024 * 1024 // 50MB max file size
+    fileSize: 100 * 1024 * 1024, // 100MB max file size
+    files: 10 // Max 10 files
   },
   fileFilter: fileFilter
 });
 
-// Helper function to construct full URL
-const getFullUrl = (filePath) => {
-  const baseUrl = process.env.BASE_URL || 'http://localhost:4000';
-  return `${baseUrl}${filePath}`;
+// Helper function to get file URL
+const getFileUrl = (filePath) => {
+  // Extract the path relative to the uploads directory
+  const relativePath = filePath.replace(uploadsDir, '').replace(/\\/g, '/');
+  return `/uploads${relativePath}`;
 };
 
-// Upload endpoint
+// Enhanced single file upload
 router.post('/', upload.single('file'), (req, res) => {
   try {
-    if (!req.file) {
-      return res.status(400).json({ error: 'No file uploaded' });
-    }
-
-    console.log('File uploaded successfully:', {
-      filename: req.file.filename,
-      originalname: req.file.originalname,
-      mimetype: req.file.mimetype,
-      size: req.file.size,
-      path: req.file.path
+    console.log('📤 Upload request received:', {
+      hasFile: !!req.file,
+      fieldName: req.file?.fieldname,
+      originalName: req.file?.originalname,
+      fileType: req.file?.mimetype,
+      uploadType: req.body.type || 'general'
     });
 
-    // Generate both relative and full URLs for the uploaded file
-    const relativeUrl = `/uploads/${req.file.filename}`;
-    const fullUrl = getFullUrl(relativeUrl);
+    if (!req.file) {
+      return res.status(400).json({ 
+        success: false,
+        error: 'No file uploaded. Please select a file to upload.' 
+      });
+    }
+
+    const fileUrl = getFileUrl(req.file.path);
+
+    console.log('✅ File uploaded successfully:', {
+      filename: req.file.filename,
+      originalname: req.file.originalname,
+      size: (req.file.size / 1024 / 1024).toFixed(2) + ' MB',
+      url: fileUrl
+    });
 
     res.json({
+      success: true,
       message: 'File uploaded successfully',
-      fileUrl: fullUrl, // Return full URL for frontend
-      relativeUrl: relativeUrl, // Also return relative URL for database storage
+      fileUrl: fileUrl,
       fileName: req.file.filename,
       originalName: req.file.originalname,
       fileSize: req.file.size,
-      mimetype: req.file.mimetype,
-      uploadTime: new Date().toISOString()
+      fileSizeMB: (req.file.size / 1024 / 1024).toFixed(2),
+      mimeType: req.file.mimetype,
+      uploadDate: new Date().toISOString()
     });
+
   } catch (error) {
-    console.error('Upload error:', error);
-    res.status(500).json({ error: 'Failed to upload file: ' + error.message });
+    console.error('❌ Upload error:', error);
+    res.status(500).json({ 
+      success: false,
+      error: 'Upload failed: ' + error.message 
+    });
   }
 });
 
-// Multiple file upload endpoint
+// Multiple files upload
 router.post('/multiple', upload.array('files', 10), (req, res) => {
   try {
     if (!req.files || req.files.length === 0) {
-      return res.status(400).json({ error: 'No files uploaded' });
+      return res.status(400).json({ 
+        success: false,
+        error: 'No files uploaded. Please select files to upload.' 
+      });
     }
 
-    console.log(`Uploaded ${req.files.length} files successfully`);
+    console.log(`✅ Uploaded ${req.files.length} files successfully`);
 
-    const uploadResults = req.files.map(file => {
-      const relativeUrl = `/uploads/${file.filename}`;
-      const fullUrl = getFullUrl(relativeUrl);
-
-      return {
-        fileUrl: fullUrl,
-        relativeUrl: relativeUrl,
-        fileName: file.filename,
-        originalName: file.originalname,
-        fileSize: file.size,
-        mimetype: file.mimetype
-      };
-    });
+    const uploadResults = req.files.map(file => ({
+      fileUrl: getFileUrl(file.path),
+      fileName: file.filename,
+      originalName: file.originalname,
+      fileSize: file.size,
+      fileSizeMB: (file.size / 1024 / 1024).toFixed(2),
+      mimeType: file.mimetype
+    }));
 
     res.json({
+      success: true,
       message: `${req.files.length} files uploaded successfully`,
       files: uploadResults,
       totalSize: req.files.reduce((total, file) => total + file.size, 0),
-      uploadTime: new Date().toISOString()
+      totalSizeMB: (req.files.reduce((total, file) => total + file.size, 0) / 1024 / 1024).toFixed(2)
+    });
+
+  } catch (error) {
+    console.error('❌ Multiple upload error:', error);
+    res.status(500).json({ 
+      success: false,
+      error: 'Upload failed: ' + error.message 
+    });
+  }
+});
+
+// Test endpoint to verify upload functionality
+router.get('/test', (req, res) => {
+  try {
+    const uploadsExist = fs.existsSync(uploadsDir);
+    const subDirs = ['images', 'videos', 'documents', 'general'];
+    const dirStats = {};
+
+    subDirs.forEach(dir => {
+      const dirPath = path.join(uploadsDir, dir);
+      dirStats[dir] = {
+        exists: fs.existsSync(dirPath),
+        fileCount: 0
+      };
+      
+      if (dirStats[dir].exists) {
+        try {
+          const files = fs.readdirSync(dirPath);
+          dirStats[dir].fileCount = files.length;
+        } catch (err) {
+          dirStats[dir].fileCount = 'Error reading directory';
+        }
+      }
+    });
+
+    res.json({
+      success: true,
+      message: 'Upload system is working',
+      uploadsDirectory: uploadsDir,
+      uploadsDirectoryExists: uploadsExist,
+      directories: dirStats,
+      serverTime: new Date().toISOString()
     });
   } catch (error) {
-    console.error('Multiple upload error:', error);
-    res.status(500).json({ error: 'Failed to upload files: ' + error.message });
+    console.error('❌ Upload test error:', error);
+    res.status(500).json({ 
+      success: false,
+      error: 'Upload test failed: ' + error.message 
+    });
   }
 });
 
 // Get upload statistics
 router.get('/stats', (req, res) => {
   try {
-    const files = fs.readdirSync(uploadsDir);
     const stats = {
-      totalFiles: files.length,
+      totalFiles: 0,
       totalSize: 0,
       byType: {
-        images: 0,
-        videos: 0,
-        others: 0
+        images: { count: 0, size: 0 },
+        videos: { count: 0, size: 0 },
+        documents: { count: 0, size: 0 },
+        general: { count: 0, size: 0 }
       }
     };
 
-    files.forEach(file => {
-      const filePath = path.join(uploadsDir, file);
-      const fileStat = fs.statSync(filePath);
-      stats.totalSize += fileStat.size;
-
-      // Categorize by file extension
-      const ext = path.extname(file).toLowerCase();
-      if (['.jpg', '.jpeg', '.png', '.gif', '.webp'].includes(ext)) {
-        stats.byType.images++;
-      } else if (['.mp4', '.webm', '.mov'].includes(ext)) {
-        stats.byType.videos++;
-      } else {
-        stats.byType.others++;
+    const scanDirectory = (dirPath, type) => {
+      if (fs.existsSync(dirPath)) {
+        const files = fs.readdirSync(dirPath);
+        stats.byType[type].count = files.length;
+        
+        files.forEach(file => {
+          const filePath = path.join(dirPath, file);
+          try {
+            const fileStat = fs.statSync(filePath);
+            stats.byType[type].size += fileStat.size;
+            stats.totalSize += fileStat.size;
+            stats.totalFiles++;
+          } catch (err) {
+            console.warn(`Could not stat file: ${filePath}`);
+          }
+        });
       }
-    });
+    };
 
-    // Convert size to human readable format
+    // Scan all directories
+    scanDirectory(path.join(uploadsDir, 'images'), 'images');
+    scanDirectory(path.join(uploadsDir, 'videos'), 'videos');
+    scanDirectory(path.join(uploadsDir, 'documents'), 'documents');
+    scanDirectory(path.join(uploadsDir, 'general'), 'general');
+
+    // Convert sizes to human readable format
     stats.totalSizeMB = (stats.totalSize / (1024 * 1024)).toFixed(2);
-
-    res.json(stats);
-  } catch (error) {
-    console.error('Stats error:', error);
-    res.status(500).json({ error: 'Failed to get upload statistics' });
-  }
-});
-
-// List uploaded files
-router.get('/files', (req, res) => {
-  try {
-    const files = fs.readdirSync(uploadsDir);
-    
-    const fileList = files.map(file => {
-      const filePath = path.join(uploadsDir, file);
-      const fileStat = fs.statSync(filePath);
-      const relativeUrl = `/uploads/${file}`;
-      const fullUrl = getFullUrl(relativeUrl);
-
-      return {
-        name: file,
-        url: fullUrl,
-        relativeUrl: relativeUrl,
-        size: fileStat.size,
-        sizeMB: (fileStat.size / (1024 * 1024)).toFixed(2),
-        modified: fileStat.mtime,
-        created: fileStat.birthtime
-      };
+    Object.keys(stats.byType).forEach(type => {
+      stats.byType[type].sizeMB = (stats.byType[type].size / (1024 * 1024)).toFixed(2);
     });
-
-    // Sort by modification time (newest first)
-    fileList.sort((a, b) => new Date(b.modified) - new Date(a.modified));
 
     res.json({
-      files: fileList,
-      total: fileList.length
+      success: true,
+      ...stats
     });
   } catch (error) {
-    console.error('File list error:', error);
-    res.status(500).json({ error: 'Failed to list uploaded files' });
+    console.error('❌ Stats error:', error);
+    res.status(500).json({ 
+      success: false,
+      error: 'Failed to get upload statistics: ' + error.message 
+    });
   }
 });
 
-// Delete uploaded file
-router.delete('/files/:filename', (req, res) => {
-  try {
-    const { filename } = req.params;
-    
-    // Security check: prevent directory traversal
-    if (filename.includes('..') || filename.includes('/') || filename.includes('\\')) {
-      return res.status(400).json({ error: 'Invalid filename' });
-    }
-
-    const filePath = path.join(uploadsDir, filename);
-    
-    if (!fs.existsSync(filePath)) {
-      return res.status(404).json({ error: 'File not found' });
-    }
-
-    fs.unlinkSync(filePath);
-    
-    res.json({
-      message: 'File deleted successfully',
-      deletedFile: filename
-    });
-  } catch (error) {
-    console.error('Delete error:', error);
-    res.status(500).json({ error: 'Failed to delete file: ' + error.message });
-  }
-});
-
-// Error handling middleware for multer
+// Enhanced error handling middleware
 router.use((error, req, res, next) => {
+  console.error('🛑 Upload middleware error:', error);
+
   if (error instanceof multer.MulterError) {
-    if (error.code === 'LIMIT_FILE_SIZE') {
-      return res.status(400).json({ 
-        error: 'File too large. Maximum size is 50MB.',
-        details: 'Please upload a smaller file or compress your media.'
-      });
+    let message = 'Upload error occurred';
+    
+    switch (error.code) {
+      case 'LIMIT_FILE_SIZE':
+        message = 'File too large. Maximum size is 100MB.';
+        break;
+      case 'LIMIT_FILE_COUNT':
+        message = 'Too many files. Maximum 10 files allowed per upload.';
+        break;
+      case 'LIMIT_UNEXPECTED_FILE':
+        message = 'Unexpected file field. Please check your file input names.';
+        break;
+      case 'LIMIT_PART_COUNT':
+        message = 'Too many form parts.';
+        break;
+      default:
+        message = `Upload error: ${error.code}`;
     }
-    if (error.code === 'LIMIT_FILE_COUNT') {
-      return res.status(400).json({ 
-        error: 'Too many files.',
-        details: 'Maximum 10 files allowed per upload.'
-      });
-    }
-    if (error.code === 'LIMIT_UNEXPECTED_FILE') {
-      return res.status(400).json({ 
-        error: 'Unexpected file field.',
-        details: 'Please use the correct field name for file uploads.'
-      });
-    }
+    
+    return res.status(400).json({
+      success: false,
+      error: message,
+      code: error.code
+    });
   }
   
-  console.error('Upload route error:', error);
-  res.status(400).json({ 
-    error: 'Upload failed',
-    details: error.message 
+  // Handle other errors
+  res.status(400).json({
+    success: false,
+    error: error.message || 'Upload failed'
   });
 });
 
