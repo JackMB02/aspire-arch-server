@@ -226,46 +226,330 @@ router.get('/admin', async (req, res) => {
   }
 });
 
+// ===== NEW ENDPOINTS FOR DASHBOARD INTEGRATION =====
+
+// @desc    Get research stats for admin dashboard
+// @route   GET /api/research/admin/stats
+// @access  Private
+router.get('/admin/stats', async (req, res) => {
+  try {
+    const [
+      totalResult,
+      sustainableResult,
+      climateResult,
+      socialResult,
+      technologicalResult,
+      featuredResult
+    ] = await Promise.all([
+      query('SELECT COUNT(*) FROM research_articles'),
+      query('SELECT COUNT(*) FROM research_articles WHERE category = $1', ['sustainable']),
+      query('SELECT COUNT(*) FROM research_articles WHERE category = $1', ['climate']),
+      query('SELECT COUNT(*) FROM research_articles WHERE category = $1', ['social']),
+      query('SELECT COUNT(*) FROM research_articles WHERE category = $1', ['technological']),
+      query('SELECT COUNT(*) FROM research_articles WHERE is_featured = true')
+    ]);
+
+    res.status(200).json({
+      success: true,
+      data: {
+        total: parseInt(totalResult.rows[0].count),
+        sustainable: parseInt(sustainableResult.rows[0].count),
+        climate: parseInt(climateResult.rows[0].count),
+        social: parseInt(socialResult.rows[0].count),
+        technological: parseInt(technologicalResult.rows[0].count),
+        featured: parseInt(featuredResult.rows[0].count)
+      }
+    });
+
+  } catch (error) {
+    console.error('Get research admin stats error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching research admin stats'
+    });
+  }
+});
+
+// @desc    Get all research articles for admin (dashboard format)
+// @route   GET /api/research/admin/articles
+// @access  Private
+router.get('/admin/articles', async (req, res) => {
+  try {
+    const result = await query(
+      'SELECT * FROM research_articles ORDER BY created_at DESC'
+    );
+
+    const articles = result.rows.map(article => ({
+      id: article.id,
+      title: article.title,
+      abstract: article.description, // Using description as abstract
+      content: article.content,
+      category: article.category,
+      authors: 'ASPIRE Research Team', // Default author since your table doesn't have authors column
+      publication_date: article.created_at,
+      main_image: article.image_url,
+      gallery_images: article.document_url ? [article.document_url] : [],
+      display_order: article.display_order,
+      is_featured: article.is_featured,
+      is_published: article.is_published,
+      created_at: article.created_at,
+      updated_at: article.updated_at
+    }));
+
+    res.status(200).json({
+      success: true,
+      data: articles
+    });
+
+  } catch (error) {
+    console.error('Get research admin articles error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching research admin articles'
+    });
+  }
+});
+
+// @desc    Get sustainable research articles
+// @route   GET /api/research/articles/sustainable
+// @access  Public
+router.get('/articles/sustainable', async (req, res) => {
+  try {
+    const result = await query(
+      'SELECT * FROM research_articles WHERE category = $1 AND is_published = true ORDER BY created_at DESC',
+      ['sustainable']
+    );
+
+    const articles = result.rows.map(article => ({
+      id: article.id,
+      title: article.title,
+      abstract: article.description,
+      content: article.content,
+      category: article.category,
+      authors: 'ASPIRE Research Team',
+      publication_date: article.created_at,
+      main_image: article.image_url,
+      gallery_images: article.document_url ? [article.document_url] : [],
+      display_order: article.display_order,
+      is_featured: article.is_featured,
+      is_published: article.is_published,
+      created_at: article.created_at,
+      updated_at: article.updated_at
+    }));
+
+    res.status(200).json({
+      success: true,
+      data: articles
+    });
+
+  } catch (error) {
+    console.error('Get sustainable research articles error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching sustainable research articles'
+    });
+  }
+});
+
+// @desc    Get climate research articles
+// @route   GET /api/research/articles/climate
+// @access  Public
+router.get('/articles/climate', async (req, res) => {
+  try {
+    const result = await query(
+      'SELECT * FROM research_articles WHERE category = $1 AND is_published = true ORDER BY created_at DESC',
+      ['climate']
+    );
+
+    const articles = result.rows.map(article => ({
+      id: article.id,
+      title: article.title,
+      abstract: article.description,
+      content: article.content,
+      category: article.category,
+      authors: 'ASPIRE Research Team',
+      publication_date: article.created_at,
+      main_image: article.image_url,
+      gallery_images: article.document_url ? [article.document_url] : [],
+      display_order: article.display_order,
+      is_featured: article.is_featured,
+      is_published: article.is_published,
+      created_at: article.created_at,
+      updated_at: article.updated_at
+    }));
+
+    res.status(200).json({
+      success: true,
+      data: articles
+    });
+
+  } catch (error) {
+    console.error('Get climate research articles error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching climate research articles'
+    });
+  }
+});
+
+// @desc    Get social research articles
+// @route   GET /api/research/articles/social
+// @access  Public
+router.get('/articles/social', async (req, res) => {
+  try {
+    const result = await query(
+      'SELECT * FROM research_articles WHERE category = $1 AND is_published = true ORDER BY created_at DESC',
+      ['social']
+    );
+
+    const articles = result.rows.map(article => ({
+      id: article.id,
+      title: article.title,
+      abstract: article.description,
+      content: article.content,
+      category: article.category,
+      authors: 'ASPIRE Research Team',
+      publication_date: article.created_at,
+      main_image: article.image_url,
+      gallery_images: article.document_url ? [article.document_url] : [],
+      display_order: article.display_order,
+      is_featured: article.is_featured,
+      is_published: article.is_published,
+      created_at: article.created_at,
+      updated_at: article.updated_at
+    }));
+
+    res.status(200).json({
+      success: true,
+      data: articles
+    });
+
+  } catch (error) {
+    console.error('Get social research articles error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching social research articles'
+    });
+  }
+});
+
+// @desc    Get technological research articles
+// @route   GET /api/research/articles/technological
+// @access  Public
+router.get('/articles/technological', async (req, res) => {
+  try {
+    const result = await query(
+      'SELECT * FROM research_articles WHERE category = $1 AND is_published = true ORDER BY created_at DESC',
+      ['technological']
+    );
+
+    const articles = result.rows.map(article => ({
+      id: article.id,
+      title: article.title,
+      abstract: article.description,
+      content: article.content,
+      category: article.category,
+      authors: 'ASPIRE Research Team',
+      publication_date: article.created_at,
+      main_image: article.image_url,
+      gallery_images: article.document_url ? [article.document_url] : [],
+      display_order: article.display_order,
+      is_featured: article.is_featured,
+      is_published: article.is_published,
+      created_at: article.created_at,
+      updated_at: article.updated_at
+    }));
+
+    res.status(200).json({
+      success: true,
+      data: articles
+    });
+
+  } catch (error) {
+    console.error('Get technological research articles error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching technological research articles'
+    });
+  }
+});
+
 // ===== ADMIN ROUTES =====
 
-// @desc    Create research article
+// @desc    Create research article (updated for dashboard)
 // @route   POST /api/research/articles
 // @access  Private
 router.post('/articles', async (req, res) => {
   try {
     const {
       title,
-      description,
-      tag,
-      year,
-      icon_name,
-      category,
+      abstract, // Frontend sends 'abstract' which maps to 'description'
       content,
-      image_url,
-      document_url,
+      category,
+      authors,
+      publication_date,
+      main_image, // Frontend sends 'main_image' which maps to 'image_url'
+      gallery_images,
       display_order,
       is_featured,
       is_published
     } = req.body;
 
+    console.log('📥 Received research article data:', {
+      title, abstract, category, authors, publication_date
+    });
+
+    // Map frontend fields to database columns
     const result = await query(
       `INSERT INTO research_articles 
-       (title, description, tag, year, icon_name, category, content, image_url, document_url, display_order, is_featured, is_published) 
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) 
+       (title, description, content, category, image_url, display_order, is_featured, is_published, tag, year, icon_name) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) 
        RETURNING *`,
-      [title, description, tag, year, icon_name, category, content, image_url, document_url, display_order || 0, is_featured || false, is_published || true]
+      [
+        title,
+        abstract || '', // Map abstract to description
+        content || '',
+        category || 'sustainable',
+        main_image || null,
+        display_order || 0,
+        is_featured || false,
+        is_published || true,
+        'Research', // Default tag
+        new Date().getFullYear().toString(), // Default year
+        'FaChartBar' // Default icon
+      ]
     );
+
+    // Format response to match frontend expectations
+    const newArticle = {
+      id: result.rows[0].id,
+      title: result.rows[0].title,
+      abstract: result.rows[0].description,
+      content: result.rows[0].content,
+      category: result.rows[0].category,
+      authors: authors || 'ASPIRE Research Team',
+      publication_date: result.rows[0].created_at,
+      main_image: result.rows[0].image_url,
+      gallery_images: gallery_images || [],
+      display_order: result.rows[0].display_order,
+      is_featured: result.rows[0].is_featured,
+      is_published: result.rows[0].is_published,
+      created_at: result.rows[0].created_at,
+      updated_at: result.rows[0].updated_at
+    };
+
+    console.log('✅ Research article created successfully:', newArticle.id);
 
     res.status(201).json({
       success: true,
-      data: result.rows[0]
+      data: newArticle
     });
 
   } catch (error) {
-    console.error('Create research article error:', error);
+    console.error('❌ Create research article error:', error);
     res.status(500).json({
       success: false,
-      message: 'Error creating research article'
+      message: 'Error creating research article: ' + error.message
     });
   }
 });
@@ -387,6 +671,42 @@ router.patch('/articles/:id/toggle', async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Error toggling research article'
+    });
+  }
+});
+
+// @desc    Toggle research article featured status
+// @route   PATCH /api/research/articles/:id/toggle-featured
+// @access  Private
+router.patch('/articles/:id/toggle-featured', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const result = await query(
+      `UPDATE research_articles 
+       SET is_featured = NOT is_featured, updated_at = CURRENT_TIMESTAMP 
+       WHERE id = $1 
+       RETURNING *`,
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Research article not found'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: result.rows[0]
+    });
+
+  } catch (error) {
+    console.error('Toggle research article featured error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error toggling research article featured status'
     });
   }
 });

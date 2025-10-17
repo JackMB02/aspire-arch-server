@@ -8,10 +8,13 @@ const itemsRoutes = require('./routes/items');
 const contactRoutes = require('./routes/contact');
 const getInvolvedRoutes = require('./routes/get-involved');
 const mediaRoutes = require('./routes/media');
-const educationRoutes = require('./routes/education'); // NEW: Education routes
+const educationRoutes = require('./routes/education');
 const uploadRoutes = require('./routes/upload');
-const theColleagueUniRoutes = require('./routes/thecolleagueuni'); // NEW: Architecture Colleagues Lab routes
-const researchRoutes = require('./routes/research'); // NEW: Research routes
+const theColleagueUniRoutes = require('./routes/thecolleagueuni');
+const researchRoutes = require('./routes/research');
+const designRoutes = require('./routes/design');
+const homeRoutes = require('./routes/home');
+const newsEventsRoutes = require('./routes/newsevents'); // NEW: News & Events routes
 const { initDb, testConnection } = require('./db');
 
 const app = express();
@@ -41,10 +44,13 @@ app.get('/api', (req, res) => {
       contact: "/api/contact",
       getInvolved: "/api/get-involved",
       media: "/api/media",
-      education: "/api/education", // NEW
+      education: "/api/education",
       upload: "/api/upload",
-      thecolleagueuni: "/api/thecolleagueuni", // NEW: Architecture Colleagues Lab
-      research: "/api/research" // NEW: Research routes
+      thecolleagueuni: "/api/thecolleagueuni",
+      research: "/api/research",
+      design: "/api/design",
+      home: "/api/home",
+      newsevents: "/api/newsevents" // NEW: News & Events endpoint
     },
     documentation: "Check /api/health for server status"
   });
@@ -60,10 +66,10 @@ app.get('/api/test', (req, res) => {
 });
 
 // Serve uploads directory
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-app.use('/images', express.static(path.join(__dirname, 'public/images'))); // NEW: Serve images
-app.use('/videos', express.static(path.join(__dirname, 'public/videos'))); // NEW: Serve videos
-app.use('/documents', express.static(path.join(__dirname, 'public/documents'))); // NEW: Serve documents
+app.use('/uploads', express.static(path.join(__dirname, 'Uploads')));
+app.use('/images', express.static(path.join(__dirname, 'public/images')));
+app.use('/videos', express.static(path.join(__dirname, 'public/videos')));
+app.use('/documents', express.static(path.join(__dirname, 'public/documents')));
 
 // API routes
 app.use('/api/auth', authRoutes);
@@ -71,10 +77,13 @@ app.use('/api/items', itemsRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/get-involved', getInvolvedRoutes);
 app.use('/api/media', mediaRoutes);
-app.use('/api/education', educationRoutes); // NEW: Education routes
+app.use('/api/education', educationRoutes);
 app.use('/api/upload', uploadRoutes);
-app.use('/api/thecolleagueuni', theColleagueUniRoutes); // NEW: Architecture Colleagues Lab routes
-app.use('/api/research', researchRoutes); // NEW: Research routes
+app.use('/api/thecolleagueuni', theColleagueUniRoutes);
+app.use('/api/research', researchRoutes);
+app.use('/api/design', designRoutes);
+app.use('/api/home', homeRoutes);
+app.use('/api/newsevents', newsEventsRoutes); // NEW: News & Events routes
 
 // Root endpoint
 app.get('/', (req, res) => {
@@ -88,10 +97,13 @@ app.get('/', (req, res) => {
       contact: "/api/contact",
       getInvolved: "/api/get-involved",
       media: "/api/media",
-      education: "/api/education", // NEW
+      education: "/api/education",
       upload: "/api/upload",
-      thecolleagueuni: "/api/thecolleagueuni", // NEW: Architecture Colleagues Lab
-      research: "/api/research" // NEW: Research routes
+      thecolleagueuni: "/api/thecolleagueuni",
+      research: "/api/research",
+      design: "/api/design",
+      home: "/api/home",
+      newsevents: "/api/newsevents" // NEW: News & Events endpoint
     }
   });
 });
@@ -112,10 +124,11 @@ app.get('/api/health', async (req, res) => {
         'community_stories', 'partnership_inquiries',
         'media_photos', 'media_videos', 'media_designs', 'media_testimonials',
         'education_workshops', 'education_tutorials', 'education_exhibitions',
-        'architecture_colleagues_contact', 'architecture_colleagues_team', // NEW: Architecture Colleagues Lab tables
+        'architecture_colleagues_contact', 'architecture_colleagues_team',
         'architecture_colleagues_initiatives', 'architecture_colleagues_values', 
         'architecture_colleagues_mission',
-        'research_articles', 'sustainable_practices', 'climate_strategies', 'social_studies', 'research_stats' // NEW: Research tables
+        'research_articles', 'sustainable_practices', 'climate_strategies', 'social_studies', 'research_stats',
+        'news_articles', 'events' // NEW: News & Events tables
       ];
       
       for (let table of tables) {
@@ -136,8 +149,10 @@ app.get('/api/health', async (req, res) => {
       server: 'ASPIRE Design Lab Backend',
       modules: {
         main: 'ASPIRE Design Lab',
-        architecture_colleagues: 'The Architecture Colleagues Lab', // NEW
-        research: 'Research & Insights' // NEW
+        architecture_colleagues: 'The Architecture Colleagues Lab',
+        research: 'Research & Insights',
+        home: 'Home Page Data',
+        newsevents: 'News & Events' // NEW: News & Events module
       },
       tables: tableCounts
     });
@@ -189,8 +204,10 @@ app.get('/api/database/status', async (req, res) => {
       totalTables: tableStats.rows.length,
       modules: {
         aspire_design_lab: 'Active',
-        architecture_colleagues_lab: 'Active', // NEW
-        research_insights: 'Active' // NEW
+        architecture_colleagues_lab: 'Active',
+        research_insights: 'Active',
+        home_page: 'Active',
+        news_events: 'Active' // NEW: News & Events module
       }
     });
   } catch (error) {
@@ -295,6 +312,93 @@ app.get('/api/research/health', async (req, res) => {
   }
 });
 
+// Home specific health check
+app.get('/api/home/health', async (req, res) => {
+  try {
+    const { getPool } = require('./db');
+    const pool = getPool();
+    
+    const tables = [
+      'items',
+      'research_articles',
+      'education_exhibitions'
+    ];
+    
+    let tableCounts = {};
+    for (let table of tables) {
+      try {
+        const result = await pool.query(`SELECT COUNT(*) FROM ${table}`);
+        tableCounts[table] = parseInt(result.rows[0].count);
+      } catch (error) {
+        tableCounts[table] = 'Error: ' + error.message;
+      }
+    }
+    
+    res.json({
+      status: 'OK',
+      module: 'Home Page Data',
+      timestamp: new Date().toISOString(),
+      tables: tableCounts,
+      endpoints: {
+        all_data: 'GET /api/home',
+        featured_designs: 'GET /api/home/featured-designs',
+        research_highlights: 'GET /api/home/research-highlights',
+        upcoming_events: 'GET /api/home/upcoming-events',
+        health: 'GET /api/home/health'
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'Error',
+      module: 'Home Page Data',
+      error: error.message
+    });
+  }
+});
+
+// News & Events specific health check
+app.get('/api/newsevents/health', async (req, res) => {
+  try {
+    const { getPool } = require('./db');
+    const pool = getPool();
+    
+    const tables = [
+      'news_articles',
+      'events'
+    ];
+    
+    let tableCounts = {};
+    for (let table of tables) {
+      try {
+        const result = await pool.query(`SELECT COUNT(*) FROM ${table}`);
+        tableCounts[table] = parseInt(result.rows[0].count);
+      } catch (error) {
+        tableCounts[table] = 'Error: ' + error.message;
+      }
+    }
+    
+    res.json({
+      status: 'OK',
+      module: 'News & Events',
+      timestamp: new Date().toISOString(),
+      tables: tableCounts,
+      endpoints: {
+        all: 'GET /api/newsevents/all',
+        news: 'GET /api/newsevents/news',
+        events: 'GET /api/newsevents/events',
+        featured: 'GET /api/newsevents/featured',
+        health: 'GET /api/newsevents/health'
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'Error',
+      module: 'News & Events',
+      error: error.message
+    });
+  }
+});
+
 // Serve admin panel
 app.use('/admin', express.static(path.join(__dirname, 'public')));
 
@@ -314,13 +418,18 @@ app.use('/api/*', (req, res) => {
       contact: "/api/contact",
       getInvolved: "/api/get-involved",
       media: "/api/media",
-      education: "/api/education", // NEW
+      education: "/api/education",
       upload: "/api/upload",
       database: "/api/database/status",
-      thecolleagueuni: "/api/thecolleagueuni", // NEW
-      thecolleagueuni_health: "/api/thecolleagueuni/health", // NEW
-      research: "/api/research", // NEW
-      research_health: "/api/research/health" // NEW
+      thecolleagueuni: "/api/thecolleagueuni",
+      thecolleagueuni_health: "/api/thecolleagueuni/health",
+      research: "/api/research",
+      research_health: "/api/research/health",
+      design: "/api/design",
+      home: "/api/home",
+      home_health: "/api/home/health",
+      newsevents: "/api/newsevents", // NEW: News & Events endpoint
+      newsevents_health: "/api/newsevents/health" // NEW: News & Events health
     }
   });
 });
@@ -370,11 +479,16 @@ async function startServer() {
       console.log(`   ⬆️ File Upload: http://localhost:${PORT}/api/upload`);
       console.log(`   🛡️ Authentication: http://localhost:${PORT}/api/auth`);
       console.log(`   🏛️ Architecture Colleagues Lab: http://localhost:${PORT}/api/thecolleagueuni`);
-      console.log(`   🔬 Research & Insights: http://localhost:${PORT}/api/research`); // NEW
+      console.log(`   🔬 Research & Insights: http://localhost:${PORT}/api/research`);
+      console.log(`   🎨 Design Projects: http://localhost:${PORT}/api/design`);
+      console.log(`   🏡 Home Page Data: http://localhost:${PORT}/api/home`);
+      console.log(`   📰 News & Events: http://localhost:${PORT}/api/newsevents`); // NEW: News & Events module
       console.log(`\n🔍 Health Check: http://localhost:${PORT}/api/health`);
       console.log(`📊 Database Status: http://localhost:${PORT}/api/database/status`);
       console.log(`🏛️ Architecture Colleagues Health: http://localhost:${PORT}/api/thecolleagueuni/health`);
-      console.log(`🔬 Research Health: http://localhost:${PORT}/api/research/health`); // NEW
+      console.log(`🔬 Research Health: http://localhost:${PORT}/api/research/health`);
+      console.log(`🏡 Home Health: http://localhost:${PORT}/api/home/health`);
+      console.log(`📰 News & Events Health: http://localhost:${PORT}/api/newsevents/health`); // NEW: News & Events health
       console.log(`=========================================\n`);
     });
   } catch (error) {

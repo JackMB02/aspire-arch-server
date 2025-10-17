@@ -542,6 +542,7 @@ async function initDb() {
         summary TEXT,
         description TEXT,
         category VARCHAR(100) NOT NULL,
+        sector VARCHAR(100),
         main_image VARCHAR(500) NOT NULL,
         gallery_images JSONB,
         display_order INTEGER DEFAULT 0,
@@ -553,6 +554,61 @@ async function initDb() {
       )
     `);
     console.log('✅ Design projects table created/verified');
+
+    // NEW: NEWS & EVENTS TABLES
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS news_articles (
+        id SERIAL PRIMARY KEY,
+        title VARCHAR(500) NOT NULL,
+        excerpt TEXT,
+        content TEXT,
+        image_url VARCHAR(500),
+        category VARCHAR(100),
+        author VARCHAR(100),
+        date DATE,
+        read_time VARCHAR(50),
+        is_featured BOOLEAN DEFAULT false,
+        is_published BOOLEAN DEFAULT true,
+        status VARCHAR(50) DEFAULT 'published',
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+    console.log('✅ News articles table created/verified');
+
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS events (
+        id SERIAL PRIMARY KEY,
+        title VARCHAR(500) NOT NULL,
+        description TEXT,
+        excerpt TEXT,
+        image_url VARCHAR(500),
+        event_date DATE,
+        event_time VARCHAR(100),
+        location VARCHAR(255),
+        category VARCHAR(100),
+        author VARCHAR(100),
+        read_time VARCHAR(50),
+        is_featured BOOLEAN DEFAULT false,
+        is_published BOOLEAN DEFAULT true,
+        status VARCHAR(50) DEFAULT 'published',
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+    console.log('✅ Events table created/verified');
+
+    // Add sector column to design_projects table if it doesn't exist
+    await client.query(`
+      DO $$ 
+      BEGIN 
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                      WHERE table_name='design_projects' AND column_name='sector') THEN
+          ALTER TABLE design_projects ADD COLUMN sector VARCHAR(100);
+        END IF;
+      END $$;
+    `);
+    console.log('✅ Design projects sector column verified');
 
     // Check if admin user exists
     const adminCheck = await client.query('SELECT * FROM admins WHERE username = $1', ['admin']);
@@ -1296,6 +1352,7 @@ async function insertDefaultData(client) {
       summary: "A sustainable library concept integrating natural light and community spaces.",
       description: "This library design focuses on sustainability, using glass facades for natural light and open spaces for collaborative learning. It integrates green courtyards and modern interiors. The project demonstrates innovative approaches to educational architecture while maintaining environmental consciousness.",
       category: "academic",
+      sector: "educational",
       main_image: "/images/library.jpg",
       gallery_images: ["/images/library.jpg", "/images/library2.jpg"],
       is_featured: true
@@ -1305,6 +1362,7 @@ async function insertDefaultData(client) {
       summary: "Affordable housing designed with modular units and green courtyards.",
       description: "The student housing project prioritizes affordability while maximizing comfort. Modular units are prefabricated and arranged around shared courtyards to foster community living. This approach reduces construction time and costs while creating vibrant student communities.",
       category: "academic",
+      sector: "residential",
       main_image: "/images/housing.jpg",
       gallery_images: ["/images/housing.jpg", "/images/housing2.jpg"],
       is_featured: false
@@ -1314,6 +1372,7 @@ async function insertDefaultData(client) {
       summary: "High-end villa design blending modern architecture with natural landscapes.",
       description: "The villa design merges minimalism with luxury, featuring an infinity pool, open floor plans, and natural stone facades that harmonize with the surrounding landscape. Every detail is carefully considered to create a seamless indoor-outdoor living experience.",
       category: "professional",
+      sector: "residential",
       main_image: "/images/villa.jpg",
       gallery_images: ["/images/villa.jpg", "/images/villa2.jpg"],
       is_featured: true
@@ -1323,6 +1382,7 @@ async function insertDefaultData(client) {
       summary: "An energy-efficient high-rise designed for flexible work environments.",
       description: "This office tower reimagines workplace design with flexible interiors, solar glass technology, and smart energy systems to minimize environmental impact. The design promotes collaboration while reducing the building's carbon footprint through innovative sustainable technologies.",
       category: "professional",
+      sector: "commercial",
       main_image: "/images/office.jpg",
       gallery_images: ["/images/office.jpg", "/images/office2.jpg"],
       is_featured: false
@@ -1332,6 +1392,7 @@ async function insertDefaultData(client) {
       summary: "A competition entry transforming abandoned urban land into a green hub.",
       description: "The park project transforms a neglected urban area into a thriving green hub with walking paths, cultural pavilions, and recreational spaces. This competition-winning design addresses urban decay while creating valuable community assets that promote social interaction and environmental awareness.",
       category: "competition",
+      sector: "landscape",
       main_image: "/images/park.jpg",
       gallery_images: ["/images/park.jpg", "/images/park2.jpg"],
       is_featured: true
@@ -1341,9 +1402,113 @@ async function insertDefaultData(client) {
       summary: "A winning concept celebrating local heritage through modern design.",
       description: "The cultural pavilion combines traditional motifs with modern construction. It serves as an exhibition space and a landmark for cultural events. This award-winning design successfully bridges historical context with contemporary architectural expression.",
       category: "competition",
+      sector: "cultural",
       main_image: "/images/pavilion.jpg",
       gallery_images: ["/images/pavilion.jpg", "/images/pavilion2.jpg"],
       is_featured: false
+    }
+  ];
+
+  // NEW: DEFAULT NEWS & EVENTS DATA
+  const defaultNewsArticles = [
+    {
+      title: "New Sustainable Architecture Award",
+      excerpt: "Sustainable design recognition for Urban Green Park project",
+      content: "ASPIRE Architecture has been awarded the prestigious Sustainable Design Award for our innovative Urban Green Park project. The award recognizes excellence in environmentally conscious design and community-focused architecture.",
+      image_url: "/images/park.jpg",
+      category: "news",
+      author: "Sarah Johnson",
+      date: "2023-05-15",
+      read_time: "3 min read",
+      is_featured: true
+    },
+    {
+      title: "Construction Begins on Modern Campus Library",
+      excerpt: "Construction starts on innovative campus library design",
+      content: "We're excited to announce that construction has officially commenced on the Modern Campus Library at Northwood University. This state-of-the-art facility will feature innovative glass façade and energy-efficient design.",
+      image_url: "/images/library.jpg",
+      category: "news",
+      author: "James Wilson",
+      date: "2023-04-28",
+      read_time: "4 min read",
+      is_featured: false
+    },
+    {
+      title: "New Research Partnership Announced",
+      excerpt: "Collaboration with leading university for sustainable design research",
+      content: "ASPIRE Design Lab has entered into a strategic research partnership with the University of Sustainable Architecture to advance innovative approaches to climate-resilient building design.",
+      image_url: "/images/office.jpg",
+      category: "news",
+      author: "Dr. Elena Martinez",
+      date: "2023-06-10",
+      read_time: "5 min read",
+      is_featured: true
+    },
+    {
+      title: "Community Design Workshop Success",
+      excerpt: "Local community engagement in urban planning initiative",
+      content: "Our recent community design workshop brought together residents, architects, and city planners to co-create solutions for neighborhood revitalization. The collaborative approach yielded innovative ideas for public spaces.",
+      image_url: "/images/pome.jpg",
+      category: "news",
+      author: "Lisa Rodriguez",
+      date: "2023-05-22",
+      read_time: "2 min read",
+      is_featured: false
+    }
+  ];
+
+  const defaultEvents = [
+    {
+      title: "Future of Urban Living Conference",
+      excerpt: "Architects discuss sustainable urban development",
+      description: "Join leading architects and urban planners as we explore the future of sustainable urban living. This conference will feature keynote presentations, panel discussions, and networking opportunities focused on innovative approaches to urban development.",
+      image_url: "/images/conference.jpg",
+      event_date: "2023-06-02",
+      event_time: "9:00 AM - 6:00 PM",
+      location: "Main Conference Center, Downtown",
+      category: "event",
+      author: "Michael Chen",
+      read_time: "5 min read",
+      is_featured: true
+    },
+    {
+      title: "Design Workshop: Community Spaces",
+      excerpt: "Workshop on designing community-centered spaces",
+      description: "Interactive workshop focused on creating public areas that foster community interaction. Learn design principles for inclusive, accessible, and engaging community spaces through hands-on activities and case studies.",
+      image_url: "/images/workshop.jpg",
+      event_date: "2023-06-15",
+      event_time: "10:00 AM - 4:00 PM",
+      location: "Design Studio, ASPIRE Lab",
+      category: "event",
+      author: "Lisa Martinez",
+      read_time: "2 min read",
+      is_featured: false
+    },
+    {
+      title: "Sustainable Architecture Tour",
+      excerpt: "Guided tour of eco-friendly projects",
+      description: "Experience sustainable architecture firsthand with our guided tour of award-winning eco-friendly projects. Visit buildings that demonstrate innovative approaches to energy efficiency, material selection, and environmental integration.",
+      image_url: "/images/villa.jpg",
+      event_date: "2023-06-22",
+      event_time: "2:00 PM - 5:00 PM",
+      location: "Various locations across the city",
+      category: "event",
+      author: "Robert Kim",
+      read_time: "3 min read",
+      is_featured: true
+    },
+    {
+      title: "Architectural Photography Exhibition",
+      excerpt: "Showcasing the beauty of modern architecture through photography",
+      description: "An exhibition featuring stunning architectural photography that captures the essence of modern design. The event includes talks by renowned architectural photographers and opportunities to network with industry professionals.",
+      image_url: "/images/pavilion.jpg",
+      event_date: "2023-07-05",
+      event_time: "6:00 PM - 9:00 PM",
+      location: "Art Gallery, Cultural District",
+      category: "event",
+      author: "Sophia Chen",
+      read_time: "4 min read",
+      is_featured: true
     }
   ];
 
@@ -1666,7 +1831,7 @@ async function insertDefaultData(client) {
     }
   }
 
-  // NEW: Insert default design projects
+  // Insert default design projects
   for (const project of defaultDesignProjects) {
     const exists = await client.query(
       'SELECT id FROM design_projects WHERE title = $1 AND category = $2',
@@ -1675,11 +1840,45 @@ async function insertDefaultData(client) {
     
     if (exists.rows.length === 0) {
       await client.query(
-        `INSERT INTO design_projects (title, summary, description, category, main_image, gallery_images, is_featured) 
-         VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-        [project.title, project.summary, project.description, project.category, project.main_image, JSON.stringify(project.gallery_images), project.is_featured]
+        `INSERT INTO design_projects (title, summary, description, category, sector, main_image, gallery_images, is_featured) 
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+        [project.title, project.summary, project.description, project.category, project.sector, project.main_image, JSON.stringify(project.gallery_images), project.is_featured]
       );
       console.log(`✅ Added design project: ${project.title}`);
+    }
+  }
+
+  // NEW: Insert default news articles
+  for (const article of defaultNewsArticles) {
+    const exists = await client.query(
+      'SELECT id FROM news_articles WHERE title = $1 AND author = $2',
+      [article.title, article.author]
+    );
+    
+    if (exists.rows.length === 0) {
+      await client.query(
+        `INSERT INTO news_articles (title, excerpt, content, image_url, category, author, date, read_time, is_featured) 
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+        [article.title, article.excerpt, article.content, article.image_url, article.category, article.author, article.date, article.read_time, article.is_featured]
+      );
+      console.log(`✅ Added news article: ${article.title}`);
+    }
+  }
+
+  // NEW: Insert default events
+  for (const event of defaultEvents) {
+    const exists = await client.query(
+      'SELECT id FROM events WHERE title = $1 AND event_date = $2',
+      [event.title, event.event_date]
+    );
+    
+    if (exists.rows.length === 0) {
+      await client.query(
+        `INSERT INTO events (title, excerpt, description, image_url, event_date, event_time, location, category, author, read_time, is_featured) 
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
+        [event.title, event.excerpt, event.description, event.image_url, event.event_date, event.event_time, event.location, event.category, event.author, event.read_time, event.is_featured]
+      );
+      console.log(`✅ Added event: ${event.title}`);
     }
   }
   
