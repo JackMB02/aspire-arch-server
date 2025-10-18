@@ -14,8 +14,8 @@ const theColleagueUniRoutes = require('./routes/thecolleagueuni');
 const researchRoutes = require('./routes/research');
 const designRoutes = require('./routes/design');
 const homeRoutes = require('./routes/home');
-const newsEventsRoutes = require('./routes/newsevents'); // NEW: News & Events routes
-const { initDb, testConnection } = require('./db');
+const newsEventsRoutes = require('./routes/newsevents');
+const { initDb, testConnection, getPool } = require('./db');
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -31,6 +31,28 @@ app.use(cors({
 // Middleware
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
+
+// Database connection middleware with retry logic
+app.use(async (req, res, next) => {
+  try {
+    const pool = getPool();
+    // Test connection with retry logic
+    const isConnected = await testConnection();
+    if (!isConnected) {
+      return res.status(503).json({
+        error: 'Database temporarily unavailable',
+        message: 'Please try again in a few moments'
+      });
+    }
+    next();
+  } catch (error) {
+    console.error('Database middleware error:', error);
+    res.status(503).json({
+      error: 'Database connection failed',
+      message: 'Service temporarily unavailable'
+    });
+  }
+});
 
 // API root endpoint
 app.get('/api', (req, res) => {
@@ -50,7 +72,7 @@ app.get('/api', (req, res) => {
       research: "/api/research",
       design: "/api/design",
       home: "/api/home",
-      newsevents: "/api/newsevents" // NEW: News & Events endpoint
+      newsevents: "/api/newsevents"
     },
     documentation: "Check /api/health for server status"
   });
@@ -83,7 +105,7 @@ app.use('/api/thecolleagueuni', theColleagueUniRoutes);
 app.use('/api/research', researchRoutes);
 app.use('/api/design', designRoutes);
 app.use('/api/home', homeRoutes);
-app.use('/api/newsevents', newsEventsRoutes); // NEW: News & Events routes
+app.use('/api/newsevents', newsEventsRoutes);
 
 // Root endpoint
 app.get('/', (req, res) => {
@@ -103,7 +125,7 @@ app.get('/', (req, res) => {
       research: "/api/research",
       design: "/api/design",
       home: "/api/home",
-      newsevents: "/api/newsevents" // NEW: News & Events endpoint
+      newsevents: "/api/newsevents"
     }
   });
 });
@@ -112,7 +134,6 @@ app.get('/', (req, res) => {
 app.get('/api/health', async (req, res) => {
   try {
     const dbStatus = await testConnection();
-    const { getPool } = require('./db');
     const pool = getPool();
     
     let tableCounts = {};
@@ -128,7 +149,7 @@ app.get('/api/health', async (req, res) => {
         'architecture_colleagues_initiatives', 'architecture_colleagues_values', 
         'architecture_colleagues_mission',
         'research_articles', 'sustainable_practices', 'climate_strategies', 'social_studies', 'research_stats',
-        'news_articles', 'events' // NEW: News & Events tables
+        'news_articles', 'events'
       ];
       
       for (let table of tables) {
@@ -152,7 +173,7 @@ app.get('/api/health', async (req, res) => {
         architecture_colleagues: 'The Architecture Colleagues Lab',
         research: 'Research & Insights',
         home: 'Home Page Data',
-        newsevents: 'News & Events' // NEW: News & Events module
+        newsevents: 'News & Events'
       },
       tables: tableCounts
     });
@@ -169,7 +190,6 @@ app.get('/api/health', async (req, res) => {
 // Database status endpoint
 app.get('/api/database/status', async (req, res) => {
   try {
-    const { getPool } = require('./db');
     const pool = getPool();
     const client = await pool.connect();
     
@@ -207,7 +227,7 @@ app.get('/api/database/status', async (req, res) => {
         architecture_colleagues_lab: 'Active',
         research_insights: 'Active',
         home_page: 'Active',
-        news_events: 'Active' // NEW: News & Events module
+        news_events: 'Active'
       }
     });
   } catch (error) {
@@ -221,7 +241,6 @@ app.get('/api/database/status', async (req, res) => {
 // Architecture Colleagues Lab specific health check
 app.get('/api/thecolleagueuni/health', async (req, res) => {
   try {
-    const { getPool } = require('./db');
     const pool = getPool();
     
     const tables = [
@@ -268,7 +287,6 @@ app.get('/api/thecolleagueuni/health', async (req, res) => {
 // Research specific health check
 app.get('/api/research/health', async (req, res) => {
   try {
-    const { getPool } = require('./db');
     const pool = getPool();
     
     const tables = [
@@ -315,7 +333,6 @@ app.get('/api/research/health', async (req, res) => {
 // Home specific health check
 app.get('/api/home/health', async (req, res) => {
   try {
-    const { getPool } = require('./db');
     const pool = getPool();
     
     const tables = [
@@ -359,7 +376,6 @@ app.get('/api/home/health', async (req, res) => {
 // News & Events specific health check
 app.get('/api/newsevents/health', async (req, res) => {
   try {
-    const { getPool } = require('./db');
     const pool = getPool();
     
     const tables = [
@@ -428,8 +444,8 @@ app.use('/api/*', (req, res) => {
       design: "/api/design",
       home: "/api/home",
       home_health: "/api/home/health",
-      newsevents: "/api/newsevents", // NEW: News & Events endpoint
-      newsevents_health: "/api/newsevents/health" // NEW: News & Events health
+      newsevents: "/api/newsevents",
+      newsevents_health: "/api/newsevents/health"
     }
   });
 });
@@ -449,12 +465,20 @@ async function startServer() {
   try {
     console.log('🔄 Starting ASPIRE Design Lab server...');
     
+    // Test database connection with retry logic
+    console.log('🔌 Testing database connection...');
     const dbConnected = await testConnection();
+    
     if (!dbConnected) {
       console.error('❌ Cannot start server without database connection');
+      console.log('💡 Please check:');
+      console.log('   - DATABASE_URL environment variable in Railway');
+      console.log('   - Neon database status');
+      console.log('   - Network connectivity');
       process.exit(1);
     }
 
+    console.log('✅ Database connection established');
     console.log('🔄 Initializing database...');
     const dbInitialized = await initDb();
     
@@ -463,6 +487,8 @@ async function startServer() {
       process.exit(1);
     }
 
+    console.log('✅ Database initialized successfully');
+    
     app.listen(PORT, () => {
       console.log(`\n🎉 ASPIRE Design Lab Server Started Successfully!`);
       console.log(`=========================================`);
@@ -482,13 +508,13 @@ async function startServer() {
       console.log(`   🔬 Research & Insights: http://localhost:${PORT}/api/research`);
       console.log(`   🎨 Design Projects: http://localhost:${PORT}/api/design`);
       console.log(`   🏡 Home Page Data: http://localhost:${PORT}/api/home`);
-      console.log(`   📰 News & Events: http://localhost:${PORT}/api/newsevents`); // NEW: News & Events module
+      console.log(`   📰 News & Events: http://localhost:${PORT}/api/newsevents`);
       console.log(`\n🔍 Health Check: http://localhost:${PORT}/api/health`);
       console.log(`📊 Database Status: http://localhost:${PORT}/api/database/status`);
       console.log(`🏛️ Architecture Colleagues Health: http://localhost:${PORT}/api/thecolleagueuni/health`);
       console.log(`🔬 Research Health: http://localhost:${PORT}/api/research/health`);
       console.log(`🏡 Home Health: http://localhost:${PORT}/api/home/health`);
-      console.log(`📰 News & Events Health: http://localhost:${PORT}/api/newsevents/health`); // NEW: News & Events health
+      console.log(`📰 News & Events Health: http://localhost:${PORT}/api/newsevents/health`);
       console.log(`=========================================\n`);
     });
   } catch (error) {
@@ -500,7 +526,6 @@ async function startServer() {
 // Handle graceful shutdown
 process.on('SIGINT', async () => {
   console.log('\n🔄 Shutting down server gracefully...');
-  const { getPool } = require('./db');
   const pool = getPool();
   await pool.end();
   console.log('✅ Database connections closed');
@@ -509,7 +534,6 @@ process.on('SIGINT', async () => {
 
 process.on('SIGTERM', async () => {
   console.log('\n🔄 Server termination requested...');
-  const { getPool } = require('./db');
   const pool = getPool();
   await pool.end();
   console.log('✅ Database connections closed');
