@@ -56,7 +56,11 @@ router.get('/team', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Get team error:', error);
+    console.error('Get team error:', error.message);
+    // Log the full error for debugging
+    console.error('Stack trace:', error.stack);
+    console.error('Query error details:', error.detail || 'No additional details');
+    
     res.status(500).json({
       success: false,
       message: 'Error fetching team data'

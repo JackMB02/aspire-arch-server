@@ -2,7 +2,7 @@ const { Pool } = require('pg');
 require('dotenv').config();
 
 const pool = new Pool({
-  connectionString: 'postgresql://neondb_owner:npg_SLMpTuH64wFc@ep-young-haze-ad2xjvz6-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require',
+  connectionString: process.env.DATABASE_URL || 'postgresql://neondb_owner:npg_SLMpTuH64wFc@ep-young-haze-ad2xjvz6-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require',
   ssl: {
     rejectUnauthorized: false
   },
@@ -10,6 +10,12 @@ const pool = new Pool({
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 10000,
   maxUses: 7500, // Close connection after 7500 uses
+});
+
+// Add error handler for the pool
+pool.on('error', (err) => {
+  console.error('Unexpected error on idle client', err);
+  process.exit(-1);
 });
 
 // Enhanced connection testing with retry logic
