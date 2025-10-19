@@ -20,12 +20,37 @@ const { initDb, testConnection, getPool } = require('./db');
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-// CORS configuration
+// CORS configuration - Updated for both Railway and local development
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:5173', 'http://127.0.0.1:3000'],
+  origin: function (origin, callback) {
+    // Allow requests with no origin (mobile apps, curl, etc)
+    if (!origin) return callback(null, true);
+    
+    const allowedOrigins = [
+      'http://localhost:3000',
+      'http://localhost:5173', 
+      'http://127.0.0.1:3000',
+      'https://your-vercel-app.vercel.app', // Add your Vercel frontend URL here
+      /\.vercel\.app$/, // Allow all Vercel deployments
+      /\.railway\.app$/ // Allow all Railway deployments
+    ];
+    
+    if (allowedOrigins.some(pattern => {
+      if (typeof pattern === 'string') {
+        return origin === pattern;
+      } else if (pattern instanceof RegExp) {
+        return pattern.test(origin);
+      }
+      return false;
+    })) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 
 // Middleware
@@ -489,32 +514,39 @@ async function startServer() {
 
     console.log('✅ Database initialized successfully');
     
-    app.listen(PORT, () => {
+    // Get the host - use '0.0.0.0' for Railway, 'localhost' for local development
+    const HOST = process.env.NODE_ENV === 'production' ? '0.0.0.0' : 'localhost';
+    
+    app.listen(PORT, HOST, () => {
       console.log(`\n🎉 ASPIRE Design Lab Server Started Successfully!`);
       console.log(`=========================================`);
-      console.log(`✅ Server URL: http://localhost:${PORT}`);
-      console.log(`📊 Admin Dashboard: http://localhost:${PORT}/admin`);
-      console.log(`🔗 API Base URL: http://localhost:${PORT}/api`);
-      console.log(`🌐 Environment: ${process.env.NODE_ENV || 'development'}`);
+      console.log(`✅ Server running on port: ${PORT}`);
+      console.log(`✅ Environment: ${process.env.NODE_ENV || 'development'}`);
+      
+      if (process.env.NODE_ENV === 'production') {
+        console.log(`🚀 Production mode - Ready for Railway deployment`);
+        console.log(`🔗 Your app will be available at the Railway public URL`);
+      } else {
+        console.log(`✅ Local Server URL: http://localhost:${PORT}`);
+        console.log(`📊 Admin Dashboard: http://localhost:${PORT}/admin`);
+        console.log(`🔗 API Base URL: http://localhost:${PORT}/api`);
+      }
+      
       console.log(`\n📋 Available Modules:`);
-      console.log(`   🏠 Main Content: http://localhost:${PORT}/api/items`);
-      console.log(`   📞 Contact System: http://localhost:${PORT}/api/contact`);
-      console.log(`   🤝 Get Involved: http://localhost:${PORT}/api/get-involved`);
-      console.log(`   🖼️ Media Gallery: http://localhost:${PORT}/api/media`);
-      console.log(`   📚 Education: http://localhost:${PORT}/api/education`);
-      console.log(`   ⬆️ File Upload: http://localhost:${PORT}/api/upload`);
-      console.log(`   🛡️ Authentication: http://localhost:${PORT}/api/auth`);
-      console.log(`   🏛️ Architecture Colleagues Lab: http://localhost:${PORT}/api/thecolleagueuni`);
-      console.log(`   🔬 Research & Insights: http://localhost:${PORT}/api/research`);
-      console.log(`   🎨 Design Projects: http://localhost:${PORT}/api/design`);
-      console.log(`   🏡 Home Page Data: http://localhost:${PORT}/api/home`);
-      console.log(`   📰 News & Events: http://localhost:${PORT}/api/newsevents`);
-      console.log(`\n🔍 Health Check: http://localhost:${PORT}/api/health`);
-      console.log(`📊 Database Status: http://localhost:${PORT}/api/database/status`);
-      console.log(`🏛️ Architecture Colleagues Health: http://localhost:${PORT}/api/thecolleagueuni/health`);
-      console.log(`🔬 Research Health: http://localhost:${PORT}/api/research/health`);
-      console.log(`🏡 Home Health: http://localhost:${PORT}/api/home/health`);
-      console.log(`📰 News & Events Health: http://localhost:${PORT}/api/newsevents/health`);
+      console.log(`   🏠 Main Content: /api/items`);
+      console.log(`   📞 Contact System: /api/contact`);
+      console.log(`   🤝 Get Involved: /api/get-involved`);
+      console.log(`   🖼️ Media Gallery: /api/media`);
+      console.log(`   📚 Education: /api/education`);
+      console.log(`   ⬆️ File Upload: /api/upload`);
+      console.log(`   🛡️ Authentication: /api/auth`);
+      console.log(`   🏛️ Architecture Colleagues Lab: /api/thecolleagueuni`);
+      console.log(`   🔬 Research & Insights: /api/research`);
+      console.log(`   🎨 Design Projects: /api/design`);
+      console.log(`   🏡 Home Page Data: /api/home`);
+      console.log(`   📰 News & Events: /api/newsevents`);
+      console.log(`\n🔍 Health Check: /api/health`);
+      console.log(`📊 Database Status: /api/database/status`);
       console.log(`=========================================\n`);
     });
   } catch (error) {
