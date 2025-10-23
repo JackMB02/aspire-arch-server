@@ -20,7 +20,7 @@ const { initDb, testConnection, getPool } = require('./db');
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-// CORS configuration - Updated for both Railway and local development
+// CORS configuration - Updated for Render and local development
 app.use(cors({
   origin: function (origin, callback) {
     // Allow requests with no origin (mobile apps, curl, etc)
@@ -32,7 +32,8 @@ app.use(cors({
       'http://127.0.0.1:3000',
       'https://your-vercel-app.vercel.app', // Add your Vercel frontend URL here
       /\.vercel\.app$/, // Allow all Vercel deployments
-      /\.railway\.app$/ // Allow all Railway deployments
+      /\.railway\.app$/, // Allow all Railway deployments
+      /\.onrender\.com$/ // Allow all Render deployments
     ];
     
     if (allowedOrigins.some(pattern => {
@@ -497,7 +498,7 @@ async function startServer() {
     if (!dbConnected) {
       console.error('❌ Cannot start server without database connection');
       console.log('💡 Please check:');
-      console.log('   - DATABASE_URL environment variable in Railway');
+      console.log('   - DATABASE_URL environment variable');
       console.log('   - Neon database status');
       console.log('   - Network connectivity');
       process.exit(1);
@@ -514,7 +515,7 @@ async function startServer() {
 
     console.log('✅ Database initialized successfully');
     
-    // Get the host - use '0.0.0.0' for Railway, 'localhost' for local development
+    // Get the host - use '0.0.0.0' for production, 'localhost' for local development
     const HOST = process.env.NODE_ENV === 'production' ? '0.0.0.0' : 'localhost';
     
     app.listen(PORT, HOST, () => {
@@ -524,8 +525,8 @@ async function startServer() {
       console.log(`✅ Environment: ${process.env.NODE_ENV || 'development'}`);
       
       if (process.env.NODE_ENV === 'production') {
-        console.log(`🚀 Production mode - Ready for Railway deployment`);
-        console.log(`🔗 Your app will be available at the Railway public URL`);
+        console.log(`🚀 Production mode - Ready for Render deployment`);
+        console.log(`🔗 Your app will be available at the Render public URL`);
       } else {
         console.log(`✅ Local Server URL: http://localhost:${PORT}`);
         console.log(`📊 Admin Dashboard: http://localhost:${PORT}/admin`);
