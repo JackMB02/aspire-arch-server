@@ -2664,15 +2664,9 @@
 
     <!-- JavaScript Section -->
 <script>
-      // Smart API URL detection - works for both local and production
-const API_BASE_URL = (() => {
-  // If we're on localhost, use local backend
-  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-    return 'http://localhost:4000/api';
-  }
-  // Otherwise, use the Railway production backend
-  return 'https://aspire-arch-server-production.up.railway.app/api';
-})();
+const API_BASE_URL = window.location.hostname === 'localhost' 
+  ? 'http://localhost:4000/api' 
+  : 'https://aspire-arch-server.onrender.com/api';
 
 console.log('🌐 Using API URL:', API_BASE_URL);
       let authToken = null;
