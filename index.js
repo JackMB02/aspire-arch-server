@@ -30,7 +30,7 @@ app.use(cors({
       'http://localhost:3000',
       'http://localhost:5173', 
       'http://127.0.0.1:3000',
-      'https://your-vercel-app.vercel.app', // Add your Vercel frontend URL here
+      'https://aspire-dashboard-wsua.vercel.app', // Add your Vercel frontend URL here
       /\.vercel\.app$/, // Allow all Vercel deployments
       /\.railway\.app$/, // Allow all Railway deployments
       /\.onrender\.com$/ // Allow all Render deployments
