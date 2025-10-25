@@ -20,38 +20,58 @@ const { initDb, testConnection, getPool } = require('./db');
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-// CORS configuration - Updated for Render and local development
+// CORS configuration - Updated for development and production
 app.use(cors({
   origin: function (origin, callback) {
     // Allow requests with no origin (mobile apps, curl, etc)
-    if (!origin) return callback(null, true);
+    if (!origin) {
+      console.log('✅ Allowing request with no origin');
+      return callback(null, true);
+    }
     
     const allowedOrigins = [
       'http://localhost:3000',
       'http://localhost:5173', 
       'http://127.0.0.1:3000',
-      'https://aspire-dashboard-wsua.vercel.app', // Add your Vercel frontend URL here
-      /\.vercel\.app$/, // Allow all Vercel deployments
-      /\.railway\.app$/, // Allow all Railway deployments
-      /\.onrender\.com$/ // Allow all Render deployments
+      'http://localhost:4000',
+      'http://127.0.0.1:4000',
+      'https://aspire-dashboard-wsua.vercel.app',
+      'https://aspire-dashboard.vercel.app'
     ];
     
-    if (allowedOrigins.some(pattern => {
-      if (typeof pattern === 'string') {
-        return origin === pattern;
-      } else if (pattern instanceof RegExp) {
-        return pattern.test(origin);
-      }
-      return false;
-    })) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
+    // Allow all Vercel, Railway, and Render domains in production
+    const allowedDomains = [
+      /\.vercel\.app$/,
+      /\.railway\.app$/,
+      /\.onrender\.com$/
+    ];
+
+    // First check exact matches
+    if (allowedOrigins.includes(origin)) {
+      console.log(`✅ Allowing request from origin: ${origin}`);
+      return callback(null, true);
     }
+
+    // Then check domain patterns
+    if (allowedDomains.some(pattern => pattern.test(origin))) {
+      console.log(`✅ Allowing request from domain: ${origin}`);
+      return callback(null, true);
+    }
+
+    // In development, allow all origins
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`✅ Development mode: Allowing request from ${origin}`);
+      return callback(null, true);
+    }
+
+    // Log blocked origins to help with debugging
+    console.log(`❌ Blocked request from origin: ${origin}`);
+    callback(new Error('Not allowed by CORS'));
   },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  exposedHeaders: ['Content-Range', 'X-Content-Range']
 }));
 
 // Middleware
