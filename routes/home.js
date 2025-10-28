@@ -94,7 +94,7 @@ router.get('/', async (req, res) => {
                 researchHighlights, 
                 upcomingEvents
             },
-            message: 'Home page data fetched successfully from existing endpoints'
+
         });
     } catch (error) {
         console.error('💥 Error in home route:', error);
