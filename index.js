@@ -313,12 +313,12 @@ app.get('/api/thecolleagueuni/health', async (req, res) => {
       timestamp: new Date().toISOString(),
       tables: tableCounts,
       endpoints: {
-        contact: 'POST /api/thecolleagueuni/contact',
-        team: 'GET /api/thecolleagueuni/team',
-        mission: 'GET /api/thecolleagueuni/mission',
-        initiatives: 'GET /api/thecolleagueuni/initiatives',
-        about: 'GET /api/thecolleagueuni/about',
-        contacts_admin: 'GET /api/thecolleagueuni/contacts'
+        contact: 'POST /api/colleagues/contact',
+        team: 'GET /api/colleagues/team',
+        mission: 'GET /api/colleagues/mission',
+        initiatives: 'GET /api/colleagues/initiatives',
+        about: 'GET /api//colleagues/about',
+        contacts_admin: 'GET /api/colleagues/contacts'
       }
     });
   } catch (error) {
