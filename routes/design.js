@@ -1,6 +1,22 @@
 const express = require("express");
 const router = express.Router();
 const { query } = require("../db");
+// Helper function to parse gallery_images JSON strings
+const parseProjectGalleryImages = (projects) => {
+    return projects.map(project => {
+        if (project.gallery_images && typeof project.gallery_images === 'string') {
+            try {
+                project.gallery_images = JSON.parse(project.gallery_images);
+            } catch (e) {
+                console.error('Error parsing gallery_images for project:', project.id, e);
+                project.gallery_images = [];
+            }
+        }
+        return project;
+    });
+};
+
+
 
 // ===== PUBLIC ROUTES =====
 
@@ -17,7 +33,7 @@ router.get("/projects", async (req, res) => {
 
         res.status(200).json({
             success: true,
-            data: result.rows,
+            data: parseProjectGalleryImages(result.rows),
         });
     } catch (error) {
         console.error("Get design projects error:", error);
@@ -43,7 +59,7 @@ router.get("/projects/academic", async (req, res) => {
 
         res.status(200).json({
             success: true,
-            data: result.rows,
+            data: parseProjectGalleryImages(result.rows),
         });
     } catch (error) {
         console.error("Get academic projects error:", error);
@@ -67,7 +83,7 @@ router.get("/projects/professional", async (req, res) => {
 
         res.status(200).json({
             success: true,
-            data: result.rows,
+            data: parseProjectGalleryImages(result.rows),
         });
     } catch (error) {
         console.error("Get professional projects error:", error);
@@ -91,7 +107,7 @@ router.get("/projects/competition", async (req, res) => {
 
         res.status(200).json({
             success: true,
-            data: result.rows,
+            data: parseProjectGalleryImages(result.rows),
         });
     } catch (error) {
         console.error("Get competition projects error:", error);
@@ -175,9 +191,20 @@ router.get("/project/:id", async (req, res) => {
             });
         }
 
+        // Parse gallery_images if it's a JSON string
+        const project = result.rows[0];
+        if (project.gallery_images && typeof project.gallery_images === 'string') {
+            try {
+                project.gallery_images = JSON.parse(project.gallery_images);
+            } catch (e) {
+                console.error('Error parsing gallery_images:', e);
+                project.gallery_images = [];
+            }
+        }
+
         res.status(200).json({
             success: true,
-            data: result.rows[0],
+            data: project,
         });
     } catch (error) {
         console.error("Get design project error:", error);
@@ -202,7 +229,7 @@ router.get("/featured", async (req, res) => {
 
         res.status(200).json({
             success: true,
-            data: result.rows,
+            data: parseProjectGalleryImages(result.rows),
         });
     } catch (error) {
         console.error("Get featured design projects error:", error);
