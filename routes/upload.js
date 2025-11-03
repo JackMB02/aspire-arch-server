@@ -2,51 +2,10 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const path = require('path');
-const fs = require('fs');
+const { processMulterFile } = require('../utils/imageHandler');
 
-// Create uploads directory if it doesn't exist
-const uploadsDir = path.join(__dirname, '../uploads');
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-  console.log('✅ Created uploads directory:', uploadsDir);
-}
-
-// Enhanced storage configuration with organized folders
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    // Create subdirectories based on file type
-    let subDir = 'general';
-    if (file.mimetype.startsWith('image/')) {
-      subDir = 'images';
-    } else if (file.mimetype.startsWith('video/')) {
-      subDir = 'videos';
-    } else if (file.mimetype.startsWith('application/')) {
-      subDir = 'documents';
-    }
-    
-    const targetDir = path.join(uploadsDir, subDir);
-    if (!fs.existsSync(targetDir)) {
-      fs.mkdirSync(targetDir, { recursive: true });
-    }
-    
-    cb(null, targetDir);
-  },
-  filename: (req, file, cb) => {
-    // Clean filename and create SEO-friendly name
-    const originalName = path.parse(file.originalname).name;
-    const cleanName = originalName
-      .toLowerCase()
-      .replace(/[^a-z0-9]/g, '-')
-      .replace(/-+/g, '-')
-      .replace(/^-|-$/g, '');
-    
-    const timestamp = Date.now();
-    const random = Math.round(Math.random() * 1E9);
-    const extension = path.extname(file.originalname).toLowerCase();
-    
-    cb(null, `${cleanName}-${timestamp}-${random}${extension}`);
-  }
-});
+// Use memory storage instead of disk storage (for Render compatibility)
+const storage = multer.memoryStorage();
 
 // Enhanced file filter
 const fileFilter = (req, file, cb) => {
