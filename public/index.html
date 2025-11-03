@@ -3687,6 +3687,551 @@
         </div>
     </div>
 
+
+    
+<!-- Edit Tutorial Modal -->
+<div id="editTutorialModal" class="modal hidden">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Edit Tutorial</h3>
+            <button class="btn-secondary" type="button" onclick="hideEditTutorialModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <form id="editTutorialForm">
+            <input type="hidden" id="editTutorialId">
+            <div class="form-grid">
+                <div class="input-group full-width">
+                    <label for="editTutorialTitle">Title *</label>
+                    <input id="editTutorialTitle" type="text" required>
+                </div>
+                
+                <div class="input-group full-width">
+                    <label for="editTutorialDescription">Description *</label>
+                    <textarea id="editTutorialDescription" required></textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label for="editTutorialInstructor">Instructor *</label>
+                    <input id="editTutorialInstructor" type="text" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="editTutorialDuration">Duration</label>
+                    <input id="editTutorialDuration" type="text" placeholder="e.g., 2 hours">
+                </div>
+                
+                <div class="input-group">
+                    <label for="editTutorialLevel">Level</label>
+                    <select id="editTutorialLevel">
+                        <option value="beginner">Beginner</option>
+                        <option value="intermediate">Intermediate</option>
+                        <option value="advanced">Advanced</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="editTutorialPublished">
+                        <span class="toggle-slider"></span>
+                        <span>Published</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="button-group">
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-save"></i> Update Tutorial
+                </button>
+                <button type="button" class="btn-secondary" onclick="hideEditTutorialModal()">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Exhibition Modal -->
+<div id="editExhibitionModal" class="modal hidden">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Edit Exhibition</h3>
+            <button class="btn-secondary" type="button" onclick="hideEditExhibitionModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <form id="editExhibitionForm">
+            <input type="hidden" id="editExhibitionId">
+            <div class="form-grid">
+                <div class="input-group full-width">
+                    <label for="editExhibitionTitle">Title *</label>
+                    <input id="editExhibitionTitle" type="text" required>
+                </div>
+                
+                <div class="input-group full-width">
+                    <label for="editExhibitionDescription">Description *</label>
+                    <textarea id="editExhibitionDescription" required></textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label for="editExhibitionStartDate">Start Date *</label>
+                    <input id="editExhibitionStartDate" type="date" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="editExhibitionEndDate">End Date *</label>
+                    <input id="editExhibitionEndDate" type="date" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="editExhibitionLocation">Location</label>
+                    <input id="editExhibitionLocation" type="text">
+                </div>
+                
+                <div class="input-group">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="editExhibitionPublished">
+                        <span class="toggle-slider"></span>
+                        <span>Published</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="button-group">
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-save"></i> Update Exhibition
+                </button>
+                <button type="button" class="btn-secondary" onclick="hideEditExhibitionModal()">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Photo Modal -->
+<div id="editPhotoModal" class="modal hidden">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Edit Photo</h3>
+            <button class="btn-secondary" type="button" onclick="hideEditPhotoModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <form id="editPhotoForm">
+            <input type="hidden" id="editPhotoId">
+            <div class="form-grid">
+                <div class="input-group full-width">
+                    <label for="editPhotoTitle">Title *</label>
+                    <input id="editPhotoTitle" type="text" required>
+                </div>
+                
+                <div class="input-group full-width">
+                    <label for="editPhotoDescription">Description</label>
+                    <textarea id="editPhotoDescription"></textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label for="editPhotoCategory">Category *</label>
+                    <select id="editPhotoCategory" required>
+                        <option value="Architecture">Architecture</option>
+                        <option value="Nature">Nature</option>
+                        <option value="Residential">Residential</option>
+                        <option value="Public">Public</option>
+                        <option value="Commercial">Commercial</option>
+                        <option value="Cultural">Cultural</option>
+                    </select>
+                </div>
+                
+                <div class="input-group full-width">
+                    <label for="editPhotoFileInput">Photo Upload</label>
+                    <div class="file-upload-container" onclick="document.getElementById('editPhotoFileInput').click()">
+                        <div class="upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <h4>Upload New Photo</h4>
+                        <p>Click to browse or drag and drop</p>
+                        <p class="upload-hint">Recommended: 1200x800px, max 5MB</p>
+                        <input type="file" id="editPhotoFileInput" class="file-input" accept="image/*">
+                    </div>
+                    <div id="editPhotoPreview" class="image-preview"></div>
+                </div>
+
+                <div class="input-group">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="editPhotoFeatured">
+                        <span class="toggle-slider"></span>
+                        <span>Featured</span>
+                    </label>
+                </div>
+                
+                <div class="input-group">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="editPhotoPublished">
+                        <span class="toggle-slider"></span>
+                        <span>Published</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="button-group">
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-save"></i> Update Photo
+                </button>
+                <button type="button" class="btn-secondary" onclick="hideEditPhotoModal()">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Video Modal -->
+<div id="editVideoModal" class="modal hidden">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Edit Video</h3>
+            <button class="btn-secondary" type="button" onclick="hideEditVideoModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <form id="editVideoForm">
+            <input type="hidden" id="editVideoId">
+            <div class="form-grid">
+                <div class="input-group full-width">
+                    <label for="editVideoTitle">Title *</label>
+                    <input id="editVideoTitle" type="text" required>
+                </div>
+                
+                <div class="input-group full-width">
+                    <label for="editVideoDescription">Description</label>
+                    <textarea id="editVideoDescription"></textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label for="editVideoURL">Video URL *</label>
+                    <input id="editVideoURL" type="url" required placeholder="https://youtube.com/embed/...">
+                </div>
+                
+                <div class="input-group">
+                    <label for="editVideoCategory">Category</label>
+                    <input id="editVideoCategory" type="text" placeholder="e.g., Tutorial, Project Showcase">
+                </div>
+                
+                <div class="input-group">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="editVideoFeatured">
+                        <span class="toggle-slider"></span>
+                        <span>Featured</span>
+                    </label>
+                </div>
+                
+                <div class="input-group">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="editVideoPublished">
+                        <span class="toggle-slider"></span>
+                        <span>Published</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="button-group">
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-save"></i> Update Video
+                </button>
+                <button type="button" class="btn-secondary" onclick="hideEditVideoModal()">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Design Modal -->
+<div id="editDesignModal" class="modal hidden">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Edit Design</h3>
+            <button class="btn-secondary" type="button" onclick="hideEditDesignModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <form id="editDesignForm">
+            <input type="hidden" id="editDesignId">
+            <div class="form-grid">
+                <div class="input-group full-width">
+                    <label for="editDesignTitle">Title *</label>
+                    <input id="editDesignTitle" type="text" required>
+                </div>
+                
+                <div class="input-group full-width">
+                    <label for="editDesignDescription">Description</label>
+                    <textarea id="editDesignDescription"></textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label for="editDesignCategory">Category *</label>
+                    <select id="editDesignCategory" required>
+                        <option value="Architecture">Architecture</option>
+                        <option value="Interior">Interior Design</option>
+                        <option value="Urban">Urban Planning</option>
+                        <option value="Landscape">Landscape</option>
+                    </select>
+                </div>
+                
+                <div class="input-group full-width">
+                    <label for="editDesignFileInput">Design File Upload</label>
+                    <div class="file-upload-container" onclick="document.getElementById('editDesignFileInput').click()">
+                        <div class="upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <h4>Upload New Design File</h4>
+                        <p>Click to browse or drag and drop</p>
+                        <p class="upload-hint">Supports: JPG, PNG, PDF, max 10MB</p>
+                        <input type="file" id="editDesignFileInput" class="file-input" accept="image/*,.pdf">
+                    </div>
+                    <div id="editDesignPreview" class="image-preview"></div>
+                </div>
+
+                <div class="input-group">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="editDesignFeatured">
+                        <span class="toggle-slider"></span>
+                        <span>Featured</span>
+                    </label>
+                </div>
+                
+                <div class="input-group">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="editDesignPublished">
+                        <span class="toggle-slider"></span>
+                        <span>Published</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="button-group">
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-save"></i> Update Design
+                </button>
+                <button type="button" class="btn-secondary" onclick="hideEditDesignModal()">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Testimonial Modal -->
+<div id="editTestimonialModal" class="modal hidden">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Edit Testimonial</h3>
+            <button class="btn-secondary" type="button" onclick="hideEditTestimonialModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <form id="editTestimonialForm">
+            <input type="hidden" id="editTestimonialId">
+            <div class="form-grid">
+                <div class="input-group">
+                    <label for="editTestimonialName">Name *</label>
+                    <input id="editTestimonialName" type="text" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="editTestimonialRole">Role/Position *</label>
+                    <input id="editTestimonialRole" type="text" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="editTestimonialOrganization">Organization</label>
+                    <input id="editTestimonialOrganization" type="text">
+                </div>
+                
+                <div class="input-group full-width">
+                    <label for="editTestimonialQuote">Testimonial Quote *</label>
+                    <textarea id="editTestimonialQuote" required placeholder="What they said about us..."></textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label for="editTestimonialProject">Related Project</label>
+                    <input id="editTestimonialProject" type="text">
+                </div>
+                
+                <div class="input-group">
+                    <label for="editTestimonialRating">Rating (1-5)</label>
+                    <select id="editTestimonialRating">
+                        <option value="5">5 Stars</option>
+                        <option value="4">4 Stars</option>
+                        <option value="3">3 Stars</option>
+                        <option value="2">2 Stars</option>
+                        <option value="1">1 Star</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="editTestimonialFeatured">
+                        <span class="toggle-slider"></span>
+                        <span>Featured</span>
+                    </label>
+                </div>
+                
+                <div class="input-group">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="editTestimonialPublished">
+                        <span class="toggle-slider"></span>
+                        <span>Published</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="button-group">
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-save"></i> Update Testimonial
+                </button>
+                <button type="button" class="btn-secondary" onclick="hideEditTestimonialModal()">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Story Modal -->
+<div id="editStoryModal" class="modal hidden">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Edit Community Story</h3>
+            <button class="btn-secondary" type="button" onclick="hideEditStoryModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <form id="editStoryForm">
+            <input type="hidden" id="editStoryId">
+            <div class="form-grid">
+                <div class="input-group full-width">
+                    <label for="editStoryTitle">Story Title *</label>
+                    <input id="editStoryTitle" type="text" required>
+                </div>
+                
+                <div class="input-group full-width">
+                    <label for="editStoryContent">Story Content *</label>
+                    <textarea id="editStoryContent" required></textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label for="editStoryAuthorName">Author Name *</label>
+                    <input id="editStoryAuthorName" type="text" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="editStoryAuthorTitle">Author Title</label>
+                    <input id="editStoryAuthorTitle" type="text" placeholder="e.g., Community Member, Volunteer">
+                </div>
+                
+                <div class="input-group">
+                    <label for="editStoryCategory">Category</label>
+                    <input id="editStoryCategory" type="text" placeholder="e.g., Volunteer Experience, Success Story">
+                </div>
+                
+                <div class="input-group">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="editStoryFeatured">
+                        <span class="toggle-slider"></span>
+                        <span>Featured</span>
+                    </label>
+                </div>
+                
+                <div class="input-group">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="editStoryPublished">
+                        <span class="toggle-slider"></span>
+                        <span>Published</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="button-group">
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-save"></i> Update Story
+                </button>
+                <button type="button" class="btn-secondary" onclick="hideEditStoryModal()">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Initiative Modal -->
+<div id="editInitiativeModal" class="modal hidden">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Edit Initiative</h3>
+            <button class="btn-secondary" type="button" onclick="hideEditInitiativeModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <form id="editInitiativeForm">
+            <input type="hidden" id="editInitiativeId">
+            <div class="form-grid">
+                <div class="input-group full-width">
+                    <label for="editInitiativeTitle">Title *</label>
+                    <input id="editInitiativeTitle" type="text" required>
+                </div>
+                
+                <div class="input-group full-width">
+                    <label for="editInitiativeDescription">Description *</label>
+                    <textarea id="editInitiativeDescription" required></textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label for="editInitiativeStatus">Status *</label>
+                    <select id="editInitiativeStatus" required>
+                        <option value="planned">Planned</option>
+                        <option value="in_progress">In Progress</option>
+                        <option value="completed">Completed</option>
+                        <option value="on_hold">On Hold</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label for="editInitiativeTargetDate">Target Date</label>
+                    <input id="editInitiativeTargetDate" type="date">
+                </div>
+                
+                <div class="input-group">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="editInitiativeActive">
+                        <span class="toggle-slider"></span>
+                        <span>Active</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="button-group">
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-save"></i> Update Initiative
+                </button>
+                <button type="button" class="btn-secondary" onclick="hideEditInitiativeModal()">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
 <script>
     // Enhanced API configuration with better error handling
     const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
@@ -5010,10 +5555,11 @@ async function loadContactStats() {
             await updateGetInvolvedStatus('stories', story.id, e.target.value);
         };
         
-        const editBtn = document.createElement('button');
-        editBtn.className = 'btn-secondary';
-        editBtn.innerHTML = '<i class="fas fa-edit"></i> Edit';
-        editBtn.onclick = () => editGetInvolvedItem(story, 'stories');
+// NEW CODE - FIX
+const editBtn = document.createElement('button');
+editBtn.className = 'btn-secondary';
+editBtn.innerHTML = '<i class="fas fa-edit"></i> Edit';
+editBtn.onclick = () => editStory(story);
         
         const deleteBtn = document.createElement('button');
         deleteBtn.className = 'btn-danger';
@@ -5517,10 +6063,19 @@ async function loadContactStats() {
             await toggleFeatured('media', type, item.id, !item.is_featured);
         };
         
-        const editBtn = document.createElement('button');
-        editBtn.className = 'btn-secondary';
-        editBtn.innerHTML = '<i class="fas fa-edit"></i> Edit';
-        editBtn.onclick = () => editMediaItem(item, type);
+        // NEW CODE - FIX
+const editBtn = document.createElement('button');
+editBtn.className = 'btn-secondary';
+editBtn.innerHTML = '<i class="fas fa-edit"></i> Edit';
+editBtn.onclick = () => {
+    switch(type) {
+        case 'photo': editPhoto(item); break;
+        case 'video': editVideo(item); break;
+        case 'design': editDesign(item); break;
+        case 'testimonials': editTestimonial(item); break;
+        default: alert(`Edit ${type} functionality coming soon!`);
+    }
+};
         
         const del = document.createElement('button');
         del.className = 'btn-danger';
@@ -5589,7 +6144,8 @@ async function loadContactStats() {
                     <option value="draft" ${testimonial.status === 'draft' ? 'selected' : ''}>Draft</option>
                     <option value="archived" ${testimonial.status === 'archived' ? 'selected' : ''}>Archived</option>
                 </select>
-                <button class="btn-secondary" onclick="toggleFeatured('media', 'testimonials', ${testimonial.id}, ${!testimonial.is_featured})">
+                // NEW CODE - FIX
+<button class="btn-secondary" onclick="editTestimonial(${testimonial})">
                     <i class="fas ${testimonial.is_featured ? 'fa-star' : 'fa-star'}"></i> ${testimonial.is_featured ? 'Unfeature' : 'Feature'}
                 </button>
                 <button class="btn-danger" onclick="deleteMediaItem('testimonials', ${testimonial.id})">
@@ -6215,7 +6771,13 @@ async function loadContactStats() {
         const editBtn = document.createElement('button');
         editBtn.className = 'btn-secondary';
         editBtn.innerHTML = '<i class="fas fa-edit"></i> Edit';
-        editBtn.onclick = () => editNewsEvent(item);
+        editBtn.onclick = () => {
+    if (item.type === 'news') {
+        editNewsEvent(item);
+    } else {
+        editEvent(item);
+    }
+};
         
         const toggleBtn = document.createElement('button');
         toggleBtn.className = item.is_published ? 'btn-warning' : 'btn-primary';
@@ -6779,6 +7341,23 @@ async function loadColleaguesStats() {
     function hideEditWorkshopModal() { hideModal('editWorkshopModal'); }
     function showEditTeamMemberModal() { showModal('editTeamMemberModal'); }
     function hideEditTeamMemberModal() { hideModal('editTeamMemberModal'); }
+    // Modal Show/Hide Functions - Add these to your existing modal functions
+function showEditTutorialModal() { showModal('editTutorialModal'); }
+function hideEditTutorialModal() { hideModal('editTutorialModal'); }
+function showEditExhibitionModal() { showModal('editExhibitionModal'); }
+function hideEditExhibitionModal() { hideModal('editExhibitionModal'); }
+function showEditPhotoModal() { showModal('editPhotoModal'); }
+function hideEditPhotoModal() { hideModal('editPhotoModal'); }
+function showEditVideoModal() { showModal('editVideoModal'); }
+function hideEditVideoModal() { hideModal('editVideoModal'); }
+function showEditDesignModal() { showModal('editDesignModal'); }
+function hideEditDesignModal() { hideModal('editDesignModal'); }
+function showEditTestimonialModal() { showModal('editTestimonialModal'); }
+function hideEditTestimonialModal() { hideModal('editTestimonialModal'); }
+function showEditStoryModal() { showModal('editStoryModal'); }
+function hideEditStoryModal() { hideModal('editStoryModal'); }
+function showEditInitiativeModal() { showModal('editInitiativeModal'); }
+function hideEditInitiativeModal() { hideModal('editInitiativeModal'); }
 
     // ===== FORM HANDLERS =====
 
@@ -6848,6 +7427,159 @@ async function loadColleaguesStats() {
             const uploadedImageUrl = await uploadFile(imageFile, 'event-image');
             eventData.image = uploadedImageUrl;
         }
+// Edit News Handler
+async function handleEditNews(event) {
+    event.preventDefault();
+    
+    try {
+        const newsId = document.getElementById('editNewsId').value;
+        const newsData = {
+            title: document.getElementById('editNewsTitle').value,
+            excerpt: document.getElementById('editNewsExcerpt').value,
+            content: document.getElementById('editNewsContent').value,
+            author: document.getElementById('editNewsAuthor').value,
+            category: document.getElementById('editNewsCategory').value,
+            date: document.getElementById('editNewsDate').value,
+            readTime: document.getElementById('editNewsReadTime').value,
+            isFeatured: document.getElementById('editNewsFeatured').checked,
+            isPublished: document.getElementById('editNewsPublished').checked,
+            image: null
+        };
+
+        const imageFile = document.getElementById('editNewsImageInput').files[0];
+        if (imageFile) {
+            const uploadedImageUrl = await uploadFile(imageFile, 'news-image');
+            newsData.image = uploadedImageUrl;
+        }
+
+        await apiRequest(`/newsevents/news/${newsId}`, {
+            method: 'PUT',
+            body: JSON.stringify(newsData)
+        });
+
+        hideEditNewsModal();
+        await loadNewsArticles();
+        await loadAllNewsEvents();
+        alert('News article updated successfully!');
+    } catch (error) {
+        console.error('Failed to update news:', error);
+        alert('Failed to update news: ' + error.message);
+    }
+}
+
+// Edit Event Handler
+async function handleEditEvent(event) {
+    event.preventDefault();
+    
+    try {
+        const eventId = document.getElementById('editEventId').value;
+        const eventData = {
+            title: document.getElementById('editEventTitle').value,
+            description: document.getElementById('editEventDescription').value,
+            excerpt: document.getElementById('editEventExcerpt').value,
+            eventDate: document.getElementById('editEventDate').value,
+            eventTime: document.getElementById('editEventTime').value,
+            location: document.getElementById('editEventLocation').value,
+            category: document.getElementById('editEventCategory').value,
+            author: document.getElementById('editEventAuthor').value,
+            readTime: document.getElementById('editEventReadTime').value,
+            isFeatured: document.getElementById('editEventFeatured').checked,
+            isPublished: document.getElementById('editEventPublished').checked,
+            image: null
+        };
+
+        const imageFile = document.getElementById('editEventImageInput').files[0];
+        if (imageFile) {
+            const uploadedImageUrl = await uploadFile(imageFile, 'event-image');
+            eventData.image = uploadedImageUrl;
+        }
+
+        await apiRequest(`/newsevents/events/${eventId}`, {
+            method: 'PUT',
+            body: JSON.stringify(eventData)
+        });
+
+        hideEditEventModal();
+        await loadEvents();
+        await loadAllNewsEvents();
+        alert('Event updated successfully!');
+    } catch (error) {
+        console.error('Failed to update event:', error);
+        alert('Failed to update event: ' + error.message);
+    }
+}
+
+// Edit Research Article Handler
+async function handleEditResearch(event) {
+    event.preventDefault();
+    
+    try {
+        const researchId = document.getElementById('editResearchId').value;
+        const researchData = {
+            title: document.getElementById('editResearchTitle').value,
+            abstract: document.getElementById('editResearchAbstract').value,
+            content: document.getElementById('editResearchContent').value,
+            category: document.getElementById('editResearchCategory').value,
+            authors: document.getElementById('editResearchAuthors').value,
+            publication_date: document.getElementById('editResearchPublicationDate').value,
+            main_image: document.getElementById('editResearchMainImage').value,
+            display_order: document.getElementById('editResearchDisplayOrder').value,
+            is_featured: document.getElementById('editResearchFeatured').checked,
+            is_published: document.getElementById('editResearchPublished').checked
+        };
+
+        await apiRequest(`/research/admin/articles/${researchId}`, {
+            method: 'PUT',
+            body: JSON.stringify(researchData)
+        });
+
+        hideEditResearchModal();
+        await loadResearchArticles();
+        alert('Research article updated successfully!');
+    } catch (error) {
+        console.error('Failed to update research article:', error);
+        alert('Failed to update research article: ' + error.message);
+    }
+}
+
+// Edit Design Project Handler
+async function handleEditDesignProject(event) {
+    event.preventDefault();
+    
+    try {
+        const projectId = document.getElementById('editDesignProjectId').value;
+        const projectData = {
+            title: document.getElementById('editDesignProjectTitle').value,
+            summary: document.getElementById('editDesignProjectSummary').value,
+            description: document.getElementById('editDesignProjectDescription').value,
+            category: document.getElementById('editDesignProjectCategory').value,
+            sector: document.getElementById('editDesignProjectSector').value,
+            display_order: parseInt(document.getElementById('editDesignProjectDisplayOrder').value) || 0,
+            is_featured: document.getElementById('editDesignProjectFeatured').checked,
+            is_published: document.getElementById('editDesignProjectPublished').checked,
+            main_image: null
+        };
+
+        const mainImageFile = document.getElementById('editMainImageInput').files[0];
+        if (mainImageFile) {
+            const uploadedImageUrl = await uploadFile(mainImageFile, 'design-project');
+            projectData.main_image = uploadedImageUrl;
+        }
+
+        await apiRequest(`/design/admin/projects/${projectId}`, {
+            method: 'PUT',
+            body: JSON.stringify(projectData)
+        });
+
+        hideEditDesignProjectModal();
+        await loadDesignProjects();
+        alert('Design project updated successfully!');
+    } catch (error) {
+        console.error('Failed to update design project:', error);
+        alert('Failed to update design project: ' + error.message);
+    }
+}
+        
 
         // Send as JSON
         await apiRequest('/newsevents/events', {
@@ -7234,7 +7966,291 @@ async function loadColleaguesStats() {
             alert('Failed to add initiative: ' + error.message);
         }
     }
+// Edit Workshop Handler
+async function handleEditWorkshop(event) {
+    event.preventDefault();
+    
+    try {
+        const workshopData = {
+            title: document.getElementById('editWorkshopTitle').value,
+            description: document.getElementById('editWorkshopDescription').value,
+            instructor: document.getElementById('editWorkshopInstructor').value,
+            date: document.getElementById('editWorkshopDate').value,
+            time: document.getElementById('editWorkshopTime').value,
+            location: document.getElementById('editWorkshopLocation').value,
+            capacity: document.getElementById('editWorkshopCapacity').value,
+            isPublished: document.getElementById('editWorkshopPublished').checked
+        };
 
+        const workshopId = document.getElementById('editWorkshopId').value;
+        
+        await apiRequest(`/education/workshops/${workshopId}`, {
+            method: 'PUT',
+            body: JSON.stringify(workshopData)
+        });
+
+        hideEditWorkshopModal();
+        await loadWorkshops();
+        alert('Workshop updated successfully!');
+    } catch (error) {
+        console.error('Failed to update workshop:', error);
+        alert('Failed to update workshop: ' + error.message);
+    }
+}
+
+// Edit Tutorial Handler
+async function handleEditTutorial(event) {
+    event.preventDefault();
+    
+    try {
+        const tutorialData = {
+            title: document.getElementById('editTutorialTitle').value,
+            description: document.getElementById('editTutorialDescription').value,
+            instructor: document.getElementById('editTutorialInstructor').value,
+            duration: document.getElementById('editTutorialDuration').value,
+            level: document.getElementById('editTutorialLevel').value,
+            isPublished: document.getElementById('editTutorialPublished').checked
+        };
+
+        const tutorialId = document.getElementById('editTutorialId').value;
+        
+        await apiRequest(`/education/tutorials/${tutorialId}`, {
+            method: 'PUT',
+            body: JSON.stringify(tutorialData)
+        });
+
+        hideEditTutorialModal();
+        await loadTutorials();
+        alert('Tutorial updated successfully!');
+    } catch (error) {
+        console.error('Failed to update tutorial:', error);
+        alert('Failed to update tutorial: ' + error.message);
+    }
+}
+
+// Edit Exhibition Handler
+async function handleEditExhibition(event) {
+    event.preventDefault();
+    
+    try {
+        const exhibitionData = {
+            title: document.getElementById('editExhibitionTitle').value,
+            description: document.getElementById('editExhibitionDescription').value,
+            startDate: document.getElementById('editExhibitionStartDate').value,
+            endDate: document.getElementById('editExhibitionEndDate').value,
+            location: document.getElementById('editExhibitionLocation').value,
+            isPublished: document.getElementById('editExhibitionPublished').checked
+        };
+
+        const exhibitionId = document.getElementById('editExhibitionId').value;
+        
+        await apiRequest(`/education/exhibitions/${exhibitionId}`, {
+            method: 'PUT',
+            body: JSON.stringify(exhibitionData)
+        });
+
+        hideEditExhibitionModal();
+        await loadExhibitions();
+        alert('Exhibition updated successfully!');
+    } catch (error) {
+        console.error('Failed to update exhibition:', error);
+        alert('Failed to update exhibition: ' + error.message);
+    }
+}
+
+// Edit Photo Handler
+async function handleEditPhoto(event) {
+    event.preventDefault();
+    
+    try {
+        const photoData = {
+            title: document.getElementById('editPhotoTitle').value,
+            description: document.getElementById('editPhotoDescription').value,
+            category: document.getElementById('editPhotoCategory').value,
+            isFeatured: document.getElementById('editPhotoFeatured').checked,
+            isPublished: document.getElementById('editPhotoPublished').checked,
+            image: null
+        };
+
+        const photoId = document.getElementById('editPhotoId').value;
+        const photoFile = document.getElementById('editPhotoFileInput').files[0];
+        
+        if (photoFile) {
+            const uploadedPhotoUrl = await uploadFile(photoFile, 'photo');
+            photoData.image = uploadedPhotoUrl;
+        }
+
+        await apiRequest(`/media/photos/${photoId}`, {
+            method: 'PUT',
+            body: JSON.stringify(photoData)
+        });
+
+        hideEditPhotoModal();
+        await loadPhotos();
+        alert('Photo updated successfully!');
+    } catch (error) {
+        console.error('Failed to update photo:', error);
+        alert('Failed to update photo: ' + error.message);
+    }
+}
+
+// Edit Video Handler
+async function handleEditVideo(event) {
+    event.preventDefault();
+    
+    try {
+        const videoData = {
+            title: document.getElementById('editVideoTitle').value,
+            description: document.getElementById('editVideoDescription').value,
+            url: document.getElementById('editVideoURL').value,
+            category: document.getElementById('editVideoCategory').value,
+            isFeatured: document.getElementById('editVideoFeatured').checked,
+            isPublished: document.getElementById('editVideoPublished').checked
+        };
+
+        const videoId = document.getElementById('editVideoId').value;
+        
+        await apiRequest(`/media/videos/${videoId}`, {
+            method: 'PUT',
+            body: JSON.stringify(videoData)
+        });
+
+        hideEditVideoModal();
+        await loadVideos();
+        alert('Video updated successfully!');
+    } catch (error) {
+        console.error('Failed to update video:', error);
+        alert('Failed to update video: ' + error.message);
+    }
+}
+
+// Edit Design Handler (Media Library)
+async function handleEditDesign(event) {
+    event.preventDefault();
+    
+    try {
+        const designData = {
+            title: document.getElementById('editDesignTitle').value,
+            description: document.getElementById('editDesignDescription').value,
+            category: document.getElementById('editDesignCategory').value,
+            isFeatured: document.getElementById('editDesignFeatured').checked,
+            isPublished: document.getElementById('editDesignPublished').checked,
+            design: null
+        };
+
+        const designId = document.getElementById('editDesignId').value;
+        const designFile = document.getElementById('editDesignFileInput').files[0];
+        
+        if (designFile) {
+            const uploadedDesignUrl = await uploadFile(designFile, 'design');
+            designData.design = uploadedDesignUrl;
+        }
+
+        await apiRequest(`/media/designs/${designId}`, {
+            method: 'PUT',
+            body: JSON.stringify(designData)
+        });
+
+        hideEditDesignModal();
+        await loadDesigns();
+        alert('Design updated successfully!');
+    } catch (error) {
+        console.error('Failed to update design:', error);
+        alert('Failed to update design: ' + error.message);
+    }
+}
+
+// Edit Testimonial Handler
+async function handleEditTestimonial(event) {
+    event.preventDefault();
+    
+    try {
+        const testimonialData = {
+            name: document.getElementById('editTestimonialName').value,
+            role: document.getElementById('editTestimonialRole').value,
+            organization: document.getElementById('editTestimonialOrganization').value,
+            quote: document.getElementById('editTestimonialQuote').value,
+            project: document.getElementById('editTestimonialProject').value,
+            rating: document.getElementById('editTestimonialRating').value,
+            isFeatured: document.getElementById('editTestimonialFeatured').checked,
+            isPublished: document.getElementById('editTestimonialPublished').checked
+        };
+
+        const testimonialId = document.getElementById('editTestimonialId').value;
+        
+        await apiRequest(`/media/testimonials/${testimonialId}`, {
+            method: 'PUT',
+            body: JSON.stringify(testimonialData)
+        });
+
+        hideEditTestimonialModal();
+        await loadTestimonials();
+        alert('Testimonial updated successfully!');
+    } catch (error) {
+        console.error('Failed to update testimonial:', error);
+        alert('Failed to update testimonial: ' + error.message);
+    }
+}
+
+// Edit Story Handler
+async function handleEditStory(event) {
+    event.preventDefault();
+    
+    try {
+        const storyData = {
+            storyTitle: document.getElementById('editStoryTitle').value,
+            storyContent: document.getElementById('editStoryContent').value,
+            authorName: document.getElementById('editStoryAuthorName').value,
+            authorTitle: document.getElementById('editStoryAuthorTitle').value,
+            category: document.getElementById('editStoryCategory').value,
+            isFeatured: document.getElementById('editStoryFeatured').checked,
+            isPublished: document.getElementById('editStoryPublished').checked
+        };
+
+        const storyId = document.getElementById('editStoryId').value;
+        
+        await apiRequest(`/get-involved/admin/stories/${storyId}`, {
+            method: 'PUT',
+            body: JSON.stringify(storyData)
+        });
+
+        hideEditStoryModal();
+        await loadStories();
+        alert('Community story updated successfully!');
+    } catch (error) {
+        console.error('Failed to update story:', error);
+        alert('Failed to update story: ' + error.message);
+    }
+}
+
+// Edit Initiative Handler
+async function handleEditInitiative(event) {
+    event.preventDefault();
+    
+    try {
+        const initiativeData = {
+            title: document.getElementById('editInitiativeTitle').value,
+            description: document.getElementById('editInitiativeDescription').value,
+            status: document.getElementById('editInitiativeStatus').value,
+            targetDate: document.getElementById('editInitiativeTargetDate').value,
+            isActive: document.getElementById('editInitiativeActive').checked
+        };
+
+        const initiativeId = document.getElementById('editInitiativeId').value;
+        
+        await apiRequest(`/colleagues/initiatives/${initiativeId}`, {
+            method: 'PUT',
+            body: JSON.stringify(initiativeData)
+        });
+
+        hideEditInitiativeModal();
+        await loadInitiatives();
+        alert('Initiative updated successfully!');
+    } catch (error) {
+        console.error('Failed to update initiative:', error);
+        alert('Failed to update initiative: ' + error.message);
+    }
+}
     // ===== FILE UPLOAD PREVIEW FUNCTIONALITY =====
 
     function setupFileUploadPreview(inputId, previewId) {
@@ -7273,7 +8289,9 @@ async function loadColleaguesStats() {
         setupFileUploadPreview('editEventImageInput', 'editEventImagePreview');
         setupFileUploadPreview('editMainImageInput', 'editMainImagePreview');
         setupFileUploadPreview('editTeamMemberImageFile', 'editTeamMemberImagePreview');
-
+        // Add these to your existing file upload preview setup
+setupFileUploadPreview('editPhotoFileInput', 'editPhotoPreview');
+setupFileUploadPreview('editDesignFileInput', 'editDesignPreview');
         // Attach form handlers
         const addNewsForm = document.getElementById('addNewsForm');
         if (addNewsForm) {
@@ -7344,6 +8362,25 @@ async function loadColleaguesStats() {
         if (addInitiativeForm) {
             addInitiativeForm.addEventListener('submit', handleAddInitiative);
         }
+            const editNewsForm = document.getElementById('editNewsForm');
+    if (editNewsForm) {
+        editNewsForm.addEventListener('submit', handleEditNews);
+    }
+
+    const editEventForm = document.getElementById('editEventForm');
+    if (editEventForm) {
+        editEventForm.addEventListener('submit', handleEditEvent);
+    }
+
+    const editResearchForm = document.getElementById('editResearchForm');
+    if (editResearchForm) {
+        editResearchForm.addEventListener('submit', handleEditResearch);
+    }
+
+    const editDesignProjectForm = document.getElementById('editDesignProjectForm');
+    if (editDesignProjectForm) {
+        editDesignProjectForm.addEventListener('submit', handleEditDesignProject);
+    }
 
         // Attach login handler
         const loginBtn = document.getElementById('loginBtn');
@@ -7395,6 +8432,51 @@ async function loadColleaguesStats() {
             if (overlay) overlay.classList.remove('active');
         }
     });
+    // Add these to your existing event listeners in the initialization section
+const editWorkshopForm = document.getElementById('editWorkshopForm');
+if (editWorkshopForm) {
+    editWorkshopForm.addEventListener('submit', handleEditWorkshop);
+}
+
+const editTutorialForm = document.getElementById('editTutorialForm');
+if (editTutorialForm) {
+    editTutorialForm.addEventListener('submit', handleEditTutorial);
+}
+
+const editExhibitionForm = document.getElementById('editExhibitionForm');
+if (editExhibitionForm) {
+    editExhibitionForm.addEventListener('submit', handleEditExhibition);
+}
+
+const editPhotoForm = document.getElementById('editPhotoForm');
+if (editPhotoForm) {
+    editPhotoForm.addEventListener('submit', handleEditPhoto);
+}
+
+const editVideoForm = document.getElementById('editVideoForm');
+if (editVideoForm) {
+    editVideoForm.addEventListener('submit', handleEditVideo);
+}
+
+const editDesignForm = document.getElementById('editDesignForm');
+if (editDesignForm) {
+    editDesignForm.addEventListener('submit', handleEditDesign);
+}
+
+const editTestimonialForm = document.getElementById('editTestimonialForm');
+if (editTestimonialForm) {
+    editTestimonialForm.addEventListener('submit', handleEditTestimonial);
+}
+
+const editStoryForm = document.getElementById('editStoryForm');
+if (editStoryForm) {
+    editStoryForm.addEventListener('submit', handleEditStory);
+}
+
+const editInitiativeForm = document.getElementById('editInitiativeForm');
+if (editInitiativeForm) {
+    editInitiativeForm.addEventListener('submit', handleEditInitiative);
+}
 
     // ===== PLACEHOLDER FUNCTIONS FOR CRUD OPERATIONS =====
 
@@ -7425,6 +8507,91 @@ async function loadColleaguesStats() {
         }
     }
 
+
+    // Add these to your existing form handlers
+const editDesignProjectForm = document.getElementById('editDesignProjectForm');
+if (editDesignProjectForm) {
+    editDesignProjectForm.addEventListener('submit', handleEditDesignProject);
+}
+
+const editResearchForm = document.getElementById('editResearchForm');
+if (editResearchForm) {
+    editResearchForm.addEventListener('submit', handleEditResearch);
+}
+
+// And implement the handler functions:
+async function handleEditDesignProject(event) {
+    event.preventDefault();
+    
+    try {
+        const projectData = {
+            title: document.getElementById('editDesignProjectTitle').value,
+            summary: document.getElementById('editDesignProjectSummary').value,
+            description: document.getElementById('editDesignProjectDescription').value,
+            category: document.getElementById('editDesignProjectCategory').value,
+            sector: document.getElementById('editDesignProjectSector').value,
+            displayOrder: parseInt(document.getElementById('editDesignProjectDisplayOrder').value) || 0,
+            isFeatured: document.getElementById('editDesignProjectFeatured').checked,
+            isPublished: document.getElementById('editDesignProjectPublished').checked,
+            mainImage: null
+        };
+
+        const projectId = document.getElementById('editDesignProjectId').value;
+        const mainImageFile = document.getElementById('editMainImageInput').files[0];
+        
+        if (mainImageFile) {
+            const uploadedImageUrl = await uploadFile(mainImageFile, 'design-project');
+            projectData.mainImage = uploadedImageUrl;
+        }
+
+        await apiRequest(`/design/admin/projects/${projectId}`, {
+            method: 'PUT',
+            body: JSON.stringify(projectData)
+        });
+
+        hideEditDesignProjectModal();
+        await loadDesignProjects();
+        alert('Design project updated successfully!');
+    } catch (error) {
+        console.error('Failed to update design project:', error);
+        alert('Failed to update design project: ' + error.message);
+    }
+}
+
+async function handleEditResearch(event) {
+    event.preventDefault();
+    
+    try {
+        const researchData = {
+            title: document.getElementById('editResearchTitle').value,
+            abstract: document.getElementById('editResearchAbstract').value,
+            content: document.getElementById('editResearchContent').value,
+            category: document.getElementById('editResearchCategory').value,
+            authors: document.getElementById('editResearchAuthors').value,
+            publicationDate: document.getElementById('editResearchPublicationDate').value,
+            mainImage: document.getElementById('editResearchMainImage').value,
+            displayOrder: document.getElementById('editResearchDisplayOrder').value,
+            isFeatured: document.getElementById('editResearchFeatured').checked,
+            isPublished: document.getElementById('editResearchPublished').checked
+        };
+
+        const researchId = document.getElementById('editResearchId').value;
+        
+        await apiRequest(`/research/admin/articles/${researchId}`, {
+            method: 'PUT',
+            body: JSON.stringify(researchData)
+        });
+
+        hideEditResearchModal();
+        await loadResearchArticles();
+        alert('Research article updated successfully!');
+    } catch (error) {
+        console.error('Failed to update research article:', error);
+        alert('Failed to update research article: ' + error.message);
+    }
+}
+
+
    async function deleteMediaItem(type, id) {
     try {
         console.log('🔄 Deleting media item:', { type, id });
@@ -7442,6 +8609,301 @@ async function loadColleaguesStats() {
     } catch (error) {
         console.error('Failed to delete media item:', error);
         alert('Failed to delete item: ' + error.message);
+    }
+}
+// Enhanced Edit Functions
+// Enhanced Edit Functions
+async function editWorkshop(workshop) {
+    try {
+        // Load workshop data
+        const workshopData = await apiRequest(`/education/workshops/${workshop.id}`);
+        
+        // Populate form
+        document.getElementById('editWorkshopId').value = workshopData.id;
+        document.getElementById('editWorkshopTitle').value = workshopData.title || '';
+        document.getElementById('editWorkshopDescription').value = workshopData.description || '';
+        document.getElementById('editWorkshopInstructor').value = workshopData.instructor || '';
+        document.getElementById('editWorkshopDate').value = workshopData.date || '';
+        document.getElementById('editWorkshopTime').value = workshopData.time || '';
+        document.getElementById('editWorkshopLocation').value = workshopData.location || '';
+        document.getElementById('editWorkshopCapacity').value = workshopData.capacity || '';
+        document.getElementById('editWorkshopPublished').checked = workshopData.is_published || false;
+        
+        showEditWorkshopModal();
+    } catch (error) {
+        console.error('Failed to load workshop data:', error);
+        alert('Failed to load workshop data: ' + error.message);
+    }
+}
+
+async function editTutorial(tutorial) {
+    try {
+        const tutorialData = await apiRequest(`/education/tutorials/${tutorial.id}`);
+        
+        document.getElementById('editTutorialId').value = tutorialData.id;
+        document.getElementById('editTutorialTitle').value = tutorialData.title || '';
+        document.getElementById('editTutorialDescription').value = tutorialData.description || '';
+        document.getElementById('editTutorialInstructor').value = tutorialData.instructor || '';
+        document.getElementById('editTutorialDuration').value = tutorialData.duration || '';
+        document.getElementById('editTutorialLevel').value = tutorialData.level || 'beginner';
+        document.getElementById('editTutorialPublished').checked = tutorialData.is_published || false;
+        
+        showEditTutorialModal();
+    } catch (error) {
+        console.error('Failed to load tutorial data:', error);
+        alert('Failed to load tutorial data: ' + error.message);
+    }
+}
+
+async function editExhibition(exhibition) {
+    try {
+        const exhibitionData = await apiRequest(`/education/exhibitions/${exhibition.id}`);
+        
+        document.getElementById('editExhibitionId').value = exhibitionData.id;
+        document.getElementById('editExhibitionTitle').value = exhibitionData.title || '';
+        document.getElementById('editExhibitionDescription').value = exhibitionData.description || '';
+        document.getElementById('editExhibitionStartDate').value = exhibitionData.startDate || '';
+        document.getElementById('editExhibitionEndDate').value = exhibitionData.endDate || '';
+        document.getElementById('editExhibitionLocation').value = exhibitionData.location || '';
+        document.getElementById('editExhibitionPublished').checked = exhibitionData.is_published || false;
+        
+        showEditExhibitionModal();
+    } catch (error) {
+        console.error('Failed to load exhibition data:', error);
+        alert('Failed to load exhibition data: ' + error.message);
+    }
+}
+
+async function editPhoto(photo) {
+    try {
+        const photoData = await apiRequest(`/media/photos/${photo.id}`);
+        
+        document.getElementById('editPhotoId').value = photoData.id;
+        document.getElementById('editPhotoTitle').value = photoData.title || '';
+        document.getElementById('editPhotoDescription').value = photoData.description || '';
+        document.getElementById('editPhotoCategory').value = photoData.category || 'Architecture';
+        document.getElementById('editPhotoFeatured').checked = photoData.is_featured || false;
+        document.getElementById('editPhotoPublished').checked = photoData.is_published || false;
+        
+        // Set image preview if exists
+        if (photoData.image_url) {
+            document.getElementById('editPhotoPreview').innerHTML = 
+                `<img src="${photoData.image_url}" alt="Preview" style="max-width: 200px; border-radius: 8px;">`;
+        }
+        
+        showEditPhotoModal();
+    } catch (error) {
+        console.error('Failed to load photo data:', error);
+        alert('Failed to load photo data: ' + error.message);
+    }
+}
+
+async function editVideo(video) {
+    try {
+        const videoData = await apiRequest(`/media/videos/${video.id}`);
+        
+        document.getElementById('editVideoId').value = videoData.id;
+        document.getElementById('editVideoTitle').value = videoData.title || '';
+        document.getElementById('editVideoDescription').value = videoData.description || '';
+        document.getElementById('editVideoURL').value = videoData.url || '';
+        document.getElementById('editVideoCategory').value = videoData.category || '';
+        document.getElementById('editVideoFeatured').checked = videoData.is_featured || false;
+        document.getElementById('editVideoPublished').checked = videoData.is_published || false;
+        
+        showEditVideoModal();
+    } catch (error) {
+        console.error('Failed to load video data:', error);
+        alert('Failed to load video data: ' + error.message);
+    }
+}
+
+async function editDesign(design) {
+    try {
+        const designData = await apiRequest(`/media/designs/${design.id}`);
+        
+        document.getElementById('editDesignId').value = designData.id;
+        document.getElementById('editDesignTitle').value = designData.title || '';
+        document.getElementById('editDesignDescription').value = designData.description || '';
+        document.getElementById('editDesignCategory').value = designData.category || 'Architecture';
+        document.getElementById('editDesignFeatured').checked = designData.is_featured || false;
+        document.getElementById('editDesignPublished').checked = designData.is_published || false;
+        
+        // Set design preview if exists
+        if (designData.image_url || designData.design_url) {
+            const designUrl = designData.image_url || designData.design_url;
+            document.getElementById('editDesignPreview').innerHTML = 
+                `<img src="${designUrl}" alt="Preview" style="max-width: 200px; border-radius: 8px;">`;
+        }
+        
+        showEditDesignModal();
+    } catch (error) {
+        console.error('Failed to load design data:', error);
+        alert('Failed to load design data: ' + error.message);
+    }
+}
+
+async function editTestimonial(testimonial) {
+    try {
+        const testimonialData = await apiRequest(`/media/testimonials/${testimonial.id}`);
+        
+        document.getElementById('editTestimonialId').value = testimonialData.id;
+        document.getElementById('editTestimonialName').value = testimonialData.name || '';
+        document.getElementById('editTestimonialRole').value = testimonialData.role || '';
+        document.getElementById('editTestimonialOrganization').value = testimonialData.organization || '';
+        document.getElementById('editTestimonialQuote').value = testimonialData.quote || '';
+        document.getElementById('editTestimonialProject').value = testimonialData.project || '';
+        document.getElementById('editTestimonialRating').value = testimonialData.rating || '5';
+        document.getElementById('editTestimonialFeatured').checked = testimonialData.is_featured || false;
+        document.getElementById('editTestimonialPublished').checked = testimonialData.is_published || false;
+        
+        showEditTestimonialModal();
+    } catch (error) {
+        console.error('Failed to load testimonial data:', error);
+        alert('Failed to load testimonial data: ' + error.message);
+    }
+}
+
+async function editStory(story) {
+    try {
+        const storyData = await apiRequest(`/get-involved/admin/stories/${story.id}`);
+        
+        document.getElementById('editStoryId').value = storyData.id;
+        document.getElementById('editStoryTitle').value = storyData.story_title || '';
+        document.getElementById('editStoryContent').value = storyData.story_content || '';
+        document.getElementById('editStoryAuthorName').value = storyData.author_name || '';
+        document.getElementById('editStoryAuthorTitle').value = storyData.author_title || '';
+        document.getElementById('editStoryCategory').value = storyData.category || '';
+        document.getElementById('editStoryFeatured').checked = storyData.is_featured || false;
+        document.getElementById('editStoryPublished').checked = storyData.is_published || false;
+        
+        showEditStoryModal();
+    } catch (error) {
+        console.error('Failed to load story data:', error);
+        alert('Failed to load story data: ' + error.message);
+    }
+}
+
+async function editInitiative(initiative) {
+    try {
+        const initiativeData = await apiRequest(`/colleagues/initiatives/${initiative.id}`);
+        
+        document.getElementById('editInitiativeId').value = initiativeData.id;
+        document.getElementById('editInitiativeTitle').value = initiativeData.title || '';
+        document.getElementById('editInitiativeDescription').value = initiativeData.description || '';
+        document.getElementById('editInitiativeStatus').value = initiativeData.status || 'planned';
+        document.getElementById('editInitiativeTargetDate').value = initiativeData.target_date || '';
+        document.getElementById('editInitiativeActive').checked = initiativeData.is_active || false;
+        
+        showEditInitiativeModal();
+    } catch (error) {
+        console.error('Failed to load initiative data:', error);
+        alert('Failed to load initiative data: ' + error.message);
+    }
+}
+
+// ===== MISSING EDIT FUNCTIONS - ADD THESE =====
+
+async function editDesignProject(project) {
+    try {
+        const projectData = await apiRequest(`/design/admin/projects/${project.id}`);
+        
+        // Populate the edit form
+        document.getElementById('editDesignProjectId').value = projectData.id;
+        document.getElementById('editDesignProjectTitle').value = projectData.title || '';
+        document.getElementById('editDesignProjectSummary').value = projectData.summary || '';
+        document.getElementById('editDesignProjectDescription').value = projectData.description || '';
+        document.getElementById('editDesignProjectCategory').value = projectData.category || 'academic';
+        document.getElementById('editDesignProjectSector').value = projectData.sector || '';
+        document.getElementById('editDesignProjectDisplayOrder').value = projectData.display_order || 0;
+        document.getElementById('editDesignProjectFeatured').checked = projectData.is_featured || false;
+        document.getElementById('editDesignProjectPublished').checked = projectData.is_published || false;
+        
+        // Set image preview if exists
+        if (projectData.main_image) {
+            document.getElementById('editMainImagePreview').innerHTML = 
+                `<img src="${projectData.main_image}" alt="Preview" style="max-width: 200px; border-radius: 8px;">`;
+        }
+        
+        showEditDesignProjectModal();
+    } catch (error) {
+        console.error('Failed to load design project data:', error);
+        alert('Failed to load project data: ' + error.message);
+    }
+}
+
+async function editResearchArticle(article) {
+    try {
+        const articleData = await apiRequest(`/research/admin/articles/${article.id}`);
+        
+        document.getElementById('editResearchId').value = articleData.id;
+        document.getElementById('editResearchTitle').value = articleData.title || '';
+        document.getElementById('editResearchAbstract').value = articleData.abstract || '';
+        document.getElementById('editResearchContent').value = articleData.content || '';
+        document.getElementById('editResearchCategory').value = articleData.category || 'sustainable';
+        document.getElementById('editResearchAuthors').value = articleData.authors || '';
+        document.getElementById('editResearchPublicationDate').value = articleData.publication_date || '';
+        document.getElementById('editResearchMainImage').value = articleData.main_image || '';
+        document.getElementById('editResearchDisplayOrder').value = articleData.display_order || 0;
+        document.getElementById('editResearchFeatured').checked = articleData.is_featured || false;
+        document.getElementById('editResearchPublished').checked = articleData.is_published || false;
+        
+        showEditResearchModal();
+    } catch (error) {
+        console.error('Failed to load research article data:', error);
+        alert('Failed to load research article data: ' + error.message);
+    }
+}
+
+async function editNewsEvent(item) {
+    try {
+        if (item.type === 'news') {
+            const newsData = await apiRequest(`/newsevents/news/${item.id}`);
+            
+            document.getElementById('editNewsId').value = newsData.id;
+            document.getElementById('editNewsTitle').value = newsData.title || '';
+            document.getElementById('editNewsExcerpt').value = newsData.excerpt || '';
+            document.getElementById('editNewsContent').value = newsData.content || '';
+            document.getElementById('editNewsCategory').value = newsData.category || '';
+            document.getElementById('editNewsAuthor').value = newsData.author || '';
+            document.getElementById('editNewsDate').value = newsData.date || '';
+            document.getElementById('editNewsReadTime').value = newsData.readTime || '';
+            document.getElementById('editNewsFeatured').checked = newsData.is_featured || false;
+            document.getElementById('editNewsPublished').checked = newsData.is_published || false;
+            
+            // Set image preview if exists
+            if (newsData.image) {
+                document.getElementById('editNewsImagePreview').innerHTML = 
+                    `<img src="${newsData.image}" alt="Preview" style="max-width: 200px; border-radius: 8px;">`;
+            }
+            
+            showEditNewsModal();
+        } else if (item.type === 'event') {
+            const eventData = await apiRequest(`/newsevents/events/${item.id}`);
+            
+            document.getElementById('editEventId').value = eventData.id;
+            document.getElementById('editEventTitle').value = eventData.title || '';
+            document.getElementById('editEventDescription').value = eventData.description || '';
+            document.getElementById('editEventExcerpt').value = eventData.excerpt || '';
+            document.getElementById('editEventDate').value = eventData.eventDate || '';
+            document.getElementById('editEventTime').value = eventData.eventTime || '';
+            document.getElementById('editEventLocation').value = eventData.location || '';
+            document.getElementById('editEventCategory').value = eventData.category || '';
+            document.getElementById('editEventAuthor').value = eventData.author || '';
+            document.getElementById('editEventReadTime').value = eventData.readTime || '';
+            document.getElementById('editEventFeatured').checked = eventData.is_featured || false;
+            document.getElementById('editEventPublished').checked = eventData.is_published || false;
+            
+            // Set image preview if exists
+            if (eventData.image) {
+                document.getElementById('editEventImagePreview').innerHTML = 
+                    `<img src="${eventData.image}" alt="Preview" style="max-width: 200px; border-radius: 8px;">`;
+            }
+            
+            showEditEventModal();
+        }
+    } catch (error) {
+        console.error('Failed to load news/event data:', error);
+        alert('Failed to load data: ' + error.message);
     }
 }
 
@@ -7635,34 +9097,119 @@ async function loadColleaguesStats() {
         }
     }
 
-    // Edit functions placeholder
-    function editMediaItem(item, type) {
-        alert(`Edit ${type} functionality coming soon!`);
+ // Edit News Function
+async function editNewsEvent(item) {
+    try {
+        // Fetch the full news data
+        const newsData = await apiRequest(`/newsevents/news/${item.id}`);
+        
+        // Populate the edit form
+        document.getElementById('editNewsId').value = newsData.id;
+        document.getElementById('editNewsTitle').value = newsData.title || '';
+        document.getElementById('editNewsExcerpt').value = newsData.excerpt || '';
+        document.getElementById('editNewsContent').value = newsData.content || '';
+        document.getElementById('editNewsCategory').value = newsData.category || '';
+        document.getElementById('editNewsAuthor').value = newsData.author || '';
+        document.getElementById('editNewsDate').value = newsData.date || '';
+        document.getElementById('editNewsReadTime').value = newsData.readTime || '';
+        document.getElementById('editNewsFeatured').checked = newsData.is_featured || false;
+        document.getElementById('editNewsPublished').checked = newsData.is_published || false;
+        
+        // Set image preview if exists
+        if (newsData.image) {
+            document.getElementById('editNewsImagePreview').innerHTML = 
+                `<img src="${newsData.image}" alt="Preview" style="max-width: 200px; border-radius: 8px;">`;
+        }
+        
+        showEditNewsModal();
+    } catch (error) {
+        console.error('Failed to load news data:', error);
+        alert('Failed to load news data: ' + error.message);
     }
+}
 
-    function editEducationItem(item, type) {
-        alert(`Edit ${type} functionality coming soon!`);
+// Edit Event Function
+async function editEvent(eventItem) {
+    try {
+        const eventData = await apiRequest(`/newsevents/events/${eventItem.id}`);
+        
+        document.getElementById('editEventId').value = eventData.id;
+        document.getElementById('editEventTitle').value = eventData.title || '';
+        document.getElementById('editEventDescription').value = eventData.description || '';
+        document.getElementById('editEventExcerpt').value = eventData.excerpt || '';
+        document.getElementById('editEventDate').value = eventData.eventDate || '';
+        document.getElementById('editEventTime').value = eventData.eventTime || '';
+        document.getElementById('editEventLocation').value = eventData.location || '';
+        document.getElementById('editEventCategory').value = eventData.category || '';
+        document.getElementById('editEventAuthor').value = eventData.author || '';
+        document.getElementById('editEventReadTime').value = eventData.readTime || '';
+        document.getElementById('editEventFeatured').checked = eventData.is_featured || false;
+        document.getElementById('editEventPublished').checked = eventData.is_published || false;
+        
+        // Set image preview if exists
+        if (eventData.image) {
+            document.getElementById('editEventImagePreview').innerHTML = 
+                `<img src="${eventData.image}" alt="Preview" style="max-width: 200px; border-radius: 8px;">`;
+        }
+        
+        showEditEventModal();
+    } catch (error) {
+        console.error('Failed to load event data:', error);
+        alert('Failed to load event data: ' + error.message);
     }
+}
 
-    function editDesignProject(project) {
-        alert('Edit design project functionality coming soon!');
+// Edit Research Article Function
+async function editResearchArticle(article) {
+    try {
+        const researchData = await apiRequest(`/research/admin/articles/${article.id}`);
+        
+        document.getElementById('editResearchId').value = researchData.id;
+        document.getElementById('editResearchTitle').value = researchData.title || '';
+        document.getElementById('editResearchAbstract').value = researchData.abstract || '';
+        document.getElementById('editResearchContent').value = researchData.content || '';
+        document.getElementById('editResearchCategory').value = researchData.category || '';
+        document.getElementById('editResearchAuthors').value = researchData.authors || '';
+        document.getElementById('editResearchPublicationDate').value = researchData.publication_date || '';
+        document.getElementById('editResearchMainImage').value = researchData.main_image || '';
+        document.getElementById('editResearchDisplayOrder').value = researchData.display_order || 0;
+        document.getElementById('editResearchFeatured').checked = researchData.is_featured || false;
+        document.getElementById('editResearchPublished').checked = researchData.is_published || false;
+        
+        showEditResearchModal();
+    } catch (error) {
+        console.error('Failed to load research data:', error);
+        alert('Failed to load research data: ' + error.message);
     }
+}
 
-    function editResearchArticle(article) {
-        alert('Edit research article functionality coming soon!');
+// Edit Design Project Function
+async function editDesignProject(project) {
+    try {
+        const projectData = await apiRequest(`/design/admin/projects/${project.id}`);
+        
+        document.getElementById('editDesignProjectId').value = projectData.id;
+        document.getElementById('editDesignProjectTitle').value = projectData.title || '';
+        document.getElementById('editDesignProjectSummary').value = projectData.summary || '';
+        document.getElementById('editDesignProjectDescription').value = projectData.description || '';
+        document.getElementById('editDesignProjectCategory').value = projectData.category || '';
+        document.getElementById('editDesignProjectSector').value = projectData.sector || '';
+        document.getElementById('editDesignProjectDisplayOrder').value = projectData.display_order || 0;
+        document.getElementById('editDesignProjectFeatured').checked = projectData.is_featured || false;
+        document.getElementById('editDesignProjectPublished').checked = projectData.is_published || false;
+        
+        // Set image preview if exists
+        if (projectData.main_image) {
+            document.getElementById('editMainImagePreview').innerHTML = 
+                `<img src="${projectData.main_image}" alt="Preview" style="max-width: 200px; border-radius: 8px;">`;
+        }
+        
+        showEditDesignProjectModal();
+    } catch (error) {
+        console.error('Failed to load design project data:', error);
+        alert('Failed to load design project data: ' + error.message);
     }
-
-    function editNewsEvent(item) {
-        alert(`Edit ${item.type} functionality coming soon!`);
-    }
-
-    function editTeamMember(member) {
-        alert('Edit team member functionality coming soon!');
-    }
-
-    function editInitiative(initiative) {
-        alert('Edit initiative functionality coming soon!');
-    }
+}
 
     console.log('🎯 Admin Dashboard JavaScript loaded successfully');
 </script>
