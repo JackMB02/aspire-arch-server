@@ -36,7 +36,9 @@ app.use(cors({
       'http://localhost:4000',
       'http://127.0.0.1:4000',
       'https://aspire-dashboard-wsua.vercel.app',
-      'https://aspire-dashboard.vercel.app'
+      'https://aspire-dashboard.vercel.app',
+      'https://www.aspiredesignlab.rw',
+      'https://aspiredesignlab.rw'
     ];
     
     // Allow all Vercel, Railway, and Render domains in production
