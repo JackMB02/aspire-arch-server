@@ -55,6 +55,51 @@ async function initDb() {
     client = await pool.connect();
     console.log('🔄 Initializing database tables...');
     
+    // MIGRATION: Convert all URL columns from VARCHAR to TEXT for base64 support
+    console.log('🔄 Running migrations for base64 image support...');
+    const urlColumns = [
+      { table: 'media_photos', column: 'image_url' },
+      { table: 'media_videos', column: 'video_url' },
+      { table: 'media_videos', column: 'thumbnail_url' },
+      { table: 'media_designs', column: 'image_url' },
+      { table: 'education_workshops', column: 'image_url' },
+      { table: 'education_workshops', column: 'document_url' },
+      { table: 'education_workshops', column: 'video_url' },
+      { table: 'education_tutorials', column: 'document_url' },
+      { table: 'education_tutorials', column: 'video_url' },
+      { table: 'education_tutorials', column: 'thumbnail_url' },
+      { table: 'education_exhibitions', column: 'image_url' },
+      { table: 'education_exhibitions', column: 'brochure_url' },
+      { table: 'education_exhibitions', column: 'virtual_tour_url' },
+      { table: 'media_testimonials', column: 'image_url' },
+      { table: 'research_articles', column: 'image_url' },
+      { table: 'research_articles', column: 'document_url' },
+      { table: 'news_articles', column: 'image_url' },
+      { table: 'events', column: 'image_url' },
+      { table: 'design_projects', column: 'main_image' },
+      { table: 'architecture_colleagues_team', column: 'image_url' }
+    ];
+
+    for (const { table, column } of urlColumns) {
+      try {
+        await client.query(`
+          DO $$ 
+          BEGIN
+            IF EXISTS (
+              SELECT 1 FROM information_schema.columns 
+              WHERE table_name = '${table}' 
+              AND column_name = '${column}'
+            ) THEN
+              ALTER TABLE ${table} ALTER COLUMN ${column} TYPE TEXT;
+            END IF;
+          END $$;
+        `);
+      } catch (err) {
+        console.log(`⚠️  Could not migrate ${table}.${column} (table may not exist yet)`);
+      }
+    }
+    console.log('✅ Migration completed for base64 support');
+    
     // Create tables
     await client.query(`
       CREATE TABLE IF NOT EXISTS admins (
@@ -245,7 +290,7 @@ async function initDb() {
         id SERIAL PRIMARY KEY,
         title VARCHAR(500) NOT NULL,
         description TEXT,
-        image_url VARCHAR(500) NOT NULL,
+        image_url TEXT NOT NULL,
         category VARCHAR(100) NOT NULL,
         album_name VARCHAR(255),
         tags JSONB,
@@ -259,13 +304,29 @@ async function initDb() {
     `);
     console.log('✅ Media photos table created/verified');
 
+    // Alter existing columns to TEXT if they exist as VARCHAR
+    await client.query(`
+      DO $$ 
+      BEGIN
+        IF EXISTS (
+          SELECT 1 FROM information_schema.columns 
+          WHERE table_name = 'media_photos' 
+          AND column_name = 'image_url' 
+          AND data_type = 'character varying'
+        ) THEN
+          ALTER TABLE media_photos ALTER COLUMN image_url TYPE TEXT;
+        END IF;
+      END $$;
+    `);
+    console.log('✅ Media photos image_url column updated to TEXT');
+
     await client.query(`
       CREATE TABLE IF NOT EXISTS media_videos (
         id SERIAL PRIMARY KEY,
         title VARCHAR(500) NOT NULL,
         description TEXT,
-        video_url VARCHAR(500),
-        thumbnail_url VARCHAR(500) NOT NULL,
+        video_url TEXT,
+        thumbnail_url TEXT NOT NULL,
         duration VARCHAR(20),
         category VARCHAR(100),
         tags JSONB,
@@ -283,7 +344,7 @@ async function initDb() {
         id SERIAL PRIMARY KEY,
         title VARCHAR(500) NOT NULL,
         description TEXT,
-        image_url VARCHAR(500) NOT NULL,
+        image_url TEXT NOT NULL,
         design_type VARCHAR(100) NOT NULL,
         category VARCHAR(100),
         project_name VARCHAR(255),
@@ -306,7 +367,7 @@ async function initDb() {
         organization VARCHAR(255),
         quote TEXT NOT NULL,
         project_name VARCHAR(255),
-        image_url VARCHAR(500),
+        image_url TEXT,
         rating INTEGER,
         is_featured BOOLEAN DEFAULT false,
         is_published BOOLEAN DEFAULT true,
@@ -333,9 +394,9 @@ async function initDb() {
         capacity INTEGER DEFAULT 0,
         enrolled_count INTEGER DEFAULT 0,
         location VARCHAR(500),
-        image_url VARCHAR(500),
-        document_url VARCHAR(500),
-        video_url VARCHAR(500),
+        image_url TEXT,
+        document_url TEXT,
+        video_url TEXT,
         is_featured BOOLEAN DEFAULT false,
         is_published BOOLEAN DEFAULT true,
         status VARCHAR(50) DEFAULT 'published',
@@ -354,9 +415,9 @@ async function initDb() {
         level VARCHAR(100) NOT NULL,
         format VARCHAR(100) NOT NULL,
         duration VARCHAR(100),
-        document_url VARCHAR(500),
-        video_url VARCHAR(500),
-        thumbnail_url VARCHAR(500),
+        document_url TEXT,
+        video_url TEXT,
+        thumbnail_url TEXT,
         download_count INTEGER DEFAULT 0,
         is_featured BOOLEAN DEFAULT false,
         is_published BOOLEAN DEFAULT true,
@@ -377,9 +438,9 @@ async function initDb() {
         location VARCHAR(500) NOT NULL,
         curator VARCHAR(255) NOT NULL,
         curator_bio TEXT,
-        image_url VARCHAR(500),
-        brochure_url VARCHAR(500),
-        virtual_tour_url VARCHAR(500),
+        image_url TEXT,
+        brochure_url TEXT,
+        virtual_tour_url TEXT,
         is_featured BOOLEAN DEFAULT false,
         is_published BOOLEAN DEFAULT true,
         status VARCHAR(50) DEFAULT 'published',
@@ -410,7 +471,7 @@ async function initDb() {
         name VARCHAR(255) NOT NULL,
         role VARCHAR(255) NOT NULL,
         bio TEXT,
-        image_url VARCHAR(500),
+        image_url TEXT,
         display_order INTEGER DEFAULT 0,
         is_active BOOLEAN DEFAULT true,
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -470,8 +531,8 @@ async function initDb() {
         icon_name VARCHAR(100) NOT NULL,
         category VARCHAR(200) NOT NULL,
         content TEXT,
-        image_url VARCHAR(500),
-        document_url VARCHAR(500),
+        image_url TEXT,
+        document_url TEXT,
         display_order INTEGER DEFAULT 0,
         is_featured BOOLEAN DEFAULT false,
         is_published BOOLEAN DEFAULT true,
@@ -568,7 +629,7 @@ async function initDb() {
         title VARCHAR(500) NOT NULL,
         excerpt TEXT,
         content TEXT,
-        image_url VARCHAR(500),
+        image_url TEXT,
         category VARCHAR(100),
         author VARCHAR(100),
         date DATE,
@@ -588,7 +649,7 @@ async function initDb() {
         title VARCHAR(500) NOT NULL,
         description TEXT,
         excerpt TEXT,
-        image_url VARCHAR(500),
+        image_url TEXT,
         event_date DATE,
         event_time VARCHAR(100),
         location VARCHAR(255),
