@@ -3370,41 +3370,116 @@
                                             <div
                                                 style="
                                                     display: grid;
-                                                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                                                    grid-template-columns: repeat(
+                                                        auto-fit,
+                                                        minmax(200px, 1fr)
+                                                    );
                                                     gap: 1.5rem;
                                                     font-size: 0.9rem;
                                                 "
                                             >
-                                                <div style="text-align: center;">
-                                                    <div style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 0.5rem;">
+                                                <div style="text-align: center">
+                                                    <div
+                                                        style="
+                                                            color: var(
+                                                                --text-muted
+                                                            );
+                                                            font-size: 0.8rem;
+                                                            margin-bottom: 0.5rem;
+                                                        "
+                                                    >
                                                         Version
                                                     </div>
-                                                    <div style="color: var(--text-primary); font-weight: 500;">
+                                                    <div
+                                                        style="
+                                                            color: var(
+                                                                --text-primary
+                                                            );
+                                                            font-weight: 500;
+                                                        "
+                                                    >
                                                         1.0.0
                                                     </div>
                                                 </div>
-                                                <div style="text-align: center;">
-                                                    <div style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 0.5rem;">
+                                                <div style="text-align: center">
+                                                    <div
+                                                        style="
+                                                            color: var(
+                                                                --text-muted
+                                                            );
+                                                            font-size: 0.8rem;
+                                                            margin-bottom: 0.5rem;
+                                                        "
+                                                    >
                                                         Last Updated
                                                     </div>
-                                                    <div style="color: var(--text-primary); font-weight: 500;">
+                                                    <div
+                                                        style="
+                                                            color: var(
+                                                                --text-primary
+                                                            );
+                                                            font-weight: 500;
+                                                        "
+                                                    >
                                                         Nov 3, 2025
                                                     </div>
                                                 </div>
-                                                <div style="text-align: center;">
-                                                    <div style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 0.5rem;">
+                                                <div style="text-align: center">
+                                                    <div
+                                                        style="
+                                                            color: var(
+                                                                --text-muted
+                                                            );
+                                                            font-size: 0.8rem;
+                                                            margin-bottom: 0.5rem;
+                                                        "
+                                                    >
                                                         Server Status
                                                     </div>
-                                                    <div style="color: var(--success); font-weight: 500;">
-                                                        <i class="fas fa-circle" style="font-size: 0.6rem;"></i> Online
+                                                    <div
+                                                        style="
+                                                            color: var(
+                                                                --success
+                                                            );
+                                                            font-weight: 500;
+                                                        "
+                                                    >
+                                                        <i
+                                                            class="fas fa-circle"
+                                                            style="
+                                                                font-size: 0.6rem;
+                                                            "
+                                                        ></i>
+                                                        Online
                                                     </div>
                                                 </div>
-                                                <div style="text-align: center;">
-                                                    <div style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 0.5rem;">
+                                                <div style="text-align: center">
+                                                    <div
+                                                        style="
+                                                            color: var(
+                                                                --text-muted
+                                                            );
+                                                            font-size: 0.8rem;
+                                                            margin-bottom: 0.5rem;
+                                                        "
+                                                    >
                                                         Database
                                                     </div>
-                                                    <div style="color: var(--success); font-weight: 500;">
-                                                        <i class="fas fa-circle" style="font-size: 0.6rem;"></i> Connected
+                                                    <div
+                                                        style="
+                                                            color: var(
+                                                                --success
+                                                            );
+                                                            font-weight: 500;
+                                                        "
+                                                    >
+                                                        <i
+                                                            class="fas fa-circle"
+                                                            style="
+                                                                font-size: 0.6rem;
+                                                            "
+                                                        ></i>
+                                                        Connected
                                                     </div>
                                                 </div>
                                             </div>
@@ -6932,7 +7007,7 @@
 
                     // Convert file to base64
                     const base64 = await fileToBase64(file);
-                    
+
                     console.log("✅ File converted to base64 successfully");
                     return base64;
                 } catch (error) {

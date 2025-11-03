@@ -7,20 +7,22 @@ This application has been configured to work with **Render's ephemeral filesyste
 ### How It Works
 
 1. **Frontend (`public/index.html`):**
-   - `uploadFile()` function converts files to base64 using `FileReader`
-   - Base64 strings are sent directly in API requests
-   - No file upload endpoint needed
+
+    - `uploadFile()` function converts files to base64 using `FileReader`
+    - Base64 strings are sent directly in API requests
+    - No file upload endpoint needed
 
 2. **Backend:**
-   - All image URL columns in database store either:
-     - Base64 data URLs (e.g., `data:image/jpeg;base64,/9j/4AAQ...`)
-     - External URLs (e.g., `https://example.com/image.jpg`)
-   - `getFullImageUrl()` helper detects and returns images as-is
+
+    - All image URL columns in database store either:
+        - Base64 data URLs (e.g., `data:image/jpeg;base64,/9j/4AAQ...`)
+        - External URLs (e.g., `https://example.com/image.jpg`)
+    - `getFullImageUrl()` helper detects and returns images as-is
 
 3. **Database:**
-   - Image columns use `TEXT` type to store base64 strings
-   - No filesystem dependencies
-   - Images persist across deployments
+    - Image columns use `TEXT` type to store base64 strings
+    - No filesystem dependencies
+    - Images persist across deployments
 
 ### Benefits for Render
 
@@ -38,14 +40,16 @@ This application has been configured to work with **Render's ephemeral filesyste
 ### Recommended Image Sizes
 
 For optimal performance:
-- **Thumbnails:** < 50KB
-- **Gallery Images:** < 200KB
-- **Hero Images:** < 500KB
+
+-   **Thumbnails:** < 50KB
+-   **Gallery Images:** < 200KB
+-   **Hero Images:** < 500KB
 
 Compress images before uploading using tools like:
-- TinyPNG (https://tinypng.com/)
-- ImageOptim
-- Squoosh (https://squoosh.app/)
+
+-   TinyPNG (https://tinypng.com/)
+-   ImageOptim
+-   Squoosh (https://squoosh.app/)
 
 ### Future Migration to Cloud Storage
 
