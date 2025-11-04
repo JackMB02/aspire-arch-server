@@ -4056,13 +4056,24 @@
                         </div>
 
                         <div class="input-group">
+                            <label for="addResearchMainImageFile"
+                                >Main Image (Upload File)</label
+                            >
+                            <input
+                                id="addResearchMainImageFile"
+                                type="file"
+                                accept="image/*"
+                            />
+                        </div>
+
+                        <div class="input-group">
                             <label for="addResearchMainImage"
-                                >Main Image URL</label
+                                >Or Main Image URL</label
                             >
                             <input
                                 id="addResearchMainImage"
                                 type="text"
-                                placeholder="/images/research/image.jpg"
+                                placeholder="https://example.com/image.jpg"
                             />
                         </div>
 
@@ -11505,9 +11516,7 @@
                         publicationDate: document.getElementById(
                             "addResearchPublicationDate"
                         ).value,
-                        mainImage: document.getElementById(
-                            "addResearchMainImage"
-                        ).value,
+                        mainImage: null,
                         displayOrder: document.getElementById(
                             "addResearchDisplayOrder"
                         ).value,
@@ -11519,7 +11528,25 @@
                         ).checked,
                     };
 
-                    await apiRequest("/research/admin/articles", {
+                    // Handle image upload
+                    const imageFile = document.getElementById(
+                        "addResearchMainImageFile"
+                    ).files[0];
+                    if (imageFile) {
+                        const uploadedImageUrl = await uploadFile(
+                            imageFile,
+                            "research-image"
+                        );
+                        researchData.mainImage = uploadedImageUrl;
+                    } else if (
+                        document.getElementById("addResearchMainImage").value
+                    ) {
+                        researchData.mainImage = document.getElementById(
+                            "addResearchMainImage"
+                        ).value;
+                    }
+
+                    await apiRequest("/research/articles", {
                         method: "POST",
                         body: JSON.stringify(researchData),
                     });
