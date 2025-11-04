@@ -56,13 +56,6 @@ const upload = multer({
     fileFilter: fileFilter,
 });
 
-// Helper function to get file URL
-const getFileUrl = (filePath) => {
-    // Extract the path relative to the uploads directory
-    const relativePath = filePath.replace(uploadsDir, "").replace(/\\/g, "/");
-    return `/uploads${relativePath}`;
-};
-
 // Enhanced single file upload
 router.post("/", upload.single("file"), (req, res) => {
     try {
@@ -81,20 +74,26 @@ router.post("/", upload.single("file"), (req, res) => {
             });
         }
 
-        const fileUrl = getFileUrl(req.file.path);
+        // Process file to base64
+        const base64Data = processMulterFile(req.file);
+
+        if (!base64Data) {
+            return res.status(500).json({
+                success: false,
+                error: "Failed to process uploaded file.",
+            });
+        }
 
         console.log("✅ File uploaded successfully:", {
-            filename: req.file.filename,
             originalname: req.file.originalname,
             size: (req.file.size / 1024 / 1024).toFixed(2) + " MB",
-            url: fileUrl,
+            mimeType: req.file.mimetype,
         });
 
         res.json({
             success: true,
             message: "File uploaded successfully",
-            fileUrl: fileUrl,
-            fileName: req.file.filename,
+            fileData: base64Data,
             originalName: req.file.originalname,
             fileSize: req.file.size,
             fileSizeMB: (req.file.size / 1024 / 1024).toFixed(2),
@@ -122,14 +121,17 @@ router.post("/multiple", upload.array("files", 10), (req, res) => {
 
         console.log(`✅ Uploaded ${req.files.length} files successfully`);
 
-        const uploadResults = req.files.map((file) => ({
-            fileUrl: getFileUrl(file.path),
-            fileName: file.filename,
-            originalName: file.originalname,
-            fileSize: file.size,
-            fileSizeMB: (file.size / 1024 / 1024).toFixed(2),
-            mimeType: file.mimetype,
-        }));
+        const uploadResults = req.files.map((file) => {
+            const base64Data = processMulterFile(file);
+
+            return {
+                fileData: base64Data,
+                originalName: file.originalname,
+                fileSize: file.size,
+                fileSizeMB: (file.size / 1024 / 1024).toFixed(2),
+                mimeType: file.mimetype,
+            };
+        });
 
         res.json({
             success: true,
@@ -154,33 +156,26 @@ router.post("/multiple", upload.array("files", 10), (req, res) => {
 // Test endpoint to verify upload functionality
 router.get("/test", (req, res) => {
     try {
-        const uploadsExist = fs.existsSync(uploadsDir);
-        const subDirs = ["images", "videos", "documents", "general"];
-        const dirStats = {};
-
-        subDirs.forEach((dir) => {
-            const dirPath = path.join(uploadsDir, dir);
-            dirStats[dir] = {
-                exists: fs.existsSync(dirPath),
-                fileCount: 0,
-            };
-
-            if (dirStats[dir].exists) {
-                try {
-                    const files = fs.readdirSync(dirPath);
-                    dirStats[dir].fileCount = files.length;
-                } catch (err) {
-                    dirStats[dir].fileCount = "Error reading directory";
-                }
-            }
-        });
-
         res.json({
             success: true,
             message: "Upload system is working",
-            uploadsDirectory: uploadsDir,
-            uploadsDirectoryExists: uploadsExist,
-            directories: dirStats,
+            storageType: "memory",
+            maxFileSize: "100MB",
+            maxFiles: 10,
+            supportedTypes: {
+                images: ["jpeg", "jpg", "png", "gif", "webp", "svg"],
+                videos: ["mp4", "webm", "ogg", "quicktime"],
+                documents: [
+                    "pdf",
+                    "doc",
+                    "docx",
+                    "xls",
+                    "xlsx",
+                    "ppt",
+                    "pptx",
+                    "txt",
+                ],
+            },
             serverTime: new Date().toISOString(),
         });
     } catch (error) {
@@ -195,54 +190,13 @@ router.get("/test", (req, res) => {
 // Get upload statistics
 router.get("/stats", (req, res) => {
     try {
-        const stats = {
-            totalFiles: 0,
-            totalSize: 0,
-            byType: {
-                images: { count: 0, size: 0 },
-                videos: { count: 0, size: 0 },
-                documents: { count: 0, size: 0 },
-                general: { count: 0, size: 0 },
-            },
-        };
-
-        const scanDirectory = (dirPath, type) => {
-            if (fs.existsSync(dirPath)) {
-                const files = fs.readdirSync(dirPath);
-                stats.byType[type].count = files.length;
-
-                files.forEach((file) => {
-                    const filePath = path.join(dirPath, file);
-                    try {
-                        const fileStat = fs.statSync(filePath);
-                        stats.byType[type].size += fileStat.size;
-                        stats.totalSize += fileStat.size;
-                        stats.totalFiles++;
-                    } catch (err) {
-                        console.warn(`Could not stat file: ${filePath}`);
-                    }
-                });
-            }
-        };
-
-        // Scan all directories
-        scanDirectory(path.join(uploadsDir, "images"), "images");
-        scanDirectory(path.join(uploadsDir, "videos"), "videos");
-        scanDirectory(path.join(uploadsDir, "documents"), "documents");
-        scanDirectory(path.join(uploadsDir, "general"), "general");
-
-        // Convert sizes to human readable format
-        stats.totalSizeMB = (stats.totalSize / (1024 * 1024)).toFixed(2);
-        Object.keys(stats.byType).forEach((type) => {
-            stats.byType[type].sizeMB = (
-                stats.byType[type].size /
-                (1024 * 1024)
-            ).toFixed(2);
-        });
-
         res.json({
             success: true,
-            ...stats,
+            message: "Upload statistics",
+            note: "Files are stored in database as base64, not on filesystem",
+            storageType: "memory/base64",
+            maxFileSize: "100MB",
+            maxFiles: 10,
         });
     } catch (error) {
         console.error("❌ Stats error:", error);

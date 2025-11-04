@@ -10340,7 +10340,8 @@
 
             async function loadTeamMembers() {
                 try {
-                    const data = await apiRequest("/colleagues/team");
+                    const response = await apiRequest("/colleagues/team");
+                    const data = response.data || response; // Handle both response formats
                     const container =
                         document.getElementById("colleaguesTeamList");
                     if (!container) return;
@@ -10370,7 +10371,8 @@
 
             async function loadInitiatives() {
                 try {
-                    const data = await apiRequest("/colleagues/initiatives");
+                    const response = await apiRequest("/colleagues/initiatives");
+                    const data = response.data || response; // Handle both response formats
                     const container = document.getElementById(
                         "colleaguesInitiativesList"
                     );

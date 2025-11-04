@@ -541,6 +541,293 @@ router.post("/events", async (req, res) => {
     }
 });
 
+// Update news article
+router.put("/news/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const {
+            title,
+            excerpt,
+            content,
+            image_url,
+            image,
+            category,
+            author,
+            date,
+            read_time,
+            readTime,
+            is_featured,
+            isFeatured,
+            is_published,
+            isPublished,
+            status,
+        } = req.body;
+
+        const imageUrl = image_url || image;
+        const readTimeValue = read_time || readTime;
+        const featured = is_featured !== undefined ? is_featured : isFeatured;
+        const published =
+            is_published !== undefined ? is_published : isPublished;
+
+        // Ensure the article exists
+        const exists = await query(
+            "SELECT * FROM news_articles WHERE id = $1",
+            [id]
+        );
+        if (exists.rows.length === 0) {
+            return res.status(404).json({ error: "News article not found" });
+        }
+
+        const result = await query(
+            `
+            UPDATE news_articles SET
+                title = COALESCE($1, title),
+                excerpt = COALESCE($2, excerpt),
+                content = COALESCE($3, content),
+                image_url = COALESCE($4, image_url),
+                category = COALESCE($5, category),
+                author = COALESCE($6, author),
+                date = COALESCE($7, date),
+                read_time = COALESCE($8, read_time),
+                is_featured = COALESCE($9, is_featured),
+                is_published = COALESCE($10, is_published),
+                status = COALESCE($11, status),
+                updated_at = NOW()
+            WHERE id = $12
+            RETURNING *
+        `,
+            [
+                title,
+                excerpt,
+                content,
+                imageUrl,
+                category,
+                author,
+                date,
+                readTimeValue,
+                featured,
+                published,
+                status,
+                id,
+            ]
+        );
+
+        const article = result.rows[0];
+        res.json({
+            id: article.id,
+            title: article.title,
+            excerpt: article.excerpt,
+            content: article.content,
+            image: getFullImageUrl(article.image_url),
+            image_url: getFullImageUrl(article.image_url),
+            imageUrl: getFullImageUrl(article.image_url),
+            category: article.category,
+            author: article.author,
+            date: article.date,
+            readTime: article.read_time,
+            read_time: article.read_time,
+            isFeatured: article.is_featured,
+            is_featured: article.is_featured,
+            isPublished: article.is_published,
+            is_published: article.is_published,
+            createdAt: article.created_at,
+            updatedAt: article.updated_at,
+        });
+    } catch (error) {
+        console.error("Error updating news article:", error);
+        res.status(500).json({
+            error: "Failed to update news article",
+            details: error.message,
+        });
+    }
+});
+
+// Update event
+router.put("/events/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const {
+            title,
+            description,
+            excerpt,
+            image_url,
+            image,
+            event_date,
+            eventDate,
+            event_time,
+            eventTime,
+            location,
+            category,
+            author,
+            read_time,
+            readTime,
+            is_featured,
+            isFeatured,
+            is_published,
+            isPublished,
+            status,
+        } = req.body;
+
+        const imageUrl = image_url || image;
+        const eventDateValue = event_date || eventDate;
+        const eventTimeValue = event_time || eventTime;
+        const readTimeValue = read_time || readTime;
+        const featured = is_featured !== undefined ? is_featured : isFeatured;
+        const published =
+            is_published !== undefined ? is_published : isPublished;
+
+        // Ensure the event exists
+        const exists = await query("SELECT * FROM events WHERE id = $1", [id]);
+        if (exists.rows.length === 0) {
+            return res.status(404).json({ error: "Event not found" });
+        }
+
+        const result = await query(
+            `
+            UPDATE events SET
+                title = COALESCE($1, title),
+                description = COALESCE($2, description),
+                excerpt = COALESCE($3, excerpt),
+                image_url = COALESCE($4, image_url),
+                event_date = COALESCE($5, event_date),
+                event_time = COALESCE($6, event_time),
+                location = COALESCE($7, location),
+                category = COALESCE($8, category),
+                author = COALESCE($9, author),
+                read_time = COALESCE($10, read_time),
+                is_featured = COALESCE($11, is_featured),
+                is_published = COALESCE($12, is_published),
+                status = COALESCE($13, status),
+                updated_at = NOW()
+            WHERE id = $14
+            RETURNING *
+        `,
+            [
+                title,
+                description,
+                excerpt,
+                imageUrl,
+                eventDateValue,
+                eventTimeValue,
+                location,
+                category,
+                author,
+                readTimeValue,
+                featured,
+                published,
+                status,
+                id,
+            ]
+        );
+
+        const event = result.rows[0];
+        res.json({
+            id: event.id,
+            title: event.title,
+            description: event.description,
+            excerpt: event.excerpt,
+            image: getFullImageUrl(event.image_url),
+            image_url: getFullImageUrl(event.image_url),
+            imageUrl: getFullImageUrl(event.image_url),
+            eventDate: event.event_date,
+            event_date: event.event_date,
+            eventTime: event.event_time,
+            event_time: event.event_time,
+            location: event.location,
+            category: event.category,
+            author: event.author,
+            readTime: event.read_time,
+            read_time: event.read_time,
+            isFeatured: event.is_featured,
+            is_featured: event.is_featured,
+            isPublished: event.is_published,
+            is_published: event.is_published,
+            createdAt: event.created_at,
+            updatedAt: event.updated_at,
+        });
+    } catch (error) {
+        console.error("Error updating event:", error);
+        res.status(500).json({
+            error: "Failed to update event",
+            details: error.message,
+        });
+    }
+});
+
+// Toggle publish/feature for news/events
+router.put("/:type/:id/publish", async (req, res) => {
+    try {
+        const { type, id } = req.params;
+        const { is_published, isPublished } = req.body;
+        const published =
+            is_published !== undefined ? is_published : isPublished;
+
+        const table =
+            type === "news"
+                ? "news_articles"
+                : type === "events"
+                ? "events"
+                : null;
+        if (!table) return res.status(400).json({ error: "Invalid type" });
+
+        const exists = await query(`SELECT * FROM ${table} WHERE id = $1`, [
+            id,
+        ]);
+        if (exists.rows.length === 0)
+            return res.status(404).json({ error: `${type} not found` });
+
+        const result = await query(
+            `UPDATE ${table} SET is_published = COALESCE($1, is_published), updated_at = NOW() WHERE id = $2 RETURNING *`,
+            [published, id]
+        );
+
+        const row = result.rows[0];
+        res.json({ success: true, id: row.id, is_published: row.is_published });
+    } catch (error) {
+        console.error("Error toggling publish:", error);
+        res.status(500).json({
+            error: "Failed to toggle publish",
+            details: error.message,
+        });
+    }
+});
+
+router.put("/:type/:id/feature", async (req, res) => {
+    try {
+        const { type, id } = req.params;
+        const { is_featured, isFeatured } = req.body;
+        const featured = is_featured !== undefined ? is_featured : isFeatured;
+
+        const table =
+            type === "news"
+                ? "news_articles"
+                : type === "events"
+                ? "events"
+                : null;
+        if (!table) return res.status(400).json({ error: "Invalid type" });
+
+        const exists = await query(`SELECT * FROM ${table} WHERE id = $1`, [
+            id,
+        ]);
+        if (exists.rows.length === 0)
+            return res.status(404).json({ error: `${type} not found` });
+
+        const result = await query(
+            `UPDATE ${table} SET is_featured = COALESCE($1, is_featured), updated_at = NOW() WHERE id = $2 RETURNING *`,
+            [featured, id]
+        );
+
+        const row = result.rows[0];
+        res.json({ success: true, id: row.id, is_featured: row.is_featured });
+    } catch (error) {
+        console.error("Error toggling feature:", error);
+        res.status(500).json({
+            error: "Failed to toggle feature",
+            details: error.message,
+        });
+    }
+});
+
 // Delete news article
 router.delete("/news/:id", async (req, res) => {
     try {

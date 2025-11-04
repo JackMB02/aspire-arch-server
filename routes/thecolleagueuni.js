@@ -70,6 +70,119 @@ router.get("/team", async (req, res) => {
     }
 });
 
+// @desc    Create a new team member
+// @route   POST /api/thecolleagueuni/team
+// @access  Private/Admin
+router.post("/team", async (req, res) => {
+    try {
+        const { name, role, bio, imageUrl, displayOrder, isActive } = req.body;
+
+        // Validate required fields
+        if (!name || !role) {
+            return res.status(400).json({
+                success: false,
+                message: "Name and role are required",
+            });
+        }
+
+        const result = await query(
+            `INSERT INTO architecture_colleagues_team 
+             (name, role, bio, image_url, display_order, is_active) 
+             VALUES ($1, $2, $3, $4, $5, $6) 
+             RETURNING *`,
+            [
+                name,
+                role,
+                bio || "",
+                imageUrl || null,
+                displayOrder || 0,
+                isActive !== undefined ? isActive : true,
+            ]
+        );
+
+        res.status(201).json({
+            success: true,
+            message: "Team member added successfully",
+            data: result.rows[0],
+        });
+    } catch (error) {
+        console.error("Create team member error:", error);
+        res.status(500).json({
+            success: false,
+            message: "Error creating team member",
+        });
+    }
+});
+
+// @desc    Update team member active status
+// @route   PUT /api/thecolleagueuni/team/:id/active
+// @access  Private/Admin
+router.put("/team/:id/active", async (req, res) => {
+    try {
+        const { isActive } = req.body;
+        const { id } = req.params;
+
+        const result = await query(
+            `UPDATE architecture_colleagues_team 
+             SET is_active = $1, updated_at = CURRENT_TIMESTAMP 
+             WHERE id = $2 
+             RETURNING *`,
+            [isActive, id]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "Team member not found",
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Team member status updated successfully",
+            data: result.rows[0],
+        });
+    } catch (error) {
+        console.error("Update team member status error:", error);
+        res.status(500).json({
+            success: false,
+            message: "Error updating team member status",
+        });
+    }
+});
+
+// @desc    Delete team member
+// @route   DELETE /api/thecolleagueuni/team/:id
+// @access  Private/Admin
+router.delete("/team/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const result = await query(
+            "DELETE FROM architecture_colleagues_team WHERE id = $1 RETURNING *",
+            [id]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "Team member not found",
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Team member deleted successfully",
+        });
+    } catch (error) {
+        console.error("Delete team member error:", error);
+        res.status(500).json({
+            success: false,
+            message: "Error deleting team member",
+        });
+    }
+});
+
 // @desc    Get mission and values
 // @route   GET /api/thecolleagueuni/mission
 // @access  Public
@@ -127,6 +240,49 @@ router.get("/initiatives", async (req, res) => {
         res.status(500).json({
             success: false,
             message: "Error fetching initiatives",
+        });
+    }
+});
+
+// @desc    Create a new initiative
+// @route   POST /api/thecolleagueuni/initiatives
+// @access  Private/Admin
+router.post("/initiatives", async (req, res) => {
+    try {
+        const { title, description, status, targetDate, isActive } = req.body;
+
+        // Validate required fields
+        if (!title || !description) {
+            return res.status(400).json({
+                success: false,
+                message: "Title and description are required",
+            });
+        }
+
+        const result = await query(
+            `INSERT INTO architecture_colleagues_initiatives 
+             (title, description, status, target_date, is_active, display_order) 
+             VALUES ($1, $2, $3, $4, $5, 0) 
+             RETURNING *`,
+            [
+                title,
+                description,
+                status || "planned",
+                targetDate || null,
+                isActive !== undefined ? isActive : true,
+            ]
+        );
+
+        res.status(201).json({
+            success: true,
+            message: "Initiative added successfully",
+            data: result.rows[0],
+        });
+    } catch (error) {
+        console.error("Create initiative error:", error);
+        res.status(500).json({
+            success: false,
+            message: "Error creating initiative",
         });
     }
 });
