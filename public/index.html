@@ -230,6 +230,19 @@
             .sidebar-header {
                 padding: 2rem 1.5rem 1.5rem;
                 border-bottom: 1px solid var(--border-light);
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+            }
+
+            .sidebar-logo {
+                width: 50px;
+                height: 50px;
+                object-fit: contain;
+            }
+
+            .sidebar-header-text {
+                flex: 1;
             }
 
             .sidebar-header h1 {
@@ -899,8 +912,11 @@
                 <!-- Sidebar -->
                 <div class="sidebar" id="sidebar">
                     <div class="sidebar-header">
-                        <h1>Aspire Design Lab</h1>
-                        <div class="subtitle">Admin Dashboard</div>
+                        <img src="/hero logo.png" alt="Aspire Logo" class="sidebar-logo">
+                        <div class="sidebar-header-text">
+                            <h1>Aspire Design Lab</h1>
+                            <div class="subtitle">Admin Dashboard</div>
+                        </div>
                     </div>
 
                     <div class="nav-menu">
@@ -11812,7 +11828,8 @@
                     };
 
                     // Handle video file upload
-                    const videoFile = document.getElementById("addVideoFileInput").files[0];
+                    const videoFile =
+                        document.getElementById("addVideoFileInput").files[0];
                     if (videoFile) {
                         const uploadedVideoUrl = await uploadFile(
                             videoFile,
@@ -11820,11 +11837,14 @@
                         );
                         videoData.url = uploadedVideoUrl;
                     } else if (document.getElementById("addVideoURL").value) {
-                        videoData.url = document.getElementById("addVideoURL").value;
+                        videoData.url =
+                            document.getElementById("addVideoURL").value;
                     }
 
                     if (!videoData.url) {
-                        alert("Please upload a video file or provide a video URL");
+                        alert(
+                            "Please upload a video file or provide a video URL"
+                        );
                         return;
                     }
 
@@ -12337,7 +12357,8 @@
                     };
 
                     // Handle video file upload
-                    const videoFile = document.getElementById("editVideoFileInput").files[0];
+                    const videoFile =
+                        document.getElementById("editVideoFileInput").files[0];
                     if (videoFile) {
                         const uploadedVideoUrl = await uploadFile(
                             videoFile,
@@ -12345,7 +12366,8 @@
                         );
                         videoData.url = uploadedVideoUrl;
                     } else if (document.getElementById("editVideoURL").value) {
-                        videoData.url = document.getElementById("editVideoURL").value;
+                        videoData.url =
+                            document.getElementById("editVideoURL").value;
                     }
 
                     const videoId =
