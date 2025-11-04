@@ -4793,12 +4793,40 @@
                             <textarea id="addVideoDescription"></textarea>
                         </div>
 
+                        <div class="input-group full-width">
+                            <label for="addVideoFileInput"
+                                >Video Upload (Local File)</label
+                            >
+                            <div
+                                class="file-upload-container"
+                                onclick="document.getElementById('addVideoFileInput').click()"
+                            >
+                                <div class="upload-icon">
+                                    <i class="fas fa-video"></i>
+                                </div>
+                                <h4>Upload Video</h4>
+                                <p>Click to browse or drag and drop</p>
+                                <p class="upload-hint">
+                                    Supported: MP4, WebM, max 100MB
+                                </p>
+                                <input
+                                    type="file"
+                                    id="addVideoFileInput"
+                                    class="file-input"
+                                    accept="video/*"
+                                />
+                            </div>
+                            <div
+                                id="addVideoFilePreview"
+                                class="image-preview"
+                            ></div>
+                        </div>
+
                         <div class="input-group">
-                            <label for="addVideoURL">Video URL *</label>
+                            <label for="addVideoURL">Or Video URL</label>
                             <input
                                 id="addVideoURL"
                                 type="url"
-                                required
                                 placeholder="https://youtube.com/embed/..."
                             />
                         </div>
@@ -6404,12 +6432,40 @@
                             <textarea id="editVideoDescription"></textarea>
                         </div>
 
+                        <div class="input-group full-width">
+                            <label for="editVideoFileInput"
+                                >Video Upload (Local File)</label
+                            >
+                            <div
+                                class="file-upload-container"
+                                onclick="document.getElementById('editVideoFileInput').click()"
+                            >
+                                <div class="upload-icon">
+                                    <i class="fas fa-video"></i>
+                                </div>
+                                <h4>Upload New Video</h4>
+                                <p>Click to browse or drag and drop</p>
+                                <p class="upload-hint">
+                                    Supported: MP4, WebM, max 100MB
+                                </p>
+                                <input
+                                    type="file"
+                                    id="editVideoFileInput"
+                                    class="file-input"
+                                    accept="video/*"
+                                />
+                            </div>
+                            <div
+                                id="editVideoFilePreview"
+                                class="image-preview"
+                            ></div>
+                        </div>
+
                         <div class="input-group">
-                            <label for="editVideoURL">Video URL *</label>
+                            <label for="editVideoURL">Or Video URL</label>
                             <input
                                 id="editVideoURL"
                                 type="url"
-                                required
                                 placeholder="https://youtube.com/embed/..."
                             />
                         </div>
@@ -11745,7 +11801,7 @@
                         description: document.getElementById(
                             "addVideoDescription"
                         ).value,
-                        url: document.getElementById("addVideoURL").value,
+                        url: null,
                         category:
                             document.getElementById("addVideoCategory").value,
                         isFeatured:
@@ -11754,6 +11810,23 @@
                             document.getElementById("addVideoPublished")
                                 .checked,
                     };
+
+                    // Handle video file upload
+                    const videoFile = document.getElementById("addVideoFileInput").files[0];
+                    if (videoFile) {
+                        const uploadedVideoUrl = await uploadFile(
+                            videoFile,
+                            "video"
+                        );
+                        videoData.url = uploadedVideoUrl;
+                    } else if (document.getElementById("addVideoURL").value) {
+                        videoData.url = document.getElementById("addVideoURL").value;
+                    }
+
+                    if (!videoData.url) {
+                        alert("Please upload a video file or provide a video URL");
+                        return;
+                    }
 
                     await apiRequest("/media/videos", {
                         method: "POST",
@@ -12252,7 +12325,7 @@
                         description: document.getElementById(
                             "editVideoDescription"
                         ).value,
-                        url: document.getElementById("editVideoURL").value,
+                        url: null,
                         category:
                             document.getElementById("editVideoCategory").value,
                         isFeatured:
@@ -12262,6 +12335,18 @@
                             document.getElementById("editVideoPublished")
                                 .checked,
                     };
+
+                    // Handle video file upload
+                    const videoFile = document.getElementById("editVideoFileInput").files[0];
+                    if (videoFile) {
+                        const uploadedVideoUrl = await uploadFile(
+                            videoFile,
+                            "video"
+                        );
+                        videoData.url = uploadedVideoUrl;
+                    } else if (document.getElementById("editVideoURL").value) {
+                        videoData.url = document.getElementById("editVideoURL").value;
+                    }
 
                     const videoId =
                         document.getElementById("editVideoId").value;
