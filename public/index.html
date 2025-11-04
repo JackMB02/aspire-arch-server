@@ -10371,7 +10371,9 @@
 
             async function loadInitiatives() {
                 try {
-                    const response = await apiRequest("/colleagues/initiatives");
+                    const response = await apiRequest(
+                        "/colleagues/initiatives"
+                    );
                     const data = response.data || response; // Handle both response formats
                     const container = document.getElementById(
                         "colleaguesInitiativesList"
@@ -12296,6 +12298,63 @@
                 }
             }
 
+            // Handle Edit Team Member Form Submission
+            async function handleEditTeamMember(event) {
+                event.preventDefault();
+
+                try {
+                    const teamMemberId =
+                        document.getElementById("editTeamMemberId").value;
+
+                    const memberData = {
+                        name: document.getElementById("editTeamMemberName")
+                            .value,
+                        role: document.getElementById("editTeamMemberRole")
+                            .value,
+                        bio: document.getElementById("editTeamMemberBio").value,
+                        displayOrder:
+                            parseInt(
+                                document.getElementById("editTeamMemberOrder")
+                                    .value
+                            ) || 0,
+                        isActive: document.getElementById(
+                            "editTeamMemberActive"
+                        ).checked,
+                        imageUrl: null,
+                    };
+
+                    // Handle image upload
+                    const imageFile = document.getElementById(
+                        "editTeamMemberImageFile"
+                    ).files[0];
+                    if (imageFile) {
+                        const uploadedImageUrl = await uploadFile(
+                            imageFile,
+                            "team-member"
+                        );
+                        memberData.imageUrl = uploadedImageUrl;
+                    } else if (
+                        document.getElementById("editTeamMemberImageUrl").value
+                    ) {
+                        memberData.imageUrl = document.getElementById(
+                            "editTeamMemberImageUrl"
+                        ).value;
+                    }
+
+                    await apiRequest(`/colleagues/team/${teamMemberId}`, {
+                        method: "PUT",
+                        body: JSON.stringify(memberData),
+                    });
+
+                    hideEditTeamMemberModal();
+                    await loadTeamMembers();
+                    alert("Team member updated successfully!");
+                } catch (error) {
+                    console.error("Failed to update team member:", error);
+                    alert("Failed to update team member: " + error.message);
+                }
+            }
+
             // Edit Initiative Handler
             async function handleEditInitiative(event) {
                 event.preventDefault();
@@ -12649,6 +12708,15 @@
             const editStoryForm = document.getElementById("editStoryForm");
             if (editStoryForm) {
                 editStoryForm.addEventListener("submit", handleEditStory);
+            }
+
+            const editTeamMemberForm =
+                document.getElementById("editTeamMemberForm");
+            if (editTeamMemberForm) {
+                editTeamMemberForm.addEventListener(
+                    "submit",
+                    handleEditTeamMember
+                );
             }
 
             const editInitiativeForm =
@@ -13478,6 +13546,35 @@
                 } catch (error) {
                     console.error("Failed to delete contact:", error);
                     alert("Failed to delete contact: " + error.message);
+                }
+            }
+
+            // Edit Team Member Function
+            async function editTeamMember(member) {
+                try {
+                    const memberData = await apiRequest(
+                        `/colleagues/team/${member.id}`
+                    );
+                    const data = memberData.data || memberData;
+
+                    document.getElementById("editTeamMemberId").value = data.id;
+                    document.getElementById("editTeamMemberName").value =
+                        data.name || "";
+                    document.getElementById("editTeamMemberRole").value =
+                        data.role || "";
+                    document.getElementById("editTeamMemberBio").value =
+                        data.bio || "";
+                    document.getElementById("editTeamMemberImageUrl").value =
+                        data.image_url || "";
+                    document.getElementById("editTeamMemberOrder").value =
+                        data.display_order || 0;
+                    document.getElementById("editTeamMemberActive").checked =
+                        data.is_active !== false;
+
+                    showEditTeamMemberModal();
+                } catch (error) {
+                    console.error("Failed to load team member data:", error);
+                    alert("Failed to load team member data: " + error.message);
                 }
             }
 

@@ -114,6 +114,76 @@ router.post("/team", async (req, res) => {
     }
 });
 
+// @desc    Get single team member by ID
+// @route   GET /api/thecolleagueuni/team/:id
+// @access  Public
+router.get("/team/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const result = await query(
+            "SELECT * FROM architecture_colleagues_team WHERE id = $1",
+            [id]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "Team member not found",
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: result.rows[0],
+        });
+    } catch (error) {
+        console.error("Get team member error:", error);
+        res.status(500).json({
+            success: false,
+            message: "Error fetching team member",
+        });
+    }
+});
+
+// @desc    Update team member details
+// @route   PUT /api/thecolleagueuni/team/:id
+// @access  Private/Admin
+router.put("/team/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, role, bio, imageUrl, displayOrder, isActive } = req.body;
+
+        const result = await query(
+            `UPDATE architecture_colleagues_team 
+             SET name = $1, role = $2, bio = $3, image_url = $4, 
+                 display_order = $5, is_active = $6, updated_at = CURRENT_TIMESTAMP 
+             WHERE id = $7 
+             RETURNING *`,
+            [name, role, bio, imageUrl, displayOrder, isActive, id]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "Team member not found",
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Team member updated successfully",
+            data: result.rows[0],
+        });
+    } catch (error) {
+        console.error("Update team member error:", error);
+        res.status(500).json({
+            success: false,
+            message: "Error updating team member",
+        });
+    }
+});
+
 // @desc    Update team member active status
 // @route   PUT /api/thecolleagueuni/team/:id/active
 // @access  Private/Admin
