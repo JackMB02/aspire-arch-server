@@ -3926,6 +3926,41 @@
                             ></div>
                         </div>
 
+                        <!-- Gallery Images Upload (Multiple) -->
+                        <div class="input-group full-width">
+                            <label for="addDesignProjectGalleryImages"
+                                >Gallery Images (Multiple)</label
+                            >
+                            <div
+                                class="file-upload-container"
+                                onclick="document.getElementById('addGalleryImagesInput').click()"
+                            >
+                                <div class="upload-icon">
+                                    <i class="fas fa-images"></i>
+                                </div>
+                                <h4>Upload Gallery Images</h4>
+                                <p>
+                                    Click to browse or drag and drop multiple
+                                    images
+                                </p>
+                                <p class="upload-hint">
+                                    You can select multiple images. Max 10
+                                    images, 5MB each
+                                </p>
+                                <input
+                                    type="file"
+                                    id="addGalleryImagesInput"
+                                    class="file-input"
+                                    accept="image/*"
+                                    multiple
+                                />
+                            </div>
+                            <div
+                                id="addGalleryImagesPreview"
+                                class="image-preview"
+                            ></div>
+                        </div>
+
                         <div class="input-group">
                             <label for="addDesignProjectDisplayOrder"
                                 >Display Order</label
@@ -5573,6 +5608,41 @@
                             </div>
                             <div
                                 id="editMainImagePreview"
+                                class="image-preview"
+                            ></div>
+                        </div>
+
+                        <!-- Gallery Images Upload (Multiple) -->
+                        <div class="input-group full-width">
+                            <label for="editDesignProjectGalleryImages"
+                                >Gallery Images (Multiple)</label
+                            >
+                            <div
+                                class="file-upload-container"
+                                onclick="document.getElementById('editGalleryImagesInput').click()"
+                            >
+                                <div class="upload-icon">
+                                    <i class="fas fa-images"></i>
+                                </div>
+                                <h4>Upload Gallery Images</h4>
+                                <p>
+                                    Click to browse or drag and drop multiple
+                                    images
+                                </p>
+                                <p class="upload-hint">
+                                    You can select multiple images. Max 10
+                                    images, 5MB each
+                                </p>
+                                <input
+                                    type="file"
+                                    id="editGalleryImagesInput"
+                                    class="file-input"
+                                    accept="image/*"
+                                    multiple
+                                />
+                            </div>
+                            <div
+                                id="editGalleryImagesPreview"
                                 class="image-preview"
                             ></div>
                         </div>
@@ -11471,8 +11541,10 @@
                             "addDesignProjectPublished"
                         ).checked,
                         mainImage: null,
+                        galleryImages: [],
                     };
 
+                    // Upload main image
                     const mainImageFile =
                         document.getElementById("addMainImageInput").files[0];
                     if (mainImageFile) {
@@ -11481,6 +11553,26 @@
                             "design-project"
                         );
                         projectData.mainImage = uploadedImageUrl;
+                    }
+
+                    // Upload gallery images (multiple)
+                    const galleryFiles = document.getElementById(
+                        "addGalleryImagesInput"
+                    ).files;
+                    if (galleryFiles && galleryFiles.length > 0) {
+                        console.log(
+                            `📸 Uploading ${galleryFiles.length} gallery images...`
+                        );
+                        for (let i = 0; i < galleryFiles.length; i++) {
+                            const uploadedImageUrl = await uploadFile(
+                                galleryFiles[i],
+                                "design-gallery"
+                            );
+                            projectData.galleryImages.push(uploadedImageUrl);
+                        }
+                        console.log(
+                            `✅ Uploaded ${projectData.galleryImages.length} gallery images`
+                        );
                     }
 
                     // Send as JSON
@@ -12834,20 +12926,42 @@
                             "editDesignProjectPublished"
                         ).checked,
                         mainImage: null,
+                        galleryImages: [],
                     };
 
                     const projectId = document.getElementById(
                         "editDesignProjectId"
                     ).value;
+
+                    // Upload main image
                     const mainImageFile =
                         document.getElementById("editMainImageInput").files[0];
-
                     if (mainImageFile) {
                         const uploadedImageUrl = await uploadFile(
                             mainImageFile,
                             "design-project"
                         );
                         projectData.mainImage = uploadedImageUrl;
+                    }
+
+                    // Upload gallery images (multiple)
+                    const galleryFiles = document.getElementById(
+                        "editGalleryImagesInput"
+                    ).files;
+                    if (galleryFiles && galleryFiles.length > 0) {
+                        console.log(
+                            `📸 Uploading ${galleryFiles.length} gallery images...`
+                        );
+                        for (let i = 0; i < galleryFiles.length; i++) {
+                            const uploadedImageUrl = await uploadFile(
+                                galleryFiles[i],
+                                "design-gallery"
+                            );
+                            projectData.galleryImages.push(uploadedImageUrl);
+                        }
+                        console.log(
+                            `✅ Uploaded ${projectData.galleryImages.length} gallery images`
+                        );
                     }
 
                     await apiRequest(`/design/admin/projects/${projectId}`, {
