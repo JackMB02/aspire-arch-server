@@ -12648,6 +12648,33 @@
                 }
             }
 
+            function setupMultipleFileUploadPreview(inputId, previewId) {
+                const input = document.getElementById(inputId);
+                const preview = document.getElementById(previewId);
+
+                if (input && preview) {
+                    input.addEventListener("change", function (e) {
+                        const files = e.target.files;
+                        if (files && files.length > 0) {
+                            preview.innerHTML = ''; // Clear previous previews
+                            console.log(`📸 Selected ${files.length} files`);
+                            
+                            Array.from(files).forEach((file, index) => {
+                                const reader = new FileReader();
+                                reader.onload = function (e) {
+                                    const imgDiv = document.createElement('div');
+                                    imgDiv.style.display = 'inline-block';
+                                    imgDiv.style.margin = '5px';
+                                    imgDiv.innerHTML = `<img src="${e.target.result}" alt="Preview ${index + 1}" style="max-width: 150px; max-height: 150px; border-radius: 8px; object-fit: cover;">`;
+                                    preview.appendChild(imgDiv);
+                                };
+                                reader.readAsDataURL(file);
+                            });
+                        }
+                    });
+                }
+            }
+
             // ===== INITIALIZATION =====
 
             document.addEventListener("DOMContentLoaded", function () {
@@ -12666,10 +12693,18 @@
                     "addMainImageInput",
                     "addMainImagePreview"
                 );
+                setupMultipleFileUploadPreview(
+                    "addGalleryImagesInput",
+                    "addGalleryImagesPreview"
+                );
                 setupFileUploadPreview("addPhotoFileInput", "addPhotoPreview");
                 setupFileUploadPreview(
                     "addDesignFileInput",
                     "addDesignPreview"
+                );
+                setupFileUploadPreview(
+                    "addVideoFileInput",
+                    "addVideoFilePreview"
                 );
                 setupFileUploadPreview(
                     "addTeamMemberImageFile",
@@ -12688,6 +12723,14 @@
                 setupFileUploadPreview(
                     "editMainImageInput",
                     "editMainImagePreview"
+                );
+                setupMultipleFileUploadPreview(
+                    "editGalleryImagesInput",
+                    "editGalleryImagesPreview"
+                );
+                setupFileUploadPreview(
+                    "editVideoFileInput",
+                    "editVideoFilePreview"
                 );
                 setupFileUploadPreview(
                     "editTeamMemberImageFile",
@@ -12771,7 +12814,10 @@
 
                 const addDesignForm = document.getElementById("addDesignForm");
                 if (addDesignForm) {
-                    addDesignForm.addEventListener("submit", handleAddDesignProject);
+                    addDesignForm.addEventListener(
+                        "submit",
+                        handleAddDesignProject
+                    );
                 }
 
                 const addStoryForm = document.getElementById("addStoryForm");
