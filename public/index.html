@@ -6,7 +6,7 @@
         <title>Aspire Design Lab - Admin Dashboard</title>
 
         <!-- Favicon -->
-        <link rel="icon" type="image/png" href="/hero logo.png" />
+        <link rel="icon" type="image/png" href="/hero%20logo.png" />
 
         <!-- External Resources -->
         <link
@@ -916,7 +916,7 @@
                 <div class="sidebar" id="sidebar">
                     <div class="sidebar-header">
                         <img
-                            src="/hero logo.png"
+                            src="/hero%20logo.png"
                             alt="Aspire Logo"
                             class="sidebar-logo"
                         />
@@ -3952,22 +3952,62 @@
                         <!-- Content Builder Section -->
                         <div class="input-group full-width">
                             <label>Project Content Builder</label>
-                            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">
-                                Build your project content by adding text blocks and images in any order you want
+                            <p
+                                style="
+                                    color: var(--text-muted);
+                                    font-size: 0.9rem;
+                                    margin-bottom: 1rem;
+                                "
+                            >
+                                Build your project content by adding text blocks
+                                and images in any order you want
                             </p>
-                            
-                            <div style="margin-bottom: 1rem; display: flex; gap: 0.5rem;">
-                                <button type="button" class="btn-secondary" onclick="addContentBlock('text')" style="flex: 1;">
-                                    <i class="fas fa-heading"></i> Add Text Block
+
+                            <div
+                                style="
+                                    margin-bottom: 1rem;
+                                    display: flex;
+                                    gap: 0.5rem;
+                                "
+                            >
+                                <button
+                                    type="button"
+                                    class="btn-secondary"
+                                    onclick="addContentBlock('text')"
+                                    style="flex: 1"
+                                >
+                                    <i class="fas fa-heading"></i> Add Text
+                                    Block
                                 </button>
-                                <button type="button" class="btn-secondary" onclick="addContentBlock('image')" style="flex: 1;">
+                                <button
+                                    type="button"
+                                    class="btn-secondary"
+                                    onclick="addContentBlock('image')"
+                                    style="flex: 1"
+                                >
                                     <i class="fas fa-image"></i> Add Image
                                 </button>
                             </div>
-                            
-                            <div id="contentBlocksContainer" style="border: 1px solid var(--border-light); border-radius: 8px; padding: 1rem; min-height: 100px; background: rgba(0,0,0,0.2);">
-                                <p id="emptyContentMessage" style="color: var(--text-muted); text-align: center;">
-                                    No content blocks yet. Click the buttons above to add text or images.
+
+                            <div
+                                id="contentBlocksContainer"
+                                style="
+                                    border: 1px solid var(--border-light);
+                                    border-radius: 8px;
+                                    padding: 1rem;
+                                    min-height: 100px;
+                                    background: rgba(0, 0, 0, 0.2);
+                                "
+                            >
+                                <p
+                                    id="emptyContentMessage"
+                                    style="
+                                        color: var(--text-muted);
+                                        text-align: center;
+                                    "
+                                >
+                                    No content blocks yet. Click the buttons
+                                    above to add text or images.
                                 </p>
                             </div>
                         </div>
@@ -11135,20 +11175,25 @@
             const contentBlocks = [];
 
             function addContentBlock(type) {
-                const container = document.getElementById('contentBlocksContainer');
-                const emptyMessage = document.getElementById('emptyContentMessage');
-                
+                const container = document.getElementById(
+                    "contentBlocksContainer"
+                );
+                const emptyMessage = document.getElementById(
+                    "emptyContentMessage"
+                );
+
                 if (emptyMessage) {
-                    emptyMessage.style.display = 'none';
+                    emptyMessage.style.display = "none";
                 }
 
                 const blockId = `content-block-${contentBlockCounter++}`;
-                const blockDiv = document.createElement('div');
+                const blockDiv = document.createElement("div");
                 blockDiv.id = blockId;
-                blockDiv.className = 'content-block';
-                blockDiv.style.cssText = 'border: 1px solid var(--border-light); border-radius: 8px; padding: 1rem; margin-bottom: 1rem; background: var(--bg-card);';
+                blockDiv.className = "content-block";
+                blockDiv.style.cssText =
+                    "border: 1px solid var(--border-light); border-radius: 8px; padding: 1rem; margin-bottom: 1rem; background: var(--bg-card);";
 
-                if (type === 'text') {
+                if (type === "text") {
                     blockDiv.innerHTML = `
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
                             <h4 style="margin: 0; color: var(--accent-light);"><i class="fas fa-heading"></i> Text Block</h4>
@@ -11167,8 +11212,8 @@
                         <input type="text" placeholder="Title (optional)" id="${blockId}-title" style="width: 100%; padding: 0.5rem; margin-bottom: 0.5rem; background: var(--bg-dark); border: 1px solid var(--border-light); border-radius: 4px; color: var(--text-light);" />
                         <textarea placeholder="Enter your text content here..." id="${blockId}-content" style="width: 100%; min-height: 100px; padding: 0.5rem; background: var(--bg-dark); border: 1px solid var(--border-light); border-radius: 4px; color: var(--text-light); font-family: inherit;"></textarea>
                     `;
-                    contentBlocks.push({ id: blockId, type: 'text' });
-                } else if (type === 'image') {
+                    contentBlocks.push({ id: blockId, type: "text" });
+                } else if (type === "image") {
                     blockDiv.innerHTML = `
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
                             <h4 style="margin: 0; color: var(--accent-light);"><i class="fas fa-image"></i> Image Block</h4>
@@ -11194,7 +11239,11 @@
                         <input type="file" id="${blockId}-input" accept="image/*" style="display: none;" onchange="handleContentBlockImage('${blockId}')" />
                         <div id="${blockId}-preview" style="margin-top: 0.5rem;"></div>
                     `;
-                    contentBlocks.push({ id: blockId, type: 'image', file: null });
+                    contentBlocks.push({
+                        id: blockId,
+                        type: "image",
+                        file: null,
+                    });
                 }
 
                 container.appendChild(blockDiv);
@@ -11204,19 +11253,19 @@
                 const input = document.getElementById(`${blockId}-input`);
                 const preview = document.getElementById(`${blockId}-preview`);
                 const filename = document.getElementById(`${blockId}-filename`);
-                
+
                 if (input.files && input.files[0]) {
                     const file = input.files[0];
                     filename.textContent = file.name;
-                    
+
                     const reader = new FileReader();
-                    reader.onload = function(e) {
+                    reader.onload = function (e) {
                         preview.innerHTML = `<img src="${e.target.result}" style="max-width: 100%; border-radius: 8px; margin-top: 0.5rem;" />`;
                     };
                     reader.readAsDataURL(file);
-                    
+
                     // Store file reference
-                    const block = contentBlocks.find(b => b.id === blockId);
+                    const block = contentBlocks.find((b) => b.id === blockId);
                     if (block) {
                         block.file = file;
                     }
@@ -11228,23 +11277,30 @@
                 if (block) {
                     block.remove();
                 }
-                const index = contentBlocks.findIndex(b => b.id === blockId);
+                const index = contentBlocks.findIndex((b) => b.id === blockId);
                 if (index > -1) {
                     contentBlocks.splice(index, 1);
                 }
-                
+
                 // Show empty message if no blocks
-                const container = document.getElementById('contentBlocksContainer');
-                const emptyMessage = document.getElementById('emptyContentMessage');
+                const container = document.getElementById(
+                    "contentBlocksContainer"
+                );
+                const emptyMessage = document.getElementById(
+                    "emptyContentMessage"
+                );
                 if (container.children.length === 1 && emptyMessage) {
-                    emptyMessage.style.display = 'block';
+                    emptyMessage.style.display = "block";
                 }
             }
 
             function moveBlockUp(blockId) {
                 const block = document.getElementById(blockId);
                 const previousBlock = block.previousElementSibling;
-                if (previousBlock && previousBlock.id !== 'emptyContentMessage') {
+                if (
+                    previousBlock &&
+                    previousBlock.id !== "emptyContentMessage"
+                ) {
                     block.parentNode.insertBefore(block, previousBlock);
                 }
             }
@@ -11258,15 +11314,18 @@
             }
 
             // ===== MODAL FUNCTIONS =====
-            
+
             function hideAddDesignProjectModal() {
                 hideModal("addDesignProjectModal");
                 // Clear content blocks
                 contentBlocks.length = 0;
                 contentBlockCounter = 0;
-                const container = document.getElementById('contentBlocksContainer');
+                const container = document.getElementById(
+                    "contentBlocksContainer"
+                );
                 if (container) {
-                    container.innerHTML = '<p id="emptyContentMessage" style="color: var(--text-muted); text-align: center;">No content blocks yet. Click the buttons above to add text or images.</p>';
+                    container.innerHTML =
+                        '<p id="emptyContentMessage" style="color: var(--text-muted); text-align: center;">No content blocks yet. Click the buttons above to add text or images.</p>';
                 }
             }
             function showAddResearchModal(category = null) {
@@ -11817,30 +11876,45 @@
                     }
 
                     // Process content blocks
-                    console.log(`📝 Processing ${contentBlocks.length} content blocks...`);
+                    console.log(
+                        `📝 Processing ${contentBlocks.length} content blocks...`
+                    );
                     for (const block of contentBlocks) {
-                        if (block.type === 'text') {
-                            const title = document.getElementById(`${block.id}-title`)?.value || '';
-                            const content = document.getElementById(`${block.id}-content`)?.value || '';
+                        if (block.type === "text") {
+                            const title =
+                                document.getElementById(`${block.id}-title`)
+                                    ?.value || "";
+                            const content =
+                                document.getElementById(`${block.id}-content`)
+                                    ?.value || "";
                             if (content) {
                                 projectData.contentBlocks.push({
-                                    type: 'text',
+                                    type: "text",
                                     title: title,
-                                    content: content
+                                    content: content,
                                 });
                             }
-                        } else if (block.type === 'image' && block.file) {
-                            const caption = document.getElementById(`${block.id}-caption`)?.value || '';
-                            console.log(`📸 Uploading image block: ${block.file.name}`);
-                            const uploadedImageUrl = await uploadFile(block.file, 'design-content');
+                        } else if (block.type === "image" && block.file) {
+                            const caption =
+                                document.getElementById(`${block.id}-caption`)
+                                    ?.value || "";
+                            console.log(
+                                `📸 Uploading image block: ${block.file.name}`
+                            );
+                            const uploadedImageUrl = await uploadFile(
+                                block.file,
+                                "design-content"
+                            );
                             projectData.contentBlocks.push({
-                                type: 'image',
+                                type: "image",
                                 caption: caption,
-                                imageUrl: uploadedImageUrl
+                                imageUrl: uploadedImageUrl,
                             });
                         }
                     }
-                    console.log(`✅ Processed ${projectData.contentBlocks.length} content blocks`);
+                    console.log(
+                        `✅ Processed ${projectData.contentBlocks.length} content blocks`
+                    );
 
                     // Send as JSON
                     await apiRequest("/design/admin/projects", {
