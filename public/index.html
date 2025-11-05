@@ -4854,6 +4854,35 @@
                             />
                         </div>
 
+                        <div class="input-group full-width">
+                            <label for="addVideoThumbnailInput"
+                                >Thumbnail Image *</label
+                            >
+                            <div
+                                class="file-upload-container"
+                                onclick="document.getElementById('addVideoThumbnailInput').click()"
+                            >
+                                <div class="upload-icon">
+                                    <i class="fas fa-image"></i>
+                                </div>
+                                <h4>Upload Thumbnail</h4>
+                                <p>Click to browse or drag and drop</p>
+                                <p class="upload-hint">
+                                    Supported: JPG, PNG, max 5MB
+                                </p>
+                                <input
+                                    type="file"
+                                    id="addVideoThumbnailInput"
+                                    class="file-input"
+                                    accept="image/*"
+                                />
+                            </div>
+                            <div
+                                id="addVideoThumbnailPreview"
+                                class="image-preview"
+                            ></div>
+                        </div>
+
                         <div class="input-group">
                             <label for="addVideoCategory">Category</label>
                             <input
@@ -6491,6 +6520,35 @@
                                 type="url"
                                 placeholder="https://youtube.com/embed/..."
                             />
+                        </div>
+
+                        <div class="input-group full-width">
+                            <label for="editVideoThumbnailInput"
+                                >Thumbnail Image</label
+                            >
+                            <div
+                                class="file-upload-container"
+                                onclick="document.getElementById('editVideoThumbnailInput').click()"
+                            >
+                                <div class="upload-icon">
+                                    <i class="fas fa-image"></i>
+                                </div>
+                                <h4>Upload New Thumbnail</h4>
+                                <p>Click to browse or drag and drop</p>
+                                <p class="upload-hint">
+                                    Supported: JPG, PNG, max 5MB
+                                </p>
+                                <input
+                                    type="file"
+                                    id="editVideoThumbnailInput"
+                                    class="file-input"
+                                    accept="image/*"
+                                />
+                            </div>
+                            <div
+                                id="editVideoThumbnailPreview"
+                                class="image-preview"
+                            ></div>
                         </div>
 
                         <div class="input-group">
@@ -11825,6 +11883,7 @@
                             "addVideoDescription"
                         ).value,
                         url: null,
+                        thumbnail: null,
                         category:
                             document.getElementById("addVideoCategory").value,
                         isFeatured:
@@ -11852,6 +11911,22 @@
                         alert(
                             "Please upload a video file or provide a video URL"
                         );
+                        return;
+                    }
+
+                    // Handle thumbnail upload
+                    const thumbnailFile =
+                        document.getElementById("addVideoThumbnailInput").files[0];
+                    if (thumbnailFile) {
+                        const uploadedThumbnailUrl = await uploadFile(
+                            thumbnailFile,
+                            "video-thumbnail"
+                        );
+                        videoData.thumbnail = uploadedThumbnailUrl;
+                    }
+
+                    if (!videoData.thumbnail) {
+                        alert("Please upload a thumbnail image for the video");
                         return;
                     }
 
@@ -12353,6 +12428,7 @@
                             "editVideoDescription"
                         ).value,
                         url: null,
+                        thumbnail: null,
                         category:
                             document.getElementById("editVideoCategory").value,
                         isFeatured:
@@ -12375,6 +12451,17 @@
                     } else if (document.getElementById("editVideoURL").value) {
                         videoData.url =
                             document.getElementById("editVideoURL").value;
+                    }
+
+                    // Handle thumbnail upload
+                    const thumbnailFile =
+                        document.getElementById("editVideoThumbnailInput").files[0];
+                    if (thumbnailFile) {
+                        const uploadedThumbnailUrl = await uploadFile(
+                            thumbnailFile,
+                            "video-thumbnail"
+                        );
+                        videoData.thumbnail = uploadedThumbnailUrl;
                     }
 
                     const videoId =
@@ -12707,6 +12794,10 @@
                     "addVideoFilePreview"
                 );
                 setupFileUploadPreview(
+                    "addVideoThumbnailInput",
+                    "addVideoThumbnailPreview"
+                );
+                setupFileUploadPreview(
                     "addTeamMemberImageFile",
                     "addTeamMemberImagePreview"
                 );
@@ -12731,6 +12822,10 @@
                 setupFileUploadPreview(
                     "editVideoFileInput",
                     "editVideoFilePreview"
+                );
+                setupFileUploadPreview(
+                    "editVideoThumbnailInput",
+                    "editVideoThumbnailPreview"
                 );
                 setupFileUploadPreview(
                     "editTeamMemberImageFile",
