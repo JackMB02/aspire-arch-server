@@ -6450,6 +6450,36 @@
                             </select>
                         </div>
 
+                        <!-- Gallery Selection/Creation -->
+                        <div class="input-group full-width">
+                            <label>Gallery</label>
+                            <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                                <button type="button" class="btn-secondary" id="editUseExistingGalleryBtn" onclick="toggleEditGalleryMode('existing')" style="flex: 1;">
+                                    <i class="fas fa-folder-open"></i> Select Existing
+                                </button>
+                                <button type="button" class="btn-secondary" id="editCreateNewGalleryBtn" onclick="toggleEditGalleryMode('new')" style="flex: 1;">
+                                    <i class="fas fa-folder-plus"></i> Create New
+                                </button>
+                            </div>
+                            
+                            <!-- Existing Gallery Selection -->
+                            <div id="editExistingGallerySection" style="display: none;">
+                                <select id="editPhotoExistingGallery" style="width: 100%; padding: 0.8rem; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-light); border-radius: 8px; color: var(--text-light);">
+                                    <option value="">Loading galleries...</option>
+                                </select>
+                            </div>
+                            
+                            <!-- New Gallery Creation -->
+                            <div id="editNewGallerySection" style="display: none;">
+                                <input 
+                                    type="text" 
+                                    id="editPhotoNewGallery" 
+                                    placeholder="Enter new gallery name (e.g., Summer 2024 Projects)"
+                                    style="width: 100%; padding: 0.8rem; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-light); border-radius: 8px; color: var(--text-light);"
+                                />
+                            </div>
+                        </div>
+
                         <div class="input-group full-width">
                             <label for="editPhotoFileInput">Photo Upload</label>
                             <div
@@ -11501,6 +11531,64 @@
                     document.getElementById('addPhotoExistingGallery').value = '';
                 }
             }
+            
+            function toggleEditGalleryMode(mode) {
+                const existingSection = document.getElementById('editExistingGallerySection');
+                const newSection = document.getElementById('editNewGallerySection');
+                const existingBtn = document.getElementById('editUseExistingGalleryBtn');
+                const newBtn = document.getElementById('editCreateNewGalleryBtn');
+                
+                if (mode === 'existing') {
+                    existingSection.style.display = 'block';
+                    newSection.style.display = 'none';
+                    existingBtn.classList.add('btn-primary');
+                    existingBtn.classList.remove('btn-secondary');
+                    newBtn.classList.remove('btn-primary');
+                    newBtn.classList.add('btn-secondary');
+                    // Clear new gallery input
+                    document.getElementById('editPhotoNewGallery').value = '';
+                } else {
+                    existingSection.style.display = 'none';
+                    newSection.style.display = 'block';
+                    newBtn.classList.add('btn-primary');
+                    newBtn.classList.remove('btn-secondary');
+                    existingBtn.classList.remove('btn-primary');
+                    existingBtn.classList.add('btn-secondary');
+                    // Reset existing gallery select
+                    document.getElementById('editPhotoExistingGallery').value = '';
+                }
+            }
+            
+            async function loadExistingGalleriesForEdit() {
+                try {
+                    const response = await fetch('/api/media/galleries', {
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        }
+                    });
+                    
+                    if (!response.ok) throw new Error('Failed to load galleries');
+                    
+                    const galleries = await response.json();
+                    const select = document.getElementById('editPhotoExistingGallery');
+                    
+                    select.innerHTML = '<option value="">No Gallery</option>';
+                    
+                    if (galleries && galleries.length > 0) {
+                        galleries.forEach(gallery => {
+                            const option = document.createElement('option');
+                            option.value = gallery;
+                            option.textContent = gallery;
+                            select.appendChild(option);
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error loading galleries:', error);
+                    document.getElementById('editPhotoExistingGallery').innerHTML = 
+                        '<option value="">No Gallery</option>';
+                }
+            }
+            
             function hideAddPhotoModal() {
                 hideModal("addPhotoModal");
             }
@@ -12739,6 +12827,11 @@
                 event.preventDefault();
 
                 try {
+                    // Get gallery name from either existing or new gallery input
+                    const existingGallery = document.getElementById('editPhotoExistingGallery').value;
+                    const newGallery = document.getElementById('editPhotoNewGallery').value.trim();
+                    const galleryName = newGallery || existingGallery || null;
+                    
                     const photoData = {
                         title: document.getElementById("editPhotoTitle").value,
                         description: document.getElementById(
@@ -12746,6 +12839,7 @@
                         ).value,
                         category:
                             document.getElementById("editPhotoCategory").value,
+                        albumName: galleryName,
                         isFeatured:
                             document.getElementById("editPhotoFeatured")
                                 .checked,
@@ -13796,6 +13890,19 @@
                         document.getElementById(
                             "editPhotoPreview"
                         ).innerHTML = `<img src="${photoData.image_url}" alt="Preview" style="max-width: 200px; border-radius: 8px;">`;
+                    }
+
+                    // Load galleries and set current gallery
+                    await loadExistingGalleriesForEdit();
+                    const currentGallery = photoData.album || photoData.albumName || '';
+                    
+                    if (currentGallery) {
+                        // Set to existing gallery mode
+                        toggleEditGalleryMode('existing');
+                        document.getElementById('editPhotoExistingGallery').value = currentGallery;
+                    } else {
+                        // Set to existing gallery mode by default
+                        toggleEditGalleryMode('existing');
                     }
 
                     showEditPhotoModal();
