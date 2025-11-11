@@ -55,6 +55,26 @@ router.get("/stats", async (req, res) => {
     }
 });
 
+// Get existing galleries (unique album names)
+router.get("/galleries", async (req, res) => {
+    try {
+        const result = await query(
+            `
+      SELECT DISTINCT album_name 
+      FROM media_photos 
+      WHERE album_name IS NOT NULL AND album_name != ''
+      ORDER BY album_name ASC
+    `
+        );
+
+        const galleries = result.rows.map((row) => row.album_name);
+        res.json(galleries);
+    } catch (error) {
+        console.error("Error fetching galleries:", error);
+        res.status(500).json({ error: "Failed to fetch galleries" });
+    }
+});
+
 // Get all photos
 router.get("/photos", async (req, res) => {
     try {
@@ -463,6 +483,7 @@ router.post("/photos", async (req, res) => {
             image, // Accept camelCase from frontend
             category,
             album_name,
+            albumName, // Accept camelCase from frontend
             album, // Accept camelCase from frontend
             tags,
             is_featured,
@@ -474,7 +495,7 @@ router.post("/photos", async (req, res) => {
 
         // Use either snake_case or camelCase, preferring the one that's provided
         const imageUrl = image_url || image;
-        const albumName = album_name || album;
+        const albumNameValue = album_name || albumName || album;
         const featured = is_featured !== undefined ? is_featured : isFeatured;
         const published =
             is_published !== undefined ? is_published : isPublished;
@@ -497,7 +518,7 @@ router.post("/photos", async (req, res) => {
                 description || "",
                 imageUrl,
                 category || "Architecture",
-                albumName || null,
+                albumNameValue || null,
                 JSON.stringify(tags || []),
                 featured || false,
                 published !== undefined ? published : true,
@@ -514,6 +535,7 @@ router.post("/photos", async (req, res) => {
             category: photo.category,
             description: photo.description,
             album: photo.album_name,
+            albumName: photo.album_name,
             tags: photo.tags,
             isFeatured: photo.is_featured,
             is_featured: photo.is_featured,

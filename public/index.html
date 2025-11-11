@@ -3618,7 +3618,7 @@
                                 <h4>Upload News Image</h4>
                                 <p>Click to browse or drag and drop</p>
                                 <p class="upload-hint">
-                                    Recommended: 1200x800px, max 5MB
+                                    Recommended: 1200x800px, max 20MB
                                 </p>
                                 <input
                                     type="file"
@@ -3762,7 +3762,7 @@
                                 <h4>Upload Event Image</h4>
                                 <p>Click to browse or drag and drop</p>
                                 <p class="upload-hint">
-                                    Recommended: 1200x800px, max 5MB
+                                    Recommended: 1200x800px, max 20MB
                                 </p>
                                 <input
                                     type="file"
@@ -3933,7 +3933,7 @@
                                 <h4>Upload Main Image</h4>
                                 <p>Click to browse or drag and drop</p>
                                 <p class="upload-hint">
-                                    Recommended: 1200x800px, max 5MB
+                                    Recommended: 1200x800px, max 20MB
                                 </p>
                                 <input
                                     type="file"
@@ -4459,6 +4459,36 @@
                             </select>
                         </div>
 
+                        <!-- Gallery Selection/Creation -->
+                        <div class="input-group full-width">
+                            <label>Gallery *</label>
+                            <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                                <button type="button" class="btn-secondary" id="useExistingGalleryBtn" onclick="toggleGalleryMode('existing')" style="flex: 1;">
+                                    <i class="fas fa-folder-open"></i> Select Existing
+                                </button>
+                                <button type="button" class="btn-secondary" id="createNewGalleryBtn" onclick="toggleGalleryMode('new')" style="flex: 1;">
+                                    <i class="fas fa-folder-plus"></i> Create New
+                                </button>
+                            </div>
+                            
+                            <!-- Existing Gallery Selection -->
+                            <div id="existingGallerySection" style="display: none;">
+                                <select id="addPhotoExistingGallery" style="width: 100%; padding: 0.8rem; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-light); border-radius: 8px; color: var(--text-light);">
+                                    <option value="">Loading galleries...</option>
+                                </select>
+                            </div>
+                            
+                            <!-- New Gallery Creation -->
+                            <div id="newGallerySection" style="display: none;">
+                                <input 
+                                    type="text" 
+                                    id="addPhotoNewGallery" 
+                                    placeholder="Enter new gallery name (e.g., Summer 2024 Projects)"
+                                    style="width: 100%; padding: 0.8rem; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-light); border-radius: 8px; color: var(--text-light);"
+                                />
+                            </div>
+                        </div>
+
                         <div class="input-group full-width">
                             <label for="addPhotoFileInput"
                                 >Photo Upload *</label
@@ -4473,7 +4503,7 @@
                                 <h4>Upload Photo</h4>
                                 <p>Click to browse or drag and drop</p>
                                 <p class="upload-hint">
-                                    Recommended: 1200x800px, max 5MB
+                                    Recommended: 1200x800px, max 20MB
                                 </p>
                                 <input
                                     type="file"
@@ -4896,7 +4926,7 @@
                                 <h4>Upload Thumbnail</h4>
                                 <p>Click to browse or drag and drop</p>
                                 <p class="upload-hint">
-                                    Supported: JPG, PNG, max 5MB
+                                    Supported: JPG, PNG, max 20MB
                                 </p>
                                 <input
                                     type="file"
@@ -5321,7 +5351,7 @@
                                 <h4>Upload News Image</h4>
                                 <p>Click to browse or drag and drop</p>
                                 <p class="upload-hint">
-                                    Recommended: 1200x800px, max 5MB
+                                    Recommended: 1200x800px, max 20MB
                                 </p>
                                 <input
                                     type="file"
@@ -5466,7 +5496,7 @@
                                 <h4>Upload Event Image</h4>
                                 <p>Click to browse or drag and drop</p>
                                 <p class="upload-hint">
-                                    Recommended: 1200x800px, max 5MB
+                                    Recommended: 1200x800px, max 20MB
                                 </p>
                                 <input
                                     type="file"
@@ -5705,7 +5735,7 @@
                                 <h4>Upload Main Image</h4>
                                 <p>Click to browse or drag and drop</p>
                                 <p class="upload-hint">
-                                    Recommended: 1200x800px, max 5MB
+                                    Recommended: 1200x800px, max 20MB
                                 </p>
                                 <input
                                     type="file"
@@ -5739,7 +5769,7 @@
                                 </p>
                                 <p class="upload-hint">
                                     You can select multiple images. Max 10
-                                    images, 5MB each
+                                    images, 20MB each
                                 </p>
                                 <input
                                     type="file"
@@ -6432,7 +6462,7 @@
                                 <h4>Upload New Photo</h4>
                                 <p>Click to browse or drag and drop</p>
                                 <p class="upload-hint">
-                                    Recommended: 1200x800px, max 5MB
+                                    Recommended: 1200x800px, max 20MB
                                 </p>
                                 <input
                                     type="file"
@@ -6564,7 +6594,7 @@
                                 <h4>Upload New Thumbnail</h4>
                                 <p>Click to browse or drag and drop</p>
                                 <p class="upload-hint">
-                                    Supported: JPG, PNG, max 5MB
+                                    Supported: JPG, PNG, max 20MB
                                 </p>
                                 <input
                                     type="file"
@@ -11344,8 +11374,69 @@
             function hideAddStoryModal() {
                 hideModal("addStoryModal");
             }
-            function showAddPhotoModal() {
+            async function showAddPhotoModal() {
+                // Load existing galleries
+                await loadExistingGalleries();
+                // Set default mode to existing gallery
+                toggleGalleryMode('existing');
                 showModal("addPhotoModal");
+            }
+            
+            async function loadExistingGalleries() {
+                try {
+                    const response = await fetch('/api/media/galleries', {
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        }
+                    });
+                    
+                    if (!response.ok) throw new Error('Failed to load galleries');
+                    
+                    const galleries = await response.json();
+                    const select = document.getElementById('addPhotoExistingGallery');
+                    
+                    select.innerHTML = '<option value="">No Gallery</option>';
+                    
+                    if (galleries && galleries.length > 0) {
+                        galleries.forEach(gallery => {
+                            const option = document.createElement('option');
+                            option.value = gallery;
+                            option.textContent = gallery;
+                            select.appendChild(option);
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error loading galleries:', error);
+                    document.getElementById('addPhotoExistingGallery').innerHTML = 
+                        '<option value="">No Gallery</option>';
+                }
+            }
+            
+            function toggleGalleryMode(mode) {
+                const existingSection = document.getElementById('existingGallerySection');
+                const newSection = document.getElementById('newGallerySection');
+                const existingBtn = document.getElementById('useExistingGalleryBtn');
+                const newBtn = document.getElementById('createNewGalleryBtn');
+                
+                if (mode === 'existing') {
+                    existingSection.style.display = 'block';
+                    newSection.style.display = 'none';
+                    existingBtn.classList.add('btn-primary');
+                    existingBtn.classList.remove('btn-secondary');
+                    newBtn.classList.remove('btn-primary');
+                    newBtn.classList.add('btn-secondary');
+                    // Clear new gallery input
+                    document.getElementById('addPhotoNewGallery').value = '';
+                } else {
+                    existingSection.style.display = 'none';
+                    newSection.style.display = 'block';
+                    newBtn.classList.add('btn-primary');
+                    newBtn.classList.remove('btn-secondary');
+                    existingBtn.classList.remove('btn-primary');
+                    existingBtn.classList.add('btn-secondary');
+                    // Reset existing gallery select
+                    document.getElementById('addPhotoExistingGallery').value = '';
+                }
             }
             function hideAddPhotoModal() {
                 hideModal("addPhotoModal");
@@ -12037,6 +12128,11 @@
                 event.preventDefault();
 
                 try {
+                    // Get gallery name from either existing or new gallery input
+                    const existingGallery = document.getElementById('addPhotoExistingGallery').value;
+                    const newGallery = document.getElementById('addPhotoNewGallery').value.trim();
+                    const galleryName = newGallery || existingGallery || null;
+                    
                     const photoData = {
                         title: document.getElementById("addPhotoTitle").value,
                         description: document.getElementById(
@@ -12044,6 +12140,7 @@
                         ).value,
                         category:
                             document.getElementById("addPhotoCategory").value,
+                        albumName: galleryName,
                         isFeatured:
                             document.getElementById("addPhotoFeatured").checked,
                         isPublished:
