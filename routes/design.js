@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { query } = require("../db");
-// Helper function to parse gallery_images JSON strings
+// Helper function to parse gallery_images JSON strings and add contentBlocks
 const parseProjectGalleryImages = (projects) => {
     return projects.map((project) => {
         if (
@@ -19,6 +19,11 @@ const parseProjectGalleryImages = (projects) => {
                 project.gallery_images = [];
             }
         }
+        
+        // Add contentBlocks field for frontend compatibility
+        project.contentBlocks = project.gallery_images || [];
+        project.content_blocks = project.gallery_images || [];
+        
         return project;
     });
 };
@@ -139,7 +144,7 @@ router.get("/projects/:category", async (req, res) => {
 
         res.status(200).json({
             success: true,
-            data: result.rows,
+            data: parseProjectGalleryImages(result.rows),
         });
     } catch (error) {
         console.error("Get design projects by category error:", error);
@@ -166,7 +171,7 @@ router.get("/sector/:sector", async (req, res) => {
 
         res.status(200).json({
             success: true,
-            data: result.rows,
+            data: parseProjectGalleryImages(result.rows),
         });
     } catch (error) {
         console.error("Get design projects by sector error:", error);
@@ -209,6 +214,10 @@ router.get("/project/:id", async (req, res) => {
                 project.gallery_images = [];
             }
         }
+        
+        // Add contentBlocks field for frontend compatibility
+        project.contentBlocks = project.gallery_images || [];
+        project.content_blocks = project.gallery_images || [];
 
         res.status(200).json({
             success: true,
@@ -1061,7 +1070,7 @@ router.get("/search", async (req, res) => {
 
         res.status(200).json({
             success: true,
-            data: result.rows,
+            data: parseProjectGalleryImages(result.rows),
             count: result.rows.length,
         });
     } catch (error) {
