@@ -82,9 +82,9 @@ app.use(
     })
 );
 
-// Middleware - increased limit to handle large base64 images (20MB images = ~27MB base64)
-app.use(express.json({ limit: "50mb" }));
-app.use(express.urlencoded({ extended: true, limit: "50mb" }));
+// Middleware - increased limit to handle large base64 videos (100MB videos = ~133MB base64)
+app.use(express.json({ limit: "150mb" }));
+app.use(express.urlencoded({ extended: true, limit: "150mb" }));
 
 // Database connection middleware with retry logic
 app.use(async (req, res, next) => {

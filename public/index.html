@@ -7311,6 +7311,11 @@
                         file.type
                     );
 
+                    // Show warning for very large videos
+                    if (file.type.startsWith('video/') && file.size > 50 * 1024 * 1024) {
+                        console.warn(`⚠️ Large video file detected: ${(file.size / 1024 / 1024).toFixed(2)}MB - This may take a while to upload...`);
+                    }
+
                     // Compress image if it's too large (over 5MB)
                     let processedFile = file;
                     if (file.type.startsWith('image/') && file.size > 5 * 1024 * 1024) {
