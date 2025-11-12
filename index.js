@@ -22,6 +22,7 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 
 // CORS configuration - Updated for development and production
+// Ensures www.aspiredesignlab.rw and other production domains are allowed
 app.use(
     cors({
         origin: function (origin, callback) {
