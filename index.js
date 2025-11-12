@@ -28,7 +28,6 @@ app.use(
         origin: function (origin, callback) {
             // Allow requests with no origin (mobile apps, curl, etc)
             if (!origin) {
-                console.log("✅ Allowing request with no origin");
                 return callback(null, true);
             }
 
@@ -54,26 +53,20 @@ app.use(
 
             // First check exact matches
             if (allowedOrigins.includes(origin)) {
-                console.log(`✅ Allowing request from origin: ${origin}`);
                 return callback(null, true);
             }
 
             // Then check domain patterns
             if (allowedDomains.some((pattern) => pattern.test(origin))) {
-                console.log(`✅ Allowing request from domain: ${origin}`);
                 return callback(null, true);
             }
 
             // In development, allow all origins
             if (process.env.NODE_ENV === "development") {
-                console.log(
-                    `✅ Development mode: Allowing request from ${origin}`
-                );
                 return callback(null, true);
             }
 
-            // Log blocked origins to help with debugging
-            console.log(`❌ Blocked request from origin: ${origin}`);
+            // Reject other origins
             callback(new Error("Not allowed by CORS"));
         },
         credentials: true,
@@ -83,9 +76,10 @@ app.use(
     })
 );
 
-// Middleware - increased limit to handle large base64 videos (100MB videos = ~133MB base64)
-app.use(express.json({ limit: "150mb" }));
-app.use(express.urlencoded({ extended: true, limit: "150mb" }));
+// Middleware - optimized for Render's 512MB memory limit
+// 50MB limit allows for ~37MB actual files after base64 encoding
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
 // Database connection middleware with retry logic
 app.use(async (req, res, next) => {

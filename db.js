@@ -6,7 +6,7 @@ const pool = new Pool({
     ssl: {
         rejectUnauthorized: false,
     },
-    max: 10, // Reduced from 20 to prevent connection overload
+    max: 5, // Reduced for Render's 512MB memory limit
     idleTimeoutMillis: 30000,
     connectionTimeoutMillis: 10000,
     maxUses: 7500, // Close connection after 7500 uses
