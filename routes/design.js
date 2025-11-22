@@ -1,6 +1,42 @@
 const express = require("express");
 const router = express.Router();
 const { query } = require("../db");
+
+// Authentication helper function
+async function authenticateAdmin(req) {
+    const auth = req.headers.authorization;
+    if (!auth) {
+        console.log('🔐 No authorization header provided');
+        return false;
+    }
+    
+    const token = auth.split(' ')[1];
+    if (!token) {
+        console.log('🔐 No token provided');
+        return false;
+    }
+    
+    try {
+        const jwt = require('jsonwebtoken');
+        const JWT_SECRET = process.env.JWT_SECRET || 'aspire_design_lab_secret_key_2024';
+        const decoded = jwt.verify(token, JWT_SECRET);
+        
+        // Verify admin exists
+        const result = await query('SELECT id FROM admins WHERE id = $1', [decoded.sub]);
+        
+        if (result.rows.length > 0) {
+            console.log(`🔐 Admin authenticated: ID ${decoded.sub}`);
+            return true;
+        } else {
+            console.log('🔐 Admin not found in database');
+            return false;
+        }
+    } catch (error) {
+        console.log('🔐 Token verification failed:', error.message);
+        return false;
+    }
+}
+
 // Helper function to parse gallery_images JSON strings and add contentBlocks alias
 const parseProjectGalleryImages = (projects) => {
     return projects.map((project) => {
@@ -288,6 +324,14 @@ router.get("/admin/projects", async (req, res) => {
 // @route   POST /api/design/admin/projects
 // @access  Private
 router.post("/admin/projects", async (req, res) => {
+    // Authenticate admin
+    if (!await authenticateAdmin(req)) {
+        return res.status(401).json({
+            success: false,
+            message: "Authentication required"
+        });
+    }
+
     try {
         const {
             title,
@@ -427,6 +471,14 @@ router.get("/admin/projects/:id", async (req, res) => {
 // @route   PUT /api/design/admin/projects/:id
 // @access  Private
 router.put("/admin/projects/:id", async (req, res) => {
+    // Authenticate admin
+    if (!await authenticateAdmin(req)) {
+        return res.status(401).json({
+            success: false,
+            message: "Authentication required"
+        });
+    }
+
     try {
         const { id } = req.params;
         const {
