@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { query } = require("../db");
-// Helper function to parse gallery_images JSON strings
+// Helper function to parse gallery_images JSON strings and add contentBlocks alias
 const parseProjectGalleryImages = (projects) => {
     return projects.map((project) => {
         if (
@@ -19,6 +19,9 @@ const parseProjectGalleryImages = (projects) => {
                 project.gallery_images = [];
             }
         }
+        // Add contentBlocks alias
+        project.contentBlocks = project.gallery_images || [];
+        project.content_blocks = project.gallery_images || [];
         return project;
     });
 };
