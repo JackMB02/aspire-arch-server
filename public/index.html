@@ -7301,11 +7301,11 @@
                 );
             }
 
-            // Convert file to base64 for storage in database (Render-compatible)
+            // Upload file to Cloudinary via API
             async function uploadFile(file, type) {
                 try {
                     console.log(
-                        `📤 Converting ${type} file to base64:`,
+                        `📤 Uploading ${type} file to Cloudinary:`,
                         file.name,
                         file.size,
                         file.type
@@ -7324,13 +7324,31 @@
                         console.log(`✅ Compressed from ${(file.size / 1024 / 1024).toFixed(2)}MB to ${(processedFile.size / 1024 / 1024).toFixed(2)}MB`);
                     }
 
-                    // Convert file to base64
-                    const base64 = await fileToBase64(processedFile);
+                    // Create FormData and upload to server
+                    const formData = new FormData();
+                    formData.append('file', processedFile);
+                    formData.append('type', type);
 
-                    console.log("✅ File converted to base64 successfully");
-                    return base64;
+                    const response = await fetch(`${API_BASE_URL}/upload`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        },
+                        body: formData
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || 'Upload failed');
+                    }
+
+                    const result = await response.json();
+                    console.log("✅ File uploaded to Cloudinary successfully:", result.fileUrl);
+                    
+                    // Return the Cloudinary URL
+                    return result.fileUrl;
                 } catch (error) {
-                    console.error("❌ File conversion error:", error);
+                    console.error("❌ File upload error:", error);
                     throw error;
                 }
             }
@@ -10849,6 +10867,23 @@
 
                 const content = document.createElement("div");
                 content.className = "item-content";
+
+                // Add profile image if available
+                if (member.image_url) {
+                    const imageContainer = document.createElement("div");
+                    imageContainer.style.cssText = "margin-bottom: 1rem; text-align: center;";
+                    
+                    const img = document.createElement("img");
+                    img.src = member.image_url;
+                    img.alt = member.name;
+                    img.style.cssText = "width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent-light);";
+                    img.onerror = function() {
+                        this.style.display = 'none';
+                    };
+                    
+                    imageContainer.appendChild(img);
+                    content.appendChild(imageContainer);
+                }
 
                 const title = document.createElement("h4");
                 title.className = "item-title";
