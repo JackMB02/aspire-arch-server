@@ -3,6 +3,7 @@ const multer = require('multer');
 const path = require('path');
 const jwt = require('jsonwebtoken');
 const { query } = require('../db');
+const { clearCachePattern } = require('../middleware/cache');
 
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'aspire_design_lab_secret_key_2024';
@@ -174,6 +175,9 @@ router.post('/', authMiddleware, upload.fields([
       [title, type, content || '', image, files, status]
     );
 
+    // Clear items cache
+    clearCachePattern('GET:/api/items.*');
+
     const item = result.rows[0];
     res.json(item);
     
@@ -240,6 +244,9 @@ router.put('/:id', authMiddleware, upload.fields([
       return res.status(404).json({ error: 'Item not found' });
     }
 
+    // Clear items cache
+    clearCachePattern('GET:/api/items.*');
+
     const updatedItem = updateResult.rows[0];
     res.json(updatedItem);
     
@@ -260,6 +267,9 @@ router.delete('/:id', authMiddleware, async (req, res) => {
     if (result.rows.length === 0) {
       return res.status(404).json({ error: 'Item not found' });
     }
+    
+    // Clear items cache
+    clearCachePattern('GET:/api/items.*');
     
     res.json({ 
       success: true, 

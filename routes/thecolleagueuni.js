@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { query } = require("../db"); // FIXED: Changed from '../config/db' to '../db'
+const { clearCachePattern } = require("../middleware/cache");
 
 // @desc    Submit contact form
 // @route   POST /api/thecolleagueuni/contact
@@ -100,6 +101,10 @@ router.post("/team", async (req, res) => {
             ]
         );
 
+        // Clear cache for team and colleagues endpoints
+        clearCachePattern('GET:/api/thecolleagueuni.*');
+        clearCachePattern('GET:/api/colleagues.*');
+
         res.status(201).json({
             success: true,
             message: "Team member added successfully",
@@ -170,6 +175,10 @@ router.put("/team/:id", async (req, res) => {
             });
         }
 
+        // Clear cache for team and colleagues endpoints
+        clearCachePattern('GET:/api/thecolleagueuni.*');
+        clearCachePattern('GET:/api/colleagues.*');
+
         res.status(200).json({
             success: true,
             message: "Team member updated successfully",
@@ -207,6 +216,10 @@ router.put("/team/:id/active", async (req, res) => {
             });
         }
 
+        // Clear cache for team and colleagues endpoints
+        clearCachePattern('GET:/api/thecolleagueuni.*');
+        clearCachePattern('GET:/api/colleagues.*');
+
         res.status(200).json({
             success: true,
             message: "Team member status updated successfully",
@@ -239,6 +252,10 @@ router.delete("/team/:id", async (req, res) => {
                 message: "Team member not found",
             });
         }
+
+        // Clear cache for team and colleagues endpoints
+        clearCachePattern('GET:/api/thecolleagueuni.*');
+        clearCachePattern('GET:/api/colleagues.*');
 
         res.status(200).json({
             success: true,
