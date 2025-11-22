@@ -804,6 +804,35 @@
                 display: block;
             }
 
+            /* Loading Overlay */
+            .loading-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.8);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 9999;
+            }
+
+            .loading-spinner {
+                text-align: center;
+                color: var(--accent-light);
+            }
+
+            .loading-spinner i {
+                font-size: 3rem;
+                margin-bottom: 1rem;
+            }
+
+            .loading-spinner p {
+                font-size: 1.2rem;
+                margin-top: 1rem;
+            }
+
             /* Responsive */
             @media (max-width: 1024px) {
                 .sidebar {
@@ -906,6 +935,14 @@
                 </div>
 
                 <div id="loginMsg" class="login-message"></div>
+            </div>
+        </div>
+
+        <!-- Global Loading Overlay -->
+        <div id="loadingOverlay" class="loading-overlay hidden">
+            <div class="loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p id="loadingText">Processing...</p>
             </div>
         </div>
 
@@ -7112,6 +7149,23 @@
             let currentNewsEventsTab = "newsevents-all";
             let currentPhotoCategory = "All";
 
+            // Loading overlay functions
+            function showLoading(text = 'Processing...') {
+                const overlay = document.getElementById('loadingOverlay');
+                const loadingText = document.getElementById('loadingText');
+                if (overlay && loadingText) {
+                    loadingText.textContent = text;
+                    overlay.classList.remove('hidden');
+                }
+            }
+
+            function hideLoading() {
+                const overlay = document.getElementById('loadingOverlay');
+                if (overlay) {
+                    overlay.classList.add('hidden');
+                }
+            }
+
             // Stats objects
             let mediaStats = {
                 photos: 0,
@@ -7303,6 +7357,7 @@
 
             // Upload file to Cloudinary via API
             async function uploadFile(file, type) {
+                showLoading(`Uploading ${type}...`);
                 try {
                     console.log(
                         `📤 Uploading ${type} file to Cloudinary:`,
@@ -7316,14 +7371,17 @@
                         console.warn(`⚠️ Large video file detected: ${(file.size / 1024 / 1024).toFixed(2)}MB - This may take a while to upload...`);
                     }
 
-                    // Compress image if it's too large (over 5MB)
+                    // Compress image if it's too large (over 2MB for faster uploads)
                     let processedFile = file;
-                    if (file.type.startsWith('image/') && file.size > 5 * 1024 * 1024) {
-                        console.log('🔄 Image is large, compressing...');
-                        processedFile = await compressImage(file);
+                    if (file.type.startsWith('image/') && file.size > 2 * 1024 * 1024) {
+                        showLoading('Compressing image...');
+                        console.log('🔄 Image is large, compressing for faster upload...');
+                        processedFile = await compressImage(file, 2, 0.7); // More aggressive compression
                         console.log(`✅ Compressed from ${(file.size / 1024 / 1024).toFixed(2)}MB to ${(processedFile.size / 1024 / 1024).toFixed(2)}MB`);
                     }
 
+                    showLoading(`Uploading to Cloudinary...`);
+                    
                     // Create FormData and upload to server
                     const formData = new FormData();
                     formData.append('file', processedFile);
@@ -7343,11 +7401,13 @@
                     }
 
                     const result = await response.json();
-                    console.log("✅ File uploaded to Cloudinary successfully:", result.fileUrl);
+                    console.log("✅ File uploaded successfully:", result.fileUrl);
                     
+                    hideLoading();
                     // Return the Cloudinary URL
                     return result.fileUrl;
                 } catch (error) {
+                    hideLoading();
                     console.error("❌ File upload error:", error);
                     throw error;
                 }
