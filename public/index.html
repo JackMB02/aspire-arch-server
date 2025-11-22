@@ -10513,9 +10513,11 @@
             // News & Events
             async function loadAllNewsEvents() {
                 try {
-                    const data = await apiRequest("/newsevents/all");
-                    const container =
-                        document.getElementById("allNewsEventsList");
+                    const response = await apiRequest("/newsevents/all");
+                    // Handle both {data: []} and direct array responses
+                    const data = Array.isArray(response) ? response : (response.data || []);
+                    
+                    const container = document.getElementById("allNewsEventsList");
                     if (!container) return;
 
                     container.innerHTML = "";
@@ -10543,7 +10545,10 @@
 
             async function loadNewsArticles() {
                 try {
-                    const data = await apiRequest("/newsevents/news");
+                    const response = await apiRequest("/newsevents/news");
+                    // Handle both {data: []} and direct array responses
+                    const data = Array.isArray(response) ? response : (response.data || []);
+                    
                     const container =
                         document.getElementById("newsArticlesList");
                     if (!container) return;
@@ -10573,7 +10578,10 @@
 
             async function loadEvents() {
                 try {
-                    const data = await apiRequest("/newsevents/events");
+                    const response = await apiRequest("/newsevents/events");
+                    // Handle both {data: []} and direct array responses
+                    const data = Array.isArray(response) ? response : (response.data || []);
+                    
                     const container = document.getElementById("eventsList");
                     if (!container) return;
 
