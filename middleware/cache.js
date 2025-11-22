@@ -59,6 +59,42 @@ const cacheMiddleware = (duration = 300, keyGenerator = null) => {
 };
 
 /**
+ * Auto cache invalidation middleware
+ * Clears cache when POST/PUT/DELETE requests succeed
+ * @param {String} pattern - Cache key pattern to clear
+ * @returns {Function} Express middleware
+ */
+const autoClearCache = (pattern) => {
+  return (req, res, next) => {
+    // Only process POST, PUT, DELETE
+    if (!['POST', 'PUT', 'DELETE'].includes(req.method)) {
+      return next();
+    }
+
+    // Store original res.json and res.status
+    const originalJson = res.json.bind(res);
+    const originalStatus = res.status.bind(res);
+
+    // Track status code
+    let statusCode = 200;
+    res.status = (code) => {
+      statusCode = code;
+      return originalStatus(code);
+    };
+
+    // Override res.json to clear cache on success
+    res.json = (body) => {
+      if (statusCode >= 200 && statusCode < 300) {
+        clearCachePattern(pattern);
+      }
+      return originalJson(body);
+    };
+
+    next();
+  };
+};
+
+/**
  * Clear cache by pattern
  * @param {String} pattern - Pattern to match keys (supports wildcards)
  */
@@ -107,6 +143,7 @@ const getCacheStats = () => {
 
 module.exports = {
   cacheMiddleware,
+  autoClearCache,
   clearCachePattern,
   clearAllCache,
   getCacheStats,

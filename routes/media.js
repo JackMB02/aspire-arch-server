@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { query } = require("../db");
+const { clearCachePattern } = require("../middleware/cache");
 
 // Helper function to construct proper image URLs
 const getFullImageUrl = (imagePath) => {

@@ -17,7 +17,7 @@ const homeRoutes = require("./routes/home");
 const newsEventsRoutes = require("./routes/newsevents");
 const newsletterRoutes = require("./routes/newsletter");
 const { initDb, testConnection, getPool } = require("./db");
-const { cacheMiddleware } = require("./middleware/cache");
+const { cacheMiddleware, autoClearCache } = require("./middleware/cache");
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -143,21 +143,21 @@ app.use("/images", express.static(path.join(__dirname, "public/images")));
 app.use("/videos", express.static(path.join(__dirname, "public/videos")));
 app.use("/documents", express.static(path.join(__dirname, "public/documents")));
 
-// API routes - Add caching for public GET routes
+// API routes - Add caching for public GET routes and auto-clear on modifications
 app.use("/api/auth", authRoutes);
-app.use("/api/items", cacheMiddleware(300), itemsRoutes); // 5 min cache
+app.use("/api/items", autoClearCache('GET:/api/items.*'), cacheMiddleware(300), itemsRoutes); // 5 min cache
 app.use("/api/contact", contactRoutes);
 app.use("/api/get-involved", getInvolvedRoutes);
-app.use("/api/media", cacheMiddleware(600), mediaRoutes); // 10 min cache
-app.use("/api/education", cacheMiddleware(600), educationRoutes); // 10 min cache
+app.use("/api/media", autoClearCache('GET:/api/media.*'), cacheMiddleware(600), mediaRoutes); // 10 min cache
+app.use("/api/education", autoClearCache('GET:/api/education.*'), cacheMiddleware(600), educationRoutes); // 10 min cache
 app.use("/api/upload", uploadRoutes);
-app.use("/api/thecolleagueuni", cacheMiddleware(600), theColleagueUniRoutes); // 10 min cache
-app.use("/api/colleagues", cacheMiddleware(600), theColleagueUniRoutes); // Alias for thecolleagueuni
-app.use("/api/research", cacheMiddleware(1800), researchRoutes); // 30 min cache
-app.use("/api/design", cacheMiddleware(600), designRoutes); // 10 min cache
-app.use("/api/home", cacheMiddleware(300), homeRoutes); // 5 min cache
+app.use("/api/thecolleagueuni", autoClearCache('GET:/api/thecolleagueuni.*'), cacheMiddleware(600), theColleagueUniRoutes); // 10 min cache
+app.use("/api/colleagues", autoClearCache('GET:/api/colleagues.*'), cacheMiddleware(600), theColleagueUniRoutes); // Alias for thecolleagueuni
+app.use("/api/research", autoClearCache('GET:/api/research.*'), cacheMiddleware(1800), researchRoutes); // 30 min cache
+app.use("/api/design", autoClearCache('GET:/api/design.*'), cacheMiddleware(600), designRoutes); // 10 min cache
+app.use("/api/home", autoClearCache('GET:/api/home.*'), cacheMiddleware(300), homeRoutes); // 5 min cache
 app.use("/api/newsletter", newsletterRoutes);
-app.use("/api/newsevents", cacheMiddleware(300), newsEventsRoutes); // 5 min cache
+app.use("/api/newsevents", autoClearCache('GET:/api/newsevents.*'), cacheMiddleware(300), newsEventsRoutes); // 5 min cache
 
 // Root endpoint
 app.get("/", (req, res) => {
