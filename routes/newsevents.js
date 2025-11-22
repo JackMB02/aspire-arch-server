@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { query } = require("../db");
+const { clearCachePattern } = require("../middleware/cache");
 
 // Helper function to construct proper image URLs
 const getFullImageUrl = (imagePath) => {
@@ -21,6 +22,9 @@ const getFullImageUrl = (imagePath) => {
 // Get all news articles
 router.get("/news", async (req, res) => {
     try {
+        // Check if admin (has authorization header) - show all items
+        const isAdmin = req.headers.authorization;
+        
         const result = await query(
             `
             SELECT 
@@ -39,10 +43,10 @@ router.get("/news", async (req, res) => {
                 created_at as "createdAt",
                 updated_at as "updatedAt"
             FROM news_articles 
-            WHERE is_published = true AND status = $1
+            ${isAdmin ? '' : 'WHERE is_published = true AND status = $1'}
             ORDER BY date DESC, created_at DESC
         `,
-            ["published"]
+            isAdmin ? [] : ["published"]
         );
 
         const news = result.rows.map((article) => ({
@@ -56,6 +60,8 @@ router.get("/news", async (req, res) => {
             date: article.date,
             readTime: article.readTime,
             isFeatured: article.isFeatured,
+            isPublished: article.isPublished,
+            status: article.status,
             createdAt: article.createdAt,
         }));
 
@@ -70,6 +76,9 @@ router.get("/news", async (req, res) => {
 // Get all events
 router.get("/events", async (req, res) => {
     try {
+        // Check if admin (has authorization header) - show all items
+        const isAdmin = req.headers.authorization;
+        
         const result = await query(
             `
             SELECT 
@@ -90,10 +99,10 @@ router.get("/events", async (req, res) => {
                 created_at as "createdAt",
                 updated_at as "updatedAt"
             FROM events 
-            WHERE is_published = true AND status = $1
+            ${isAdmin ? '' : 'WHERE is_published = true AND status = $1'}
             ORDER BY event_date ASC, created_at DESC
         `,
-            ["published"]
+            isAdmin ? [] : ["published"]
         );
 
         const events = result.rows.map((event) => ({
@@ -123,6 +132,9 @@ router.get("/events", async (req, res) => {
 // Get combined news and events for the main page
 router.get("/all", async (req, res) => {
     try {
+        // Check if admin (has authorization header) - show all items
+        const isAdmin = req.headers.authorization;
+        
         const newsResult = await query(
             `
             SELECT 
@@ -137,13 +149,15 @@ router.get("/all", async (req, res) => {
                 date,
                 read_time as "readTime",
                 is_featured as "isFeatured",
+                is_published as "isPublished",
+                status,
                 created_at as "createdAt"
             FROM news_articles 
-            WHERE is_published = true AND status = $1
+            ${isAdmin ? '' : 'WHERE is_published = true AND status = $1'}
             ORDER BY date DESC
-            LIMIT 6
+            ${isAdmin ? '' : 'LIMIT 6'}
         `,
-            ["published"]
+            isAdmin ? [] : ["published"]
         );
 
         const eventsResult = await query(
@@ -162,13 +176,15 @@ router.get("/all", async (req, res) => {
                 location,
                 read_time as "readTime",
                 is_featured as "isFeatured",
+                is_published as "isPublished",
+                status,
                 created_at as "createdAt"
             FROM events 
-            WHERE is_published = true AND status = $1
+            ${isAdmin ? '' : 'WHERE is_published = true AND status = $1'}
             ORDER BY event_date ASC
-            LIMIT 6
+            ${isAdmin ? '' : 'LIMIT 6'}
         `,
-            ["published"]
+            isAdmin ? [] : ["published"]
         );
 
         const news = newsResult.rows.map((article) => ({
