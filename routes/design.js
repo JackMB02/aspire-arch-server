@@ -280,13 +280,10 @@ router.post("/admin/projects", async (req, res) => {
         const {
             title,
             summary,
-            description,
             category,
             sector,
             main_image,
             mainImage, // Accept camelCase from frontend
-            gallery_images,
-            galleryImages, // Accept camelCase from frontend
             content_blocks,
             contentBlocks, // Accept camelCase from frontend
             display_order,
@@ -299,7 +296,6 @@ router.post("/admin/projects", async (req, res) => {
 
         // Use either snake_case or camelCase, preferring the one that's provided
         const mainImageUrl = main_image || mainImage;
-        const galleryImagesArray = gallery_images || galleryImages;
         const contentBlocksArray = content_blocks || contentBlocks;
         const displayOrderValue =
             display_order !== undefined ? display_order : displayOrder;
@@ -311,7 +307,6 @@ router.post("/admin/projects", async (req, res) => {
         if (
             !title ||
             !summary ||
-            !description ||
             !category ||
             !sector ||
             !mainImageUrl
@@ -319,23 +314,22 @@ router.post("/admin/projects", async (req, res) => {
             return res.status(400).json({
                 success: false,
                 message:
-                    "Missing required fields: title, summary, description, category, sector, and main_image are required",
+                    "Missing required fields: title, summary, category, sector, and main_image are required",
             });
         }
 
         const result = await query(
             `INSERT INTO design_projects 
-       (title, summary, description, category, sector, main_image, gallery_images, display_order, is_featured, is_published) 
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) 
+       (title, summary, category, sector, main_image, gallery_images, display_order, is_featured, is_published) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) 
        RETURNING *`,
             [
                 title,
                 summary,
-                description,
                 category,
                 sector,
                 mainImageUrl,
-                JSON.stringify(contentBlocksArray || galleryImagesArray || []),
+                JSON.stringify(contentBlocksArray || []),
                 displayOrderValue || 0,
                 featured || false,
                 published !== undefined ? published : true,
@@ -349,7 +343,9 @@ router.post("/admin/projects", async (req, res) => {
                 ...project,
                 mainImage: project.main_image,
                 main_image: project.main_image,
-                galleryImages: project.gallery_images,
+                contentBlocks: project.gallery_images, // gallery_images now stores content blocks
+                content_blocks: project.gallery_images,
+                galleryImages: project.gallery_images, // Keep for backward compatibility
                 gallery_images: project.gallery_images,
                 displayOrder: project.display_order,
                 display_order: project.display_order,
@@ -424,13 +420,12 @@ router.put("/admin/projects/:id", async (req, res) => {
         const {
             title,
             summary,
-            description,
             category,
             sector,
             main_image,
             mainImage, // Accept camelCase from frontend
-            gallery_images,
-            galleryImages, // Accept camelCase from frontend
+            content_blocks,
+            contentBlocks, // Accept camelCase from frontend
             display_order,
             displayOrder, // Accept camelCase from frontend
             is_featured,
@@ -441,7 +436,7 @@ router.put("/admin/projects/:id", async (req, res) => {
 
         // Use either snake_case or camelCase, preferring the one that's provided
         const mainImageUrl = main_image || mainImage;
-        const galleryImagesArray = gallery_images || galleryImages;
+        const contentBlocksArray = content_blocks || contentBlocks;
         const displayOrderValue =
             display_order !== undefined ? display_order : displayOrder;
         const featured = is_featured !== undefined ? is_featured : isFeatured;
@@ -466,19 +461,18 @@ router.put("/admin/projects/:id", async (req, res) => {
 
         const result = await query(
             `UPDATE design_projects 
-       SET title = $1, summary = $2, description = $3, category = $4, sector = $5,
-           main_image = $6, gallery_images = $7, display_order = $8, 
-           is_featured = $9, is_published = $10, updated_at = CURRENT_TIMESTAMP 
-       WHERE id = $11 
+       SET title = $1, summary = $2, category = $3, sector = $4,
+           main_image = $5, gallery_images = $6, display_order = $7, 
+           is_featured = $8, is_published = $9, updated_at = CURRENT_TIMESTAMP 
+       WHERE id = $10 
        RETURNING *`,
             [
                 title,
                 summary,
-                description,
                 category,
                 sector,
                 finalMainImage,
-                JSON.stringify(galleryImagesArray || []),
+                JSON.stringify(contentBlocksArray || []),
                 displayOrderValue || 0,
                 featured !== undefined ? featured : false,
                 published !== undefined ? published : true,
@@ -493,7 +487,9 @@ router.put("/admin/projects/:id", async (req, res) => {
                 ...project,
                 mainImage: project.main_image,
                 main_image: project.main_image,
-                galleryImages: project.gallery_images,
+                contentBlocks: project.gallery_images, // gallery_images now stores content blocks
+                content_blocks: project.gallery_images,
+                galleryImages: project.gallery_images, // Keep for backward compatibility
                 gallery_images: project.gallery_images,
                 displayOrder: project.display_order,
                 display_order: project.display_order,
@@ -622,13 +618,12 @@ router.post("/projects", async (req, res) => {
         const {
             title,
             summary,
-            description,
             category,
             sector,
             main_image,
             mainImage, // Accept camelCase from frontend
-            gallery_images,
-            galleryImages, // Accept camelCase from frontend
+            content_blocks,
+            contentBlocks, // Accept camelCase from frontend
             display_order,
             displayOrder, // Accept camelCase from frontend
             is_featured,
@@ -639,7 +634,7 @@ router.post("/projects", async (req, res) => {
 
         // Use either snake_case or camelCase, preferring the one that's provided
         const mainImageUrl = main_image || mainImage;
-        const galleryImagesArray = gallery_images || galleryImages;
+        const contentBlocksArray = content_blocks || contentBlocks;
         const displayOrderValue =
             display_order !== undefined ? display_order : displayOrder;
         const featured = is_featured !== undefined ? is_featured : isFeatured;
@@ -650,7 +645,6 @@ router.post("/projects", async (req, res) => {
         if (
             !title ||
             !summary ||
-            !description ||
             !category ||
             !sector ||
             !mainImageUrl
@@ -658,23 +652,22 @@ router.post("/projects", async (req, res) => {
             return res.status(400).json({
                 success: false,
                 message:
-                    "Missing required fields: title, summary, description, category, sector, and main_image are required",
+                    "Missing required fields: title, summary, category, sector, and main_image are required",
             });
         }
 
         const result = await query(
             `INSERT INTO design_projects 
-       (title, summary, description, category, sector, main_image, gallery_images, display_order, is_featured, is_published) 
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) 
+       (title, summary, category, sector, main_image, gallery_images, display_order, is_featured, is_published) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) 
        RETURNING *`,
             [
                 title,
                 summary,
-                description,
                 category,
                 sector,
                 mainImageUrl,
-                JSON.stringify(galleryImagesArray || []),
+                JSON.stringify(contentBlocksArray || []),
                 displayOrderValue || 0,
                 featured || false,
                 published !== undefined ? published : true,
@@ -717,21 +710,23 @@ router.put("/projects/:id", async (req, res) => {
         const {
             title,
             summary,
-            description,
             category,
             sector,
             main_image,
-            gallery_images,
+            content_blocks,
+            contentBlocks,
             display_order,
             is_featured,
             is_published,
         } = req.body;
 
+        // Use either snake_case or camelCase
+        const contentBlocksArray = content_blocks || contentBlocks;
+
         // Validate required fields
         if (
             !title ||
             !summary ||
-            !description ||
             !category ||
             !sector ||
             !main_image
@@ -739,25 +734,24 @@ router.put("/projects/:id", async (req, res) => {
             return res.status(400).json({
                 success: false,
                 message:
-                    "Missing required fields: title, summary, description, category, sector, and main_image are required",
+                    "Missing required fields: title, summary, category, sector, and main_image are required",
             });
         }
 
         const result = await query(
             `UPDATE design_projects 
-       SET title = $1, summary = $2, description = $3, category = $4, sector = $5,
-           main_image = $6, gallery_images = $7, display_order = $8, 
-           is_featured = $9, is_published = $10, updated_at = CURRENT_TIMESTAMP 
-       WHERE id = $11 
+       SET title = $1, summary = $2, category = $3, sector = $4,
+           main_image = $5, gallery_images = $6, display_order = $7, 
+           is_featured = $8, is_published = $9, updated_at = CURRENT_TIMESTAMP 
+       WHERE id = $10 
        RETURNING *`,
             [
                 title,
                 summary,
-                description,
                 category,
                 sector,
                 main_image,
-                JSON.stringify(gallery_images || []),
+                JSON.stringify(contentBlocksArray || []),
                 display_order,
                 is_featured,
                 is_published,
