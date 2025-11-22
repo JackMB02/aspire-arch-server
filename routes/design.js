@@ -210,9 +210,18 @@ router.get("/project/:id", async (req, res) => {
             }
         }
 
+        // Also provide contentBlocks alias for frontend
+        const responseData = {
+            ...project,
+            contentBlocks: project.gallery_images, // Provide content blocks
+            content_blocks: project.gallery_images,
+            mainImage: project.main_image,
+            main_image: project.main_image,
+        };
+
         res.status(200).json({
             success: true,
-            data: project,
+            data: responseData,
         });
     } catch (error) {
         console.error("Get design project error:", error);
