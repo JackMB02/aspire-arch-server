@@ -3116,7 +3116,7 @@
                                             <button
                                                 class="btn-secondary"
                                                 type="button"
-                                                onclick="loadColleaguesTeam()"
+                                                onclick="loadTeamMembers()"
                                             >
                                                 <i class="fas fa-sync-alt"></i>
                                                 Refresh
@@ -3882,16 +3882,6 @@
                             >
                             <textarea
                                 id="addDesignProjectSummary"
-                                required
-                            ></textarea>
-                        </div>
-
-                        <div class="input-group full-width">
-                            <label for="addDesignProjectDescription"
-                                >Description *</label
-                            >
-                            <textarea
-                                id="addDesignProjectDescription"
                                 required
                             ></textarea>
                         </div>
@@ -10800,7 +10790,7 @@
 
             async function loadTeamMembers() {
                 try {
-                    const response = await apiRequest("/colleagues/team");
+                    const response = await apiRequest("/colleagues/admin/team");
                     const data = response.data || response; // Handle both response formats
                     const container =
                         document.getElementById("colleaguesTeamList");
@@ -12188,9 +12178,6 @@
                             .value,
                         summary: document.getElementById(
                             "addDesignProjectSummary"
-                        ).value,
-                        description: document.getElementById(
-                            "addDesignProjectDescription"
                         ).value,
                         category: document.getElementById(
                             "addDesignProjectCategory"

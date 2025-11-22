@@ -41,7 +41,30 @@ router.post("/contact", async (req, res) => {
     }
 });
 
-// @desc    Get team members
+// @desc    Get team members (Admin - returns all)
+// @route   GET /api/thecolleagueuni/admin/team
+// @access  Private/Admin
+router.get("/admin/team", async (req, res) => {
+    try {
+        // Get ALL team members from database (including inactive)
+        const result = await query(
+            "SELECT * FROM architecture_colleagues_team ORDER BY display_order"
+        );
+
+        res.status(200).json({
+            success: true,
+            data: result.rows,
+        });
+    } catch (error) {
+        console.error("Get team error:", error.message);
+        res.status(500).json({
+            success: false,
+            message: "Error fetching team data",
+        });
+    }
+});
+
+// @desc    Get team members (Public - only active)
 // @route   GET /api/thecolleagueuni/team
 // @access  Public
 router.get("/team", async (req, res) => {
