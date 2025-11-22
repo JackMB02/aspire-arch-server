@@ -1,6 +1,15 @@
 const cloudinary = require('cloudinary').v2;
 require('dotenv').config();
 
+// Check for required Cloudinary credentials
+const hasCloudinaryCredentials = () => {
+  return !!(
+    process.env.CLOUDINARY_CLOUD_NAME &&
+    process.env.CLOUDINARY_API_KEY &&
+    process.env.CLOUDINARY_API_SECRET
+  );
+};
+
 // Configure Cloudinary
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -8,6 +17,17 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
   secure: true
 });
+
+// Log configuration status
+if (!hasCloudinaryCredentials()) {
+  console.warn('⚠️  WARNING: Cloudinary credentials not configured!');
+  console.warn('   Please add the following to your .env file:');
+  console.warn('   CLOUDINARY_CLOUD_NAME=your_cloud_name');
+  console.warn('   CLOUDINARY_API_KEY=your_api_key');
+  console.warn('   CLOUDINARY_API_SECRET=your_api_secret');
+} else {
+  console.log('✅ Cloudinary configured successfully');
+}
 
 /**
  * Upload file buffer to Cloudinary
@@ -17,6 +37,13 @@ cloudinary.config({
  */
 const uploadToCloudinary = (fileBuffer, options = {}) => {
   return new Promise((resolve, reject) => {
+    // Check if credentials are configured
+    if (!hasCloudinaryCredentials()) {
+      return reject(new Error(
+        'Cloudinary credentials not configured. Please add CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET to your .env file.'
+      ));
+    }
+
     const uploadStream = cloudinary.uploader.upload_stream(
       {
         folder: options.folder || 'aspire-arch',
@@ -77,5 +104,6 @@ module.exports = {
   cloudinary,
   uploadToCloudinary,
   deleteFromCloudinary,
-  getCloudinaryUrl
+  getCloudinaryUrl,
+  hasCloudinaryCredentials
 };
