@@ -2,9 +2,9 @@ const express = require("express");
 const router = express.Router();
 const multer = require("multer");
 const path = require("path");
-const { processMulterFile } = require("../utils/imageHandler");
+const { uploadToCloudinary } = require("../config/cloudinary");
 
-// Use memory storage instead of disk storage (for Render compatibility)
+// Use memory storage (required for Cloudinary uploads)
 const storage = multer.memoryStorage();
 
 // Enhanced file filter
@@ -56,8 +56,8 @@ const upload = multer({
     fileFilter: fileFilter,
 });
 
-// Enhanced single file upload
-router.post("/", upload.single("file"), (req, res) => {
+// Enhanced single file upload with Cloudinary
+router.post("/", upload.single("file"), async (req, res) => {
     try {
         console.log("📤 Upload request received:", {
             hasFile: !!req.file,
@@ -74,30 +74,46 @@ router.post("/", upload.single("file"), (req, res) => {
             });
         }
 
-        // Process file to base64
-        const base64Data = processMulterFile(req.file);
+        // Determine folder based on upload type
+        const uploadType = req.body.type || "general";
+        const folder = `aspire-arch/${uploadType}`;
 
-        if (!base64Data) {
-            return res.status(500).json({
-                success: false,
-                error: "Failed to process uploaded file.",
-            });
+        // Determine resource type
+        let resourceType = 'auto';
+        if (req.file.mimetype.startsWith('video/')) {
+            resourceType = 'video';
+        } else if (req.file.mimetype.startsWith('image/')) {
+            resourceType = 'image';
+        } else {
+            resourceType = 'raw'; // For documents
         }
 
-        console.log("✅ File uploaded successfully:", {
-            originalname: req.file.originalname,
-            size: (req.file.size / 1024 / 1024).toFixed(2) + " MB",
-            mimeType: req.file.mimetype,
+        // Upload to Cloudinary
+        const result = await uploadToCloudinary(req.file.buffer, {
+            folder: folder,
+            resource_type: resourceType,
+            public_id: `${Date.now()}-${req.file.originalname.replace(/\.[^/.]+$/, "")}`,
+        });
+
+        console.log("✅ File uploaded to Cloudinary:", {
+            url: result.secure_url,
+            publicId: result.public_id,
+            size: (result.bytes / 1024 / 1024).toFixed(2) + " MB",
         });
 
         res.json({
             success: true,
-            message: "File uploaded successfully",
-            fileData: base64Data,
+            message: "File uploaded successfully to Cloudinary",
+            fileUrl: result.secure_url,
+            publicId: result.public_id,
             originalName: req.file.originalname,
-            fileSize: req.file.size,
-            fileSizeMB: (req.file.size / 1024 / 1024).toFixed(2),
+            fileSize: result.bytes,
+            fileSizeMB: (result.bytes / 1024 / 1024).toFixed(2),
             mimeType: req.file.mimetype,
+            resourceType: result.resource_type,
+            format: result.format,
+            width: result.width,
+            height: result.height,
             uploadDate: new Date().toISOString(),
         });
     } catch (error) {
@@ -109,8 +125,8 @@ router.post("/", upload.single("file"), (req, res) => {
     }
 });
 
-// Multiple files upload
-router.post("/multiple", upload.array("files", 10), (req, res) => {
+// Multiple files upload with Cloudinary
+router.post("/multiple", upload.array("files", 10), async (req, res) => {
     try {
         if (!req.files || req.files.length === 0) {
             return res.status(400).json({
@@ -119,30 +135,53 @@ router.post("/multiple", upload.array("files", 10), (req, res) => {
             });
         }
 
-        console.log(`✅ Uploaded ${req.files.length} files successfully`);
+        const uploadType = req.body.type || "general";
+        const folder = `aspire-arch/${uploadType}`;
 
-        const uploadResults = req.files.map((file) => {
-            const base64Data = processMulterFile(file);
+        // Upload all files to Cloudinary in parallel
+        const uploadPromises = req.files.map(async (file) => {
+            let resourceType = 'auto';
+            if (file.mimetype.startsWith('video/')) {
+                resourceType = 'video';
+            } else if (file.mimetype.startsWith('image/')) {
+                resourceType = 'image';
+            } else {
+                resourceType = 'raw';
+            }
+
+            const result = await uploadToCloudinary(file.buffer, {
+                folder: folder,
+                resource_type: resourceType,
+                public_id: `${Date.now()}-${file.originalname.replace(/\.[^/.]+$/, "")}`,
+            });
 
             return {
-                fileData: base64Data,
+                fileUrl: result.secure_url,
+                publicId: result.public_id,
                 originalName: file.originalname,
-                fileSize: file.size,
-                fileSizeMB: (file.size / 1024 / 1024).toFixed(2),
+                fileSize: result.bytes,
+                fileSizeMB: (result.bytes / 1024 / 1024).toFixed(2),
                 mimeType: file.mimetype,
+                resourceType: result.resource_type,
+                format: result.format,
+                width: result.width,
+                height: result.height,
             };
         });
 
+        const uploadResults = await Promise.all(uploadPromises);
+
+        console.log(`✅ Uploaded ${req.files.length} files to Cloudinary successfully`);
+
+        const totalSize = uploadResults.reduce((total, file) => total + parseInt(file.fileSize), 0);
+
         res.json({
             success: true,
-            message: `${req.files.length} files uploaded successfully`,
+            message: `${req.files.length} files uploaded successfully to Cloudinary`,
             files: uploadResults,
-            totalSize: req.files.reduce((total, file) => total + file.size, 0),
-            totalSizeMB: (
-                req.files.reduce((total, file) => total + file.size, 0) /
-                1024 /
-                1024
-            ).toFixed(2),
+            totalFiles: req.files.length,
+            totalSize: totalSize,
+            totalSizeMB: (totalSize / 1024 / 1024).toFixed(2),
         });
     } catch (error) {
         console.error("❌ Multiple upload error:", error);
@@ -158,8 +197,8 @@ router.get("/test", (req, res) => {
     try {
         res.json({
             success: true,
-            message: "Upload system is working",
-            storageType: "memory",
+            message: "Upload system is working with Cloudinary",
+            storageType: "cloudinary",
             maxFileSize: "100MB",
             maxFiles: 10,
             supportedTypes: {
@@ -193,8 +232,8 @@ router.get("/stats", (req, res) => {
         res.json({
             success: true,
             message: "Upload statistics",
-            note: "Files are stored in database as base64, not on filesystem",
-            storageType: "memory/base64",
+            note: "Files are stored on Cloudinary CDN, not locally",
+            storageType: "cloudinary",
             maxFileSize: "100MB",
             maxFiles: 10,
         });
