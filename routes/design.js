@@ -222,6 +222,8 @@ router.get("/sector/:sector", async (req, res) => {
 router.get("/project/:id", async (req, res) => {
     try {
         const { id } = req.params;
+        
+        console.log(`🔍 Fetching project with ID: ${id}`);
 
         const result = await query(
             "SELECT * FROM design_projects WHERE id = $1 AND is_published = true",
@@ -229,6 +231,7 @@ router.get("/project/:id", async (req, res) => {
         );
 
         if (result.rows.length === 0) {
+            console.log(`❌ Project ${id} not found or not published`);
             return res.status(404).json({
                 success: false,
                 message: "Design project not found",
@@ -237,6 +240,10 @@ router.get("/project/:id", async (req, res) => {
 
         // Parse gallery_images if it's a JSON string
         const project = result.rows[0];
+        console.log(`✅ Project found: ${project.title}`);
+        console.log(`📊 Project data fields:`, Object.keys(project));
+        console.log(`🖼️ Gallery images:`, project.gallery_images ? JSON.stringify(project.gallery_images).substring(0, 200) : 'null');
+        
         if (
             project.gallery_images &&
             typeof project.gallery_images === "string"
@@ -248,15 +255,22 @@ router.get("/project/:id", async (req, res) => {
                 project.gallery_images = [];
             }
         }
+        
+        // Ensure gallery_images is an array
+        if (!Array.isArray(project.gallery_images)) {
+            project.gallery_images = [];
+        }
 
         // Also provide contentBlocks alias for frontend
         const responseData = {
             ...project,
-            contentBlocks: project.gallery_images, // Provide content blocks
-            content_blocks: project.gallery_images,
+            contentBlocks: project.gallery_images || [], // Provide content blocks
+            content_blocks: project.gallery_images || [],
             mainImage: project.main_image,
             main_image: project.main_image,
         };
+        
+        console.log(`📤 Sending response with ${responseData.contentBlocks.length} content blocks`);
 
         res.status(200).json({
             success: true,

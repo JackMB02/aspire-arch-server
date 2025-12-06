@@ -5808,39 +5808,67 @@
                             ></div>
                         </div>
 
-                        <!-- Gallery Images Upload (Multiple) -->
+                        <!-- Content Builder Section -->
                         <div class="input-group full-width">
-                            <label for="editDesignProjectGalleryImages"
-                                >Gallery Images (Multiple)</label
+                            <label>Project Content Builder</label>
+                            <p
+                                style="
+                                    color: var(--text-muted);
+                                    font-size: 0.9rem;
+                                    margin-bottom: 1rem;
+                                "
                             >
+                                Build your project content by adding text blocks
+                                and images in any order you want
+                            </p>
+
                             <div
-                                class="file-upload-container"
-                                onclick="document.getElementById('editGalleryImagesInput').click()"
+                                style="
+                                    margin-bottom: 1rem;
+                                    display: flex;
+                                    gap: 0.5rem;
+                                "
                             >
-                                <div class="upload-icon">
-                                    <i class="fas fa-images"></i>
-                                </div>
-                                <h4>Upload Gallery Images</h4>
-                                <p>
-                                    Click to browse or drag and drop multiple
-                                    images
-                                </p>
-                                <p class="upload-hint">
-                                    You can select multiple images. Max 10
-                                    images, 20MB each
-                                </p>
-                                <input
-                                    type="file"
-                                    id="editGalleryImagesInput"
-                                    class="file-input"
-                                    accept="image/*"
-                                    multiple
-                                />
+                                <button
+                                    type="button"
+                                    class="btn-secondary"
+                                    onclick="addEditContentBlock('text')"
+                                    style="flex: 1"
+                                >
+                                    <i class="fas fa-heading"></i> Add Text
+                                    Block
+                                </button>
+                                <button
+                                    type="button"
+                                    class="btn-secondary"
+                                    onclick="addEditContentBlock('image')"
+                                    style="flex: 1"
+                                >
+                                    <i class="fas fa-image"></i> Add Image
+                                </button>
                             </div>
+
                             <div
-                                id="editGalleryImagesPreview"
-                                class="image-preview"
-                            ></div>
+                                id="editContentBlocksContainer"
+                                style="
+                                    border: 1px solid var(--border-light);
+                                    border-radius: 8px;
+                                    padding: 1rem;
+                                    min-height: 100px;
+                                    background: rgba(0, 0, 0, 0.2);
+                                "
+                            >
+                                <p
+                                    id="editEmptyContentMessage"
+                                    style="
+                                        color: var(--text-muted);
+                                        text-align: center;
+                                    "
+                                >
+                                    No content blocks yet. Click the buttons
+                                    above to add text or images.
+                                </p>
+                            </div>
                         </div>
 
                         <div class="input-group">
@@ -11565,6 +11593,147 @@
                 }
             }
 
+            // Edit content block functions
+            let editContentBlocks = [];
+            let editContentBlockCounter = 0;
+
+            function addEditContentBlock(type) {
+                const container = document.getElementById(
+                    "editContentBlocksContainer"
+                );
+                const emptyMessage = document.getElementById(
+                    "editEmptyContentMessage"
+                );
+
+                if (emptyMessage) {
+                    emptyMessage.style.display = "none";
+                }
+
+                const blockId = `edit-content-block-${editContentBlockCounter++}`;
+                const blockDiv = document.createElement("div");
+                blockDiv.id = blockId;
+                blockDiv.className = "content-block";
+                blockDiv.style.cssText =
+                    "border: 1px solid var(--border-light); border-radius: 8px; padding: 1rem; margin-bottom: 1rem; background: var(--bg-card);";
+
+                if (type === "text") {
+                    blockDiv.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <h4 style="margin: 0; color: var(--accent-light);"><i class="fas fa-heading"></i> Text Block</h4>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button type="button" onclick="moveEditBlockUp('${blockId}')" class="btn-secondary" style="padding: 0.3rem 0.6rem;">
+                                    <i class="fas fa-arrow-up"></i>
+                                </button>
+                                <button type="button" onclick="moveEditBlockDown('${blockId}')" class="btn-secondary" style="padding: 0.3rem 0.6rem;">
+                                    <i class="fas fa-arrow-down"></i>
+                                </button>
+                                <button type="button" onclick="removeEditContentBlock('${blockId}')" class="btn-secondary" style="padding: 0.3rem 0.6rem; background: var(--danger);">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <input type="text" placeholder="Title (optional)" id="${blockId}-title" style="width: 100%; padding: 0.5rem; margin-bottom: 0.5rem; background: var(--bg-dark); border: 1px solid var(--border-light); border-radius: 4px; color: var(--text-light);" />
+                        <textarea placeholder="Enter your text content here..." id="${blockId}-content" style="width: 100%; min-height: 100px; padding: 0.5rem; background: var(--bg-dark); border: 1px solid var(--border-light); border-radius: 4px; color: var(--text-light); font-family: inherit;"></textarea>
+                    `;
+                    editContentBlocks.push({ id: blockId, type: "text" });
+                } else if (type === "image") {
+                    blockDiv.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <h4 style="margin: 0; color: var(--accent-light);"><i class="fas fa-image"></i> Image Block</h4>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button type="button" onclick="moveEditBlockUp('${blockId}')" class="btn-secondary" style="padding: 0.3rem 0.6rem;">
+                                    <i class="fas fa-arrow-up"></i>
+                                </button>
+                                <button type="button" onclick="moveEditBlockDown('${blockId}')" class="btn-secondary" style="padding: 0.3rem 0.6rem;">
+                                    <i class="fas fa-arrow-down"></i>
+                                </button>
+                                <button type="button" onclick="removeEditContentBlock('${blockId}')" class="btn-secondary" style="padding: 0.3rem 0.6rem; background: var(--danger);">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <input type="text" placeholder="Image caption (optional)" id="${blockId}-caption" style="width: 100%; padding: 0.5rem; margin-bottom: 0.5rem; background: var(--bg-dark); border: 1px solid var(--border-light); border-radius: 4px; color: var(--text-light);" />
+                        <div style="display: flex; gap: 1rem; align-items: center;">
+                            <button type="button" onclick="document.getElementById('${blockId}-input').click()" class="btn-secondary" style="flex-shrink: 0;">
+                                <i class="fas fa-upload"></i> Choose Image
+                            </button>
+                            <span id="${blockId}-filename" style="color: var(--text-muted); font-size: 0.9rem;">No file chosen</span>
+                        </div>
+                        <input type="file" id="${blockId}-input" accept="image/*" style="display: none;" onchange="handleEditContentBlockImage('${blockId}')" />
+                        <div id="${blockId}-preview" style="margin-top: 0.5rem;"></div>
+                    `;
+                    editContentBlocks.push({
+                        id: blockId,
+                        type: "image",
+                        file: null,
+                    });
+                }
+
+                container.appendChild(blockDiv);
+            }
+
+            function handleEditContentBlockImage(blockId) {
+                const input = document.getElementById(`${blockId}-input`);
+                const preview = document.getElementById(`${blockId}-preview`);
+                const filename = document.getElementById(`${blockId}-filename`);
+
+                if (input.files && input.files[0]) {
+                    const file = input.files[0];
+                    filename.textContent = file.name;
+
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        preview.innerHTML = `<img src="${e.target.result}" style="max-width: 100%; border-radius: 8px; margin-top: 0.5rem;" />`;
+                    };
+                    reader.readAsDataURL(file);
+
+                    const block = editContentBlocks.find((b) => b.id === blockId);
+                    if (block) {
+                        block.file = file;
+                    }
+                }
+            }
+
+            function removeEditContentBlock(blockId) {
+                const block = document.getElementById(blockId);
+                if (block) {
+                    block.remove();
+                }
+                const index = editContentBlocks.findIndex((b) => b.id === blockId);
+                if (index > -1) {
+                    editContentBlocks.splice(index, 1);
+                }
+
+                const container = document.getElementById(
+                    "editContentBlocksContainer"
+                );
+                const emptyMessage = document.getElementById(
+                    "editEmptyContentMessage"
+                );
+                if (container.children.length === 1 && emptyMessage) {
+                    emptyMessage.style.display = "block";
+                }
+            }
+
+            function moveEditBlockUp(blockId) {
+                const block = document.getElementById(blockId);
+                const previousBlock = block.previousElementSibling;
+                if (
+                    previousBlock &&
+                    previousBlock.id !== "editEmptyContentMessage"
+                ) {
+                    block.parentNode.insertBefore(block, previousBlock);
+                }
+            }
+
+            function moveEditBlockDown(blockId) {
+                const block = document.getElementById(blockId);
+                const nextBlock = block.nextElementSibling;
+                if (nextBlock) {
+                    block.parentNode.insertBefore(nextBlock, block);
+                }
+            }
+
             // ===== MODAL FUNCTIONS =====
 
             function hideAddDesignProjectModal() {
@@ -11794,6 +11963,16 @@
             }
             function hideEditDesignProjectModal() {
                 hideModal("editDesignProjectModal");
+                // Clear edit content blocks
+                editContentBlocks.length = 0;
+                editContentBlockCounter = 0;
+                const container = document.getElementById(
+                    "editContentBlocksContainer"
+                );
+                if (container) {
+                    container.innerHTML =
+                        '<p id="editEmptyContentMessage" style="color: var(--text-muted); text-align: center;">No content blocks yet. Click the buttons above to add text or images.</p>';
+                }
             }
             function showEditResearchModal() {
                 showModal("editResearchModal");
@@ -13772,7 +13951,7 @@
                             "editDesignProjectPublished"
                         ).checked,
                         mainImage: null,
-                        galleryImages: [],
+                        contentBlocks: [],
                     };
 
                     const projectId = document.getElementById(
@@ -13790,25 +13969,36 @@
                         projectData.mainImage = uploadedImageUrl;
                     }
 
-                    // Upload gallery images (multiple)
-                    const galleryFiles = document.getElementById(
-                        "editGalleryImagesInput"
-                    ).files;
-                    if (galleryFiles && galleryFiles.length > 0) {
-                        console.log(
-                            `📸 Uploading ${galleryFiles.length} gallery images...`
-                        );
-                        for (let i = 0; i < galleryFiles.length; i++) {
-                            const uploadedImageUrl = await uploadFile(
-                                galleryFiles[i],
-                                "design-gallery"
-                            );
-                            projectData.galleryImages.push(uploadedImageUrl);
+                    // Process content blocks
+                    console.log(`📝 Processing ${editContentBlocks.length} content blocks...`);
+                    for (const block of editContentBlocks) {
+                        if (block.type === "text") {
+                            const title = document.getElementById(`${block.id}-title`)?.value || "";
+                            const content = document.getElementById(`${block.id}-content`)?.value || "";
+                            projectData.contentBlocks.push({
+                                type: "text",
+                                title: title,
+                                content: content,
+                            });
+                        } else if (block.type === "image") {
+                            const caption = document.getElementById(`${block.id}-caption`)?.value || "";
+                            let imageUrl = block.existingUrl || null;
+                            
+                            // Upload new image if file exists
+                            if (block.file) {
+                                imageUrl = await uploadFile(block.file, "design-content");
+                            }
+                            
+                            if (imageUrl) {
+                                projectData.contentBlocks.push({
+                                    type: "image",
+                                    caption: caption,
+                                    url: imageUrl,
+                                });
+                            }
                         }
-                        console.log(
-                            `✅ Uploaded ${projectData.galleryImages.length} gallery images`
-                        );
                     }
+                    console.log(`✅ Processed ${projectData.contentBlocks.length} content blocks`);
 
                     await apiRequest(`/design/admin/projects/${projectId}`, {
                         method: "PUT",
@@ -14921,6 +15111,36 @@
                         document.getElementById(
                             "editMainImagePreview"
                         ).innerHTML = `<img src="${projectData.main_image}" alt="Preview" style="max-width: 200px; border-radius: 8px;">`;
+                    }
+
+                    // Clear and populate content blocks
+                    editContentBlocks.length = 0;
+                    editContentBlockCounter = 0;
+                    const container = document.getElementById(
+                        "editContentBlocksContainer"
+                    );
+                    container.innerHTML = '<p id="editEmptyContentMessage" style="color: var(--text-muted); text-align: center;">No content blocks yet. Click the buttons above to add text or images.</p>';
+
+                    // Load existing content blocks if available
+                    if (projectData.content_blocks && Array.isArray(projectData.content_blocks)) {
+                        projectData.content_blocks.forEach((block) => {
+                            if (block.type === 'text') {
+                                addEditContentBlock('text');
+                                const lastBlock = editContentBlocks[editContentBlocks.length - 1];
+                                document.getElementById(`${lastBlock.id}-title`).value = block.title || '';
+                                document.getElementById(`${lastBlock.id}-content`).value = block.content || '';
+                            } else if (block.type === 'image') {
+                                addEditContentBlock('image');
+                                const lastBlock = editContentBlocks[editContentBlocks.length - 1];
+                                document.getElementById(`${lastBlock.id}-caption`).value = block.caption || '';
+                                if (block.url) {
+                                    const preview = document.getElementById(`${lastBlock.id}-preview`);
+                                    preview.innerHTML = `<img src="${block.url}" style="max-width: 100%; border-radius: 8px; margin-top: 0.5rem;" />`;
+                                    document.getElementById(`${lastBlock.id}-filename`).textContent = 'Existing image';
+                                    lastBlock.existingUrl = block.url;
+                                }
+                            }
+                        });
                     }
 
                     showEditDesignProjectModal();
