@@ -709,17 +709,24 @@ async function initDb() {
             console.log("✅ Admin user already exists");
         }
 
-        // Check if default data already exists
-        const dataCheck = await client.query(
-            "SELECT COUNT(*) FROM design_projects"
-        );
-        const projectCount = parseInt(dataCheck.rows[0].count);
+        // Check if default data already exists - check multiple tables to ensure truly fresh DB
+        const checks = await Promise.all([
+            client.query("SELECT COUNT(*) FROM design_projects"),
+            client.query("SELECT COUNT(*) FROM contact_info"),
+            client.query("SELECT COUNT(*) FROM community_stories")
+        ]);
+        
+        const projectCount = parseInt(checks[0].rows[0].count);
+        const contactCount = parseInt(checks[1].rows[0].count);
+        const storiesCount = parseInt(checks[2].rows[0].count);
+        
+        const isFreshDatabase = projectCount === 0 && contactCount === 0 && storiesCount === 0;
 
-        if (projectCount === 0) {
-            console.log("🔄 No existing data found. Inserting default data...");
+        if (isFreshDatabase) {
+            console.log("🔄 Fresh database detected. Inserting default data...");
             await insertDefaultData(client);
         } else {
-            console.log(`✅ Database already has ${projectCount} design projects. Skipping default data insertion.`);
+            console.log(`✅ Database already populated (${projectCount} projects, ${contactCount} contacts, ${storiesCount} stories). Skipping default data insertion.`);
         }
 
         console.log("🎉 Database initialization completed successfully");
@@ -733,9 +740,11 @@ async function initDb() {
 }
 
 async function insertDefaultData(client) {
-    console.log("🔄 Inserting default data...");
+    console.log("🔄 Inserting default data for fresh database...");
+    console.log("⚠️  Note: This only runs once on a fresh database. Deleted items will NOT be restored on restart.");
 
-    const defaultContactInfo = [
+    try {
+        const defaultContactInfo = [
         {
             type: "address",
             title: "Visit Us",
@@ -1680,529 +1689,380 @@ async function insertDefaultData(client) {
 
     // Insert default contact info
     for (const info of defaultContactInfo) {
-        const exists = await client.query(
-            "SELECT id FROM contact_info WHERE type = $1 AND title = $2",
-            [info.type, info.title]
-        );
-
-        if (exists.rows.length === 0) {
-            await client.query(
-                `INSERT INTO contact_info (type, title, value, description, display_order) 
+        await client.query(
+            `INSERT INTO contact_info (type, title, value, description, display_order) 
          VALUES ($1, $2, $3, $4, $5)`,
-                [
-                    info.type,
-                    info.title,
-                    info.value,
-                    info.description,
-                    info.display_order,
-                ]
-            );
-            console.log(`✅ Added contact info: ${info.title}`);
-        }
+            [
+                info.type,
+                info.title,
+                info.value,
+                info.description,
+                info.display_order,
+            ]
+        );
+        console.log(`✅ Added contact info: ${info.title}`);
     }
 
     // Insert default email settings
     for (const setting of defaultEmailSettings) {
-        const exists = await client.query(
-            "SELECT id FROM email_settings WHERE recipient_email = $1",
-            [setting.recipient_email]
-        );
-
-        if (exists.rows.length === 0) {
-            await client.query(
-                `INSERT INTO email_settings (recipient_email, subject_template, enabled) 
+        await client.query(
+            `INSERT INTO email_settings (recipient_email, subject_template, enabled) 
          VALUES ($1, $2, $3)`,
-                [
-                    setting.recipient_email,
-                    setting.subject_template,
-                    setting.enabled,
-                ]
-            );
-            console.log(
-                `✅ Added email setting for: ${setting.recipient_email}`
-            );
-        }
+            [
+                setting.recipient_email,
+                setting.subject_template,
+                setting.enabled,
+            ]
+        );
+        console.log(
+            `✅ Added email setting for: ${setting.recipient_email}`
+        );
     }
 
     // Insert default community stories
     for (const story of defaultStories) {
-        const exists = await client.query(
-            "SELECT id FROM community_stories WHERE story_title = $1 AND author_name = $2",
-            [story.story_title, story.author_name]
-        );
-
-        if (exists.rows.length === 0) {
-            await client.query(
-                `INSERT INTO community_stories (author_name, author_title, author_organization, story_title, story_content, category, is_featured) 
+        await client.query(
+            `INSERT INTO community_stories (author_name, author_title, author_organization, story_title, story_content, category, is_featured) 
          VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-                [
-                    story.author_name,
-                    story.author_title,
-                    story.author_organization,
-                    story.story_title,
-                    story.story_content,
-                    story.category,
-                    story.is_featured,
-                ]
-            );
-            console.log(`✅ Added community story: ${story.story_title}`);
-        }
+            [
+                story.author_name,
+                story.author_title,
+                story.author_organization,
+                story.story_title,
+                story.story_content,
+                story.category,
+                story.is_featured,
+            ]
+        );
+        console.log(`✅ Added community story: ${story.story_title}`);
     }
 
     // Insert default media photos
     for (const photo of defaultPhotos) {
-        const exists = await client.query(
-            "SELECT id FROM media_photos WHERE title = $1 AND image_url = $2",
-            [photo.title, photo.image_url]
-        );
-
-        if (exists.rows.length === 0) {
-            await client.query(
-                `INSERT INTO media_photos (title, description, image_url, category, album_name, tags, is_featured) 
+        await client.query(
+            `INSERT INTO media_photos (title, description, image_url, category, album_name, tags, is_featured) 
          VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-                [
-                    photo.title,
-                    photo.description,
-                    photo.image_url,
-                    photo.category,
-                    photo.album_name,
-                    JSON.stringify(photo.tags),
-                    photo.is_featured,
-                ]
-            );
-            console.log(`✅ Added media photo: ${photo.title}`);
-        }
+            [
+                photo.title,
+                photo.description,
+                photo.image_url,
+                photo.category,
+                photo.album_name,
+                JSON.stringify(photo.tags),
+                photo.is_featured,
+            ]
+        );
+        console.log(`✅ Added media photo: ${photo.title}`);
     }
 
     // Insert default media videos
     for (const video of defaultVideos) {
-        const exists = await client.query(
-            "SELECT id FROM media_videos WHERE title = $1 AND thumbnail_url = $2",
-            [video.title, video.thumbnail_url]
-        );
-
-        if (exists.rows.length === 0) {
-            await client.query(
-                `INSERT INTO media_videos (title, description, video_url, thumbnail_url, duration, category, tags, is_featured) 
+        await client.query(
+            `INSERT INTO media_videos (title, description, video_url, thumbnail_url, duration, category, tags, is_featured) 
          VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
-                [
-                    video.title,
-                    video.description,
-                    video.video_url,
-                    video.thumbnail_url,
-                    video.duration,
-                    video.category,
-                    JSON.stringify(video.tags),
-                    video.is_featured,
-                ]
-            );
-            console.log(`✅ Added media video: ${video.title}`);
-        }
+            [
+                video.title,
+                video.description,
+                video.video_url,
+                video.thumbnail_url,
+                video.duration,
+                video.category,
+                JSON.stringify(video.tags),
+                video.is_featured,
+            ]
+        );
+        console.log(`✅ Added media video: ${video.title}`);
     }
 
     // Insert default media designs
     for (const design of defaultDesigns) {
-        const exists = await client.query(
-            "SELECT id FROM media_designs WHERE title = $1 AND image_url = $2",
-            [design.title, design.image_url]
-        );
-
-        if (exists.rows.length === 0) {
-            await client.query(
-                `INSERT INTO media_designs (title, description, image_url, design_type, category, project_name, tags, is_featured) 
+        await client.query(
+            `INSERT INTO media_designs (title, description, image_url, design_type, category, project_name, tags, is_featured) 
          VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
-                [
-                    design.title,
-                    design.description,
-                    design.image_url,
-                    design.design_type,
-                    design.category,
-                    design.project_name,
-                    JSON.stringify(design.tags),
-                    design.is_featured,
-                ]
-            );
-            console.log(`✅ Added media design: ${design.title}`);
-        }
+            [
+                design.title,
+                design.description,
+                design.image_url,
+                design.design_type,
+                design.category,
+                design.project_name,
+                JSON.stringify(design.tags),
+                design.is_featured,
+            ]
+        );
+        console.log(`✅ Added media design: ${design.title}`);
     }
 
     // Insert default media testimonials
     for (const testimonial of defaultTestimonials) {
-        const exists = await client.query(
-            "SELECT id FROM media_testimonials WHERE name = $1 AND quote = $2",
-            [testimonial.name, testimonial.quote]
-        );
-
-        if (exists.rows.length === 0) {
-            await client.query(
-                `INSERT INTO media_testimonials (name, role, organization, quote, project_name, image_url, rating, is_featured) 
+        await client.query(
+            `INSERT INTO media_testimonials (name, role, organization, quote, project_name, image_url, rating, is_featured) 
          VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
-                [
-                    testimonial.name,
-                    testimonial.role,
-                    testimonial.organization,
-                    testimonial.quote,
-                    testimonial.project_name,
-                    testimonial.image_url,
-                    testimonial.rating,
-                    testimonial.is_featured,
-                ]
-            );
-            console.log(`✅ Added media testimonial: ${testimonial.name}`);
-        }
+            [
+                testimonial.name,
+                testimonial.role,
+                testimonial.organization,
+                testimonial.quote,
+                testimonial.project_name,
+                testimonial.image_url,
+                testimonial.rating,
+                testimonial.is_featured,
+            ]
+        );
+        console.log(`✅ Added media testimonial: ${testimonial.name}`);
     }
 
     // Insert default education workshops
     for (const workshop of defaultWorkshops) {
-        const exists = await client.query(
-            "SELECT id FROM education_workshops WHERE title = $1 AND instructor = $2",
-            [workshop.title, workshop.instructor]
-        );
-
-        if (exists.rows.length === 0) {
-            await client.query(
-                `INSERT INTO education_workshops (title, description, tag, duration, date, instructor, instructor_bio, price, capacity, location, image_url, document_url, is_featured) 
+        await client.query(
+            `INSERT INTO education_workshops (title, description, tag, duration, date, instructor, instructor_bio, price, capacity, location, image_url, document_url, is_featured) 
          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`,
-                [
-                    workshop.title,
-                    workshop.description,
-                    workshop.tag,
-                    workshop.duration,
-                    workshop.date,
-                    workshop.instructor,
-                    workshop.instructor_bio,
-                    workshop.price,
-                    workshop.capacity,
-                    workshop.location,
-                    workshop.image_url,
-                    workshop.document_url,
-                    workshop.is_featured,
-                ]
-            );
-            console.log(`✅ Added education workshop: ${workshop.title}`);
-        }
+            [
+                workshop.title,
+                workshop.description,
+                workshop.tag,
+                workshop.duration,
+                workshop.date,
+                workshop.instructor,
+                workshop.instructor_bio,
+                workshop.price,
+                workshop.capacity,
+                workshop.location,
+                workshop.image_url,
+                workshop.document_url,
+                workshop.is_featured,
+            ]
+        );
+        console.log(`✅ Added education workshop: ${workshop.title}`);
     }
 
     // Insert default education tutorials
     for (const tutorial of defaultTutorials) {
-        const exists = await client.query(
-            "SELECT id FROM education_tutorials WHERE title = $1 AND category = $2",
-            [tutorial.title, tutorial.category]
-        );
-
-        if (exists.rows.length === 0) {
-            await client.query(
-                `INSERT INTO education_tutorials (title, description, category, level, format, duration, document_url, video_url, thumbnail_url, download_count, is_featured) 
+        await client.query(
+            `INSERT INTO education_tutorials (title, description, category, level, format, duration, document_url, video_url, thumbnail_url, download_count, is_featured) 
          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
-                [
-                    tutorial.title,
-                    tutorial.description,
-                    tutorial.category,
-                    tutorial.level,
-                    tutorial.format,
-                    tutorial.duration,
-                    tutorial.document_url,
-                    tutorial.video_url,
-                    tutorial.thumbnail_url,
-                    tutorial.download_count,
-                    tutorial.is_featured,
-                ]
-            );
-            console.log(`✅ Added education tutorial: ${tutorial.title}`);
-        }
+            [
+                tutorial.title,
+                tutorial.description,
+                tutorial.category,
+                tutorial.level,
+                tutorial.format,
+                tutorial.duration,
+                tutorial.document_url,
+                tutorial.video_url,
+                tutorial.thumbnail_url,
+                tutorial.download_count,
+                tutorial.is_featured,
+            ]
+        );
+        console.log(`✅ Added education tutorial: ${tutorial.title}`);
     }
 
     // Insert default education exhibitions
     for (const exhibition of defaultExhibitions) {
-        const exists = await client.query(
-            "SELECT id FROM education_exhibitions WHERE title = $1 AND curator = $2",
-            [exhibition.title, exhibition.curator]
-        );
-
-        if (exists.rows.length === 0) {
-            await client.query(
-                `INSERT INTO education_exhibitions (title, description, start_date, end_date, location, curator, curator_bio, image_url, brochure_url, virtual_tour_url, is_featured) 
+        await client.query(
+            `INSERT INTO education_exhibitions (title, description, start_date, end_date, location, curator, curator_bio, image_url, brochure_url, virtual_tour_url, is_featured) 
          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
-                [
-                    exhibition.title,
-                    exhibition.description,
-                    exhibition.start_date,
-                    exhibition.end_date,
-                    exhibition.location,
-                    exhibition.curator,
-                    exhibition.curator_bio,
-                    exhibition.image_url,
-                    exhibition.brochure_url,
-                    exhibition.virtual_tour_url,
-                    exhibition.is_featured,
-                ]
-            );
-            console.log(`✅ Added education exhibition: ${exhibition.title}`);
-        }
+            [
+                exhibition.title,
+                exhibition.description,
+                exhibition.start_date,
+                exhibition.end_date,
+                exhibition.location,
+                exhibition.curator,
+                exhibition.curator_bio,
+                exhibition.image_url,
+                exhibition.brochure_url,
+                exhibition.virtual_tour_url,
+                exhibition.is_featured,
+            ]
+        );
+        console.log(`✅ Added education exhibition: ${exhibition.title}`);
     }
 
     // Insert Architecture Colleagues Lab default data
     for (const member of defaultColleaguesTeam) {
-        const exists = await client.query(
-            "SELECT id FROM architecture_colleagues_team WHERE name = $1 AND role = $2",
-            [member.name, member.role]
-        );
-
-        if (exists.rows.length === 0) {
-            await client.query(
-                `INSERT INTO architecture_colleagues_team (name, role, bio, display_order) 
+        await client.query(
+            `INSERT INTO architecture_colleagues_team (name, role, bio, display_order) 
          VALUES ($1, $2, $3, $4)`,
-                [member.name, member.role, member.bio, member.display_order]
-            );
-            console.log(
-                `✅ Added architecture colleagues team member: ${member.name}`
-            );
-        }
+            [member.name, member.role, member.bio, member.display_order]
+        );
+        console.log(
+            `✅ Added architecture colleagues team member: ${member.name}`
+        );
     }
 
     for (const initiative of defaultColleaguesInitiatives) {
-        const exists = await client.query(
-            "SELECT id FROM architecture_colleagues_initiatives WHERE title = $1",
-            [initiative.title]
-        );
-
-        if (exists.rows.length === 0) {
-            await client.query(
-                `INSERT INTO architecture_colleagues_initiatives (title, description, status, target_date, display_order) 
+        await client.query(
+            `INSERT INTO architecture_colleagues_initiatives (title, description, status, target_date, display_order) 
          VALUES ($1, $2, $3, $4, $5)`,
-                [
-                    initiative.title,
-                    initiative.description,
-                    initiative.status,
-                    initiative.target_date,
-                    initiative.display_order,
-                ]
-            );
-            console.log(
-                `✅ Added architecture colleagues initiative: ${initiative.title}`
-            );
-        }
+            [
+                initiative.title,
+                initiative.description,
+                initiative.status,
+                initiative.target_date,
+                initiative.display_order,
+            ]
+        );
+        console.log(
+            `✅ Added architecture colleagues initiative: ${initiative.title}`
+        );
     }
 
     for (const value of defaultColleaguesValues) {
-        const exists = await client.query(
-            "SELECT id FROM architecture_colleagues_values WHERE title = $1",
-            [value.title]
-        );
-
-        if (exists.rows.length === 0) {
-            await client.query(
-                `INSERT INTO architecture_colleagues_values (title, description, display_order) 
+        await client.query(
+            `INSERT INTO architecture_colleagues_values (title, description, display_order) 
          VALUES ($1, $2, $3)`,
-                [value.title, value.description, value.display_order]
-            );
-            console.log(
-                `✅ Added architecture colleagues value: ${value.title}`
-            );
-        }
+            [value.title, value.description, value.display_order]
+        );
+        console.log(
+            `✅ Added architecture colleagues value: ${value.title}`
+        );
     }
 
     for (const mission of defaultColleaguesMission) {
-        const exists = await client.query(
-            "SELECT id FROM architecture_colleagues_mission"
-        );
-
-        if (exists.rows.length === 0) {
-            await client.query(
-                `INSERT INTO architecture_colleagues_mission (mission_statement, vision_statement) 
+        await client.query(
+            `INSERT INTO architecture_colleagues_mission (mission_statement, vision_statement) 
          VALUES ($1, $2)`,
-                [mission.mission_statement, mission.vision_statement]
-            );
-            console.log(`✅ Added architecture colleagues mission and vision`);
-        }
+            [mission.mission_statement, mission.vision_statement]
+        );
+        console.log(`✅ Added architecture colleagues mission and vision`);
     }
 
     // Insert default research articles
     for (const article of defaultResearchArticles) {
-        const exists = await client.query(
-            "SELECT id FROM research_articles WHERE title = $1",
-            [article.title]
-        );
-
-        if (exists.rows.length === 0) {
-            await client.query(
-                `INSERT INTO research_articles (title, description, tag, year, icon_name, category, is_featured) 
+        await client.query(
+            `INSERT INTO research_articles (title, description, tag, year, icon_name, category, is_featured) 
          VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-                [
-                    article.title,
-                    article.description,
-                    article.tag,
-                    article.year,
-                    article.icon_name,
-                    article.category,
-                    article.is_featured,
-                ]
-            );
-            console.log(`✅ Added research article: ${article.title}`);
-        }
+            [
+                article.title,
+                article.description,
+                article.tag,
+                article.year,
+                article.icon_name,
+                article.category,
+                article.is_featured,
+            ]
+        );
+        console.log(`✅ Added research article: ${article.title}`);
     }
 
     // Insert default sustainable practices
     for (const practice of defaultSustainablePractices) {
-        const exists = await client.query(
-            "SELECT id FROM sustainable_practices WHERE title = $1",
-            [practice.title]
-        );
-
-        if (exists.rows.length === 0) {
-            await client.query(
-                `INSERT INTO sustainable_practices (title, description, icon_name) 
+        await client.query(
+            `INSERT INTO sustainable_practices (title, description, icon_name) 
          VALUES ($1, $2, $3)`,
-                [practice.title, practice.description, practice.icon_name]
-            );
-            console.log(`✅ Added sustainable practice: ${practice.title}`);
-        }
+            [practice.title, practice.description, practice.icon_name]
+        );
+        console.log(`✅ Added sustainable practice: ${practice.title}`);
     }
 
     // Insert default climate strategies
     for (const strategy of defaultClimateStrategies) {
-        const exists = await client.query(
-            "SELECT id FROM climate_strategies WHERE title = $1",
-            [strategy.title]
-        );
-
-        if (exists.rows.length === 0) {
-            await client.query(
-                `INSERT INTO climate_strategies (title, description, icon_name) 
+        await client.query(
+            `INSERT INTO climate_strategies (title, description, icon_name) 
          VALUES ($1, $2, $3)`,
-                [strategy.title, strategy.description, strategy.icon_name]
-            );
-            console.log(`✅ Added climate strategy: ${strategy.title}`);
-        }
+            [strategy.title, strategy.description, strategy.icon_name]
+        );
+        console.log(`✅ Added climate strategy: ${strategy.title}`);
     }
 
     // Insert default social studies
     for (const study of defaultSocialStudies) {
-        const exists = await client.query(
-            "SELECT id FROM social_studies WHERE title = $1",
-            [study.title]
-        );
-
-        if (exists.rows.length === 0) {
-            await client.query(
-                `INSERT INTO social_studies (title, description, focus_area, icon_name) 
+        await client.query(
+            `INSERT INTO social_studies (title, description, focus_area, icon_name) 
          VALUES ($1, $2, $3, $4)`,
-                [
-                    study.title,
-                    study.description,
-                    study.focus_area,
-                    study.icon_name,
-                ]
-            );
-            console.log(`✅ Added social study: ${study.title}`);
-        }
+            [
+                study.title,
+                study.description,
+                study.focus_area,
+                study.icon_name,
+            ]
+        );
+        console.log(`✅ Added social study: ${study.title}`);
     }
 
     // Insert default research stats
     for (const stat of defaultResearchStats) {
-        const exists = await client.query(
-            "SELECT id FROM research_stats WHERE stat_label = $1 AND category = $2",
-            [stat.stat_label, stat.category]
-        );
-
-        if (exists.rows.length === 0) {
-            await client.query(
-                `INSERT INTO research_stats (stat_label, stat_value, icon_name, category) 
+        await client.query(
+            `INSERT INTO research_stats (stat_label, stat_value, icon_name, category) 
          VALUES ($1, $2, $3, $4)`,
-                [
-                    stat.stat_label,
-                    stat.stat_value,
-                    stat.icon_name,
-                    stat.category,
-                ]
-            );
-            console.log(`✅ Added research stat: ${stat.stat_label}`);
-        }
+            [
+                stat.stat_label,
+                stat.stat_value,
+                stat.icon_name,
+                stat.category,
+            ]
+        );
+        console.log(`✅ Added research stat: ${stat.stat_label}`);
     }
 
     // Insert default design projects
     for (const project of defaultDesignProjects) {
-        const exists = await client.query(
-            "SELECT id FROM design_projects WHERE title = $1 AND category = $2",
-            [project.title, project.category]
-        );
-
-        if (exists.rows.length === 0) {
-            await client.query(
-                `INSERT INTO design_projects (title, summary, description, category, sector, main_image, gallery_images, is_featured) 
+        await client.query(
+            `INSERT INTO design_projects (title, summary, description, category, sector, main_image, gallery_images, is_featured) 
          VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
-                [
-                    project.title,
-                    project.summary,
-                    project.description,
-                    project.category,
-                    project.sector,
-                    project.main_image,
-                    JSON.stringify(project.gallery_images),
-                    project.is_featured,
-                ]
-            );
-            console.log(`✅ Added design project: ${project.title}`);
-        }
+            [
+                project.title,
+                project.summary,
+                project.description,
+                project.category,
+                project.sector,
+                project.main_image,
+                JSON.stringify(project.gallery_images),
+                project.is_featured,
+            ]
+        );
+        console.log(`✅ Added design project: ${project.title}`);
     }
 
     // NEW: Insert default news articles
     for (const article of defaultNewsArticles) {
-        const exists = await client.query(
-            "SELECT id FROM news_articles WHERE title = $1 AND author = $2",
-            [article.title, article.author]
-        );
-
-        if (exists.rows.length === 0) {
-            await client.query(
-                `INSERT INTO news_articles (title, excerpt, content, image_url, category, author, date, read_time, is_featured) 
+        await client.query(
+            `INSERT INTO news_articles (title, excerpt, content, image_url, category, author, date, read_time, is_featured) 
          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
-                [
-                    article.title,
-                    article.excerpt,
-                    article.content,
-                    article.image_url,
-                    article.category,
-                    article.author,
-                    article.date,
-                    article.read_time,
-                    article.is_featured,
-                ]
-            );
-            console.log(`✅ Added news article: ${article.title}`);
-        }
+            [
+                article.title,
+                article.excerpt,
+                article.content,
+                article.image_url,
+                article.category,
+                article.author,
+                article.date,
+                article.read_time,
+                article.is_featured,
+            ]
+        );
+        console.log(`✅ Added news article: ${article.title}`);
     }
 
     // NEW: Insert default events
     for (const event of defaultEvents) {
-        const exists = await client.query(
-            "SELECT id FROM events WHERE title = $1 AND event_date = $2",
-            [event.title, event.event_date]
-        );
-
-        if (exists.rows.length === 0) {
-            await client.query(
-                `INSERT INTO events (title, excerpt, description, image_url, event_date, event_time, location, category, author, read_time, is_featured) 
+        await client.query(
+            `INSERT INTO events (title, excerpt, description, image_url, event_date, event_time, location, category, author, read_time, is_featured) 
          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
-                [
-                    event.title,
-                    event.excerpt,
-                    event.description,
-                    event.image_url,
-                    event.event_date,
-                    event.event_time,
-                    event.location,
-                    event.category,
-                    event.author,
-                    event.read_time,
-                    event.is_featured,
-                ]
-            );
-            console.log(`✅ Added event: ${event.title}`);
-        }
+            [
+                event.title,
+                event.excerpt,
+                event.description,
+                event.image_url,
+                event.event_date,
+                event.event_time,
+                event.location,
+                event.category,
+                event.author,
+                event.read_time,
+                event.is_featured,
+            ]
+        );
+        console.log(`✅ Added event: ${event.title}`);
     }
 
     console.log("✅ Default data insertion completed");
+    } catch (error) {
+        console.error("❌ Error inserting default data:", error.message);
+        throw error;
+    }
 }
 
 // Enhanced query function with connection recovery
