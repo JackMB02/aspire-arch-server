@@ -10180,12 +10180,12 @@
                 preview.className = "item-preview";
                 preview.innerHTML = project.summary || "No summary available";
 
-                // Add image preview if available
-                if (project.main_image) {
-                    const imgContainer = document.createElement("div");
-                    imgContainer.style.marginLeft = "1rem";
-                    imgContainer.style.flexShrink = "0";
+                content.appendChild(title);
+                content.appendChild(meta);
+                content.appendChild(preview);
 
+                // Add image preview if available - inside content for better layout
+                if (project.main_image) {
                     const img = document.createElement("img");
                     img.src = project.main_image;
                     img.alt = project.title;
@@ -10194,14 +10194,10 @@
                     img.style.objectFit = "cover";
                     img.style.borderRadius = "6px";
                     img.style.border = "1px solid var(--border-light)";
+                    img.style.marginTop = "0.5rem";
 
-                    imgContainer.appendChild(img);
-                    el.appendChild(imgContainer);
+                    content.appendChild(img);
                 }
-
-                content.appendChild(title);
-                content.appendChild(meta);
-                content.appendChild(preview);
 
                 const actions = document.createElement("div");
                 actions.className = "item-actions";

@@ -366,11 +366,14 @@ button {
     border-radius: 8px;
     border: 1px solid var(--border-light);
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
     transition: all 0.3s ease;
     overflow: hidden;
     max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .item:hover {
@@ -382,6 +385,7 @@ button {
     flex: 1;
     min-width: 0;
     overflow: hidden;
+    width: 100%;
 }
 
 .item-content img {
@@ -390,6 +394,17 @@ button {
     width: auto !important;
     height: auto !important;
     object-fit: contain;
+    border-radius: 4px;
+    margin: 0.5rem 0;
+}
+
+.item-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+    width: 100%;
+}
     border-radius: 4px;
     margin: 0.5rem 0;
 }
