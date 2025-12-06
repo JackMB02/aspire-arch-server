@@ -709,8 +709,18 @@ async function initDb() {
             console.log("✅ Admin user already exists");
         }
 
-        // Insert default data
-        await insertDefaultData(client);
+        // Check if default data already exists
+        const dataCheck = await client.query(
+            "SELECT COUNT(*) FROM design_projects"
+        );
+        const projectCount = parseInt(dataCheck.rows[0].count);
+
+        if (projectCount === 0) {
+            console.log("🔄 No existing data found. Inserting default data...");
+            await insertDefaultData(client);
+        } else {
+            console.log(`✅ Database already has ${projectCount} design projects. Skipping default data insertion.`);
+        }
 
         console.log("🎉 Database initialization completed successfully");
         return true;
