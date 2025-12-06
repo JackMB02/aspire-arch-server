@@ -479,8 +479,10 @@
             }
 
             .item-content img {
-                max-width: 150px;
-                max-height: 100px;
+                max-width: 150px !important;
+                max-height: 100px !important;
+                width: auto !important;
+                height: auto !important;
                 object-fit: contain;
                 border-radius: 4px;
                 margin: 0.5rem 0;
@@ -507,8 +509,10 @@
             }
 
             .item-preview img {
-                max-width: 150px;
-                max-height: 100px;
+                max-width: 150px !important;
+                max-height: 100px !important;
+                width: auto !important;
+                height: auto !important;
                 object-fit: contain;
                 border-radius: 4px;
                 margin: 0.5rem 0;
@@ -536,8 +540,10 @@
             }
 
             .submission-item img {
-                max-width: 150px;
-                max-height: 100px;
+                max-width: 150px !important;
+                max-height: 100px !important;
+                width: auto !important;
+                height: auto !important;
                 object-fit: contain;
                 border-radius: 4px;
                 margin: 0.5rem 0;
@@ -7838,7 +7844,7 @@
                 const preview = document.createElement("div");
                 preview.className = "item-preview";
                 const contentText = item.content || "";
-                preview.textContent =
+                preview.innerHTML =
                     contentText.substring(0, 150) +
                     (contentText.length > 150 ? "..." : "");
 
@@ -9702,7 +9708,7 @@
 
                 const preview = document.createElement("div");
                 preview.className = "item-preview";
-                preview.textContent =
+                preview.innerHTML =
                     item.description?.substring(0, 100) + "..." ||
                     "No description available";
 
@@ -9781,7 +9787,7 @@
 
                 const preview = document.createElement("div");
                 preview.className = "item-preview";
-                preview.textContent =
+                preview.innerHTML =
                     item.description || "No description available";
 
                 content.appendChild(title);
@@ -10138,7 +10144,7 @@
 
                 const preview = document.createElement("div");
                 preview.className = "item-preview";
-                preview.textContent = project.summary || "No summary available";
+                preview.innerHTML = project.summary || "No summary available";
 
                 // Add image preview if available
                 if (project.main_image) {
@@ -10418,7 +10424,7 @@
 
                 const preview = document.createElement("div");
                 preview.className = "item-preview";
-                preview.textContent =
+                preview.innerHTML =
                     article.abstract ||
                     article.content?.substring(0, 150) + "..." ||
                     "No abstract available";
@@ -10663,7 +10669,7 @@
 
                 const preview = document.createElement("div");
                 preview.className = "item-preview";
-                preview.textContent =
+                preview.innerHTML =
                     item.excerpt || item.description || "No excerpt available";
 
                 // Add date and location for events
@@ -10991,7 +10997,7 @@
 
                 const preview = document.createElement("div");
                 preview.className = "item-preview";
-                preview.textContent = member.bio || "No bio available";
+                preview.innerHTML = member.bio || "No bio available";
 
                 content.appendChild(title);
                 content.appendChild(meta);
@@ -11086,7 +11092,7 @@
 
                 const preview = document.createElement("div");
                 preview.className = "item-preview";
-                preview.textContent =
+                preview.innerHTML =
                     initiative.description || "No description available";
 
                 content.appendChild(title);
