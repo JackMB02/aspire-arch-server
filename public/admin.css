@@ -384,6 +384,14 @@ button {
     overflow: hidden;
 }
 
+.item-content img {
+    max-width: 150px;
+    max-height: 100px;
+    object-fit: contain;
+    border-radius: 4px;
+    margin: 0.5rem 0;
+}
+
 .item-title {
     font-weight: 300;
     margin: 0 0 0.5rem;
@@ -424,6 +432,15 @@ button {
     font-weight: 300;
     word-wrap: break-word;
     overflow-wrap: break-word;
+}
+
+.item-preview img {
+    max-width: 150px;
+    max-height: 100px;
+    object-fit: contain;
+    border-radius: 4px;
+    margin: 0.5rem 0;
+    display: block;
 }
 
 .item img {
@@ -510,6 +527,14 @@ button {
     border: 1px solid var(--border-light);
     margin-bottom: 1rem;
     transition: all 0.3s ease;
+}
+
+.submission-item img {
+    max-width: 150px;
+    max-height: 100px;
+    object-fit: contain;
+    border-radius: 4px;
+    margin: 0.5rem 0;
 }
 
 .submission-item:hover {
