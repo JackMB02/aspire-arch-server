@@ -5685,6 +5685,12 @@
                     </button>
                 </div>
 
+                <!-- Current Content Preview Section -->
+                <div id="editProjectPreview" style="padding: 1.5rem; background: rgba(0, 0, 0, 0.2); border-radius: 8px; margin: 0 1.5rem 1.5rem;">
+                    <h4 style="color: var(--accent-light); margin-bottom: 1rem;"><i class="fas fa-eye"></i> Current Project Content</h4>
+                    <div id="editProjectPreviewContent" style="color: var(--text-muted);"></div>
+                </div>
+
                 <form id="editDesignProjectForm">
                     <input type="hidden" id="editDesignProjectId" />
                     <div class="form-grid">
@@ -15112,6 +15118,50 @@
                             "editMainImagePreview"
                         ).innerHTML = `<img src="${projectData.main_image}" alt="Preview" style="max-width: 200px; border-radius: 8px;">`;
                     }
+
+                    // Build and display current content preview
+                    let previewHTML = '';
+                    if (projectData.main_image) {
+                        previewHTML += `<div style="margin-bottom: 1rem;">
+                            <strong>Main Image:</strong><br/>
+                            <img src="${projectData.main_image}" style="max-width: 100%; max-height: 200px; border-radius: 8px; margin-top: 0.5rem;" />
+                        </div>`;
+                    }
+                    
+                    if (projectData.description) {
+                        previewHTML += `<div style="margin-bottom: 1rem;">
+                            <strong>Description:</strong><br/>
+                            <div style="margin-top: 0.5rem; line-height: 1.6;">${projectData.description}</div>
+                        </div>`;
+                    }
+
+                    if (projectData.content_blocks && projectData.content_blocks.length > 0) {
+                        previewHTML += `<div style="margin-bottom: 1rem;">
+                            <strong>Content Blocks (${projectData.content_blocks.length}):</strong><br/>`;
+                        
+                        projectData.content_blocks.forEach((block, index) => {
+                            if (block.type === 'text') {
+                                previewHTML += `<div style="margin: 1rem 0; padding: 1rem; background: rgba(0,0,0,0.3); border-radius: 6px;">
+                                    <div style="color: var(--accent-light); margin-bottom: 0.5rem;"><i class="fas fa-heading"></i> Text Block ${index + 1}</div>
+                                    ${block.title ? `<strong>${block.title}</strong><br/>` : ''}
+                                    <div style="margin-top: 0.5rem;">${block.content || 'No content'}</div>
+                                </div>`;
+                            } else if (block.type === 'image') {
+                                previewHTML += `<div style="margin: 1rem 0; padding: 1rem; background: rgba(0,0,0,0.3); border-radius: 6px;">
+                                    <div style="color: var(--accent-light); margin-bottom: 0.5rem;"><i class="fas fa-image"></i> Image Block ${index + 1}</div>
+                                    ${block.caption ? `<div style="margin-bottom: 0.5rem;">${block.caption}</div>` : ''}
+                                    <img src="${block.url}" style="max-width: 100%; border-radius: 6px;" />
+                                </div>`;
+                            }
+                        });
+                        previewHTML += `</div>`;
+                    }
+
+                    if (!previewHTML) {
+                        previewHTML = '<p style="color: var(--text-muted);">No content available</p>';
+                    }
+
+                    document.getElementById('editProjectPreviewContent').innerHTML = previewHTML;
 
                     // Clear and populate content blocks
                     editContentBlocks.length = 0;
