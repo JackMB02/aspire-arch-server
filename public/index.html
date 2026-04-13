@@ -15310,10 +15310,6 @@
                     return;
                 }
 
-                const email = manager.email || prompt('Enter your email to view drafts:');
-                if (!email) return;
-
-                manager.email = email;
                 const drafts = await manager.getUserDrafts();
 
                 if (drafts.length === 0) {

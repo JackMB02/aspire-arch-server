@@ -15,7 +15,7 @@ class DraftManager {
     this.apiUrl = options.apiUrl || '/api';
     this.formType = options.formType || 'contact';
     this.formElement = options.formElement;
-    this.email = options.email || this.getEmailFromForm();
+    this.sessionId = this.getSessionId();
     this.currentDraftId = null;
     this.autosaveInterval = options.autosaveInterval || 0; // 0 = disabled
     this.autosaveIntervalId = null;
@@ -53,14 +53,28 @@ class DraftManager {
   }
 
   /**
-   * Get email from form or local storage
+   * Get or create a unique session ID for this browser
    */
-  getEmailFromForm() {
+  getSessionId() {
+    const key = 'draft_session_id';
+    let sessionId = localStorage.getItem(key);
+    if (!sessionId) {
+      sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+      localStorage.setItem(key, sessionId);
+    }
+    return sessionId;
+  }
+
+  /**
+   * Get email from form, or generate one from session ID
+   */
+  getEmailForDraft() {
     const emailInput = this.formElement?.querySelector('[type="email"]');
     if (emailInput?.value) {
       return emailInput.value;
     }
-    return localStorage.getItem(`draft_user_email_${this.formType}`) || '';
+    // Use session ID as pseudo-email for draft identification
+    return `draft+${this.sessionId}@local`;
   }
 
   /**
@@ -92,15 +106,6 @@ class DraftManager {
       }
     });
 
-    // Update stored email
-    if (formData.email) {
-      localStorage.setItem(
-        `draft_user_email_${this.formType}`,
-        formData.email
-      );
-      this.email = formData.email;
-    }
-
     return formData;
   }
 
@@ -130,19 +135,12 @@ class DraftManager {
    * Save draft to server
    */
   async saveDraft(draftName = null) {
-    if (!this.email) {
-      this.showNotification(
-        'Email is required to save draft',
-        'error'
-      );
-      return null;
-    }
-
     try {
       const formData = this.collectFormData();
+      const email = this.getEmailForDraft();
       
       const payload = {
-        email: this.email,
+        email: email,
         form_type: this.formType,
         form_data: formData,
         draft_name: draftName || `${this.formType} Draft - ${new Date().toLocaleDateString()}`,
@@ -223,13 +221,10 @@ class DraftManager {
    * Get user's saved drafts
    */
   async getUserDrafts() {
-    if (!this.email) {
-      return [];
-    }
-
     try {
+      const email = this.getEmailForDraft();
       const response = await fetch(
-        `${this.apiUrl}/drafts/user/${encodeURIComponent(this.email)}/${encodeURIComponent(this.formType)}`
+        `${this.apiUrl}/drafts/user/${encodeURIComponent(email)}/${encodeURIComponent(this.formType)}`
       );
 
       const data = await response.json();
@@ -249,6 +244,7 @@ class DraftManager {
    */
   async deleteDraft(draftId) {
     try {
+      const email = this.getEmailForDraft();
       const response = await fetch(
         `${this.apiUrl}/drafts/${draftId}`,
         {
@@ -256,7 +252,7 @@ class DraftManager {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ email: this.email })
+          body: JSON.stringify({ email: email })
         }
       );
 
