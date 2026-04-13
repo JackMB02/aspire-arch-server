@@ -156,10 +156,13 @@ app.use("/api/thecolleagueuni", autoClearCache('GET:/api/thecolleagueuni.*'), ca
 app.use("/api/colleagues", autoClearCache('GET:/api/colleagues.*'), cacheMiddleware(600), theColleagueUniRoutes); // Alias for thecolleagueuni
 app.use("/api/research", autoClearCache('GET:/api/research.*'), cacheMiddleware(1800), researchRoutes); // 30 min cache
 app.use("/api/design", autoClearCache('GET:/api/design.*'), cacheMiddleware(600), designRoutes); // 10 min cache
+app.use("/api/design_project", designRoutes); // For draft saving (no cache for POST)
 app.use("/api/home", autoClearCache('GET:/api/home.*'), cacheMiddleware(300), homeRoutes); // 5 min cache
+app.use("/api/event", homeRoutes); // For event draft saving
 app.use("/api/newsletter", newsletterRoutes);
 app.use("/api/drafts", draftsRoutes); // No caching for user drafts
 app.use("/api/newsevents", autoClearCache('GET:/api/newsevents.*'), cacheMiddleware(300), newsEventsRoutes); // 5 min cache
+app.use("/api/news", newsEventsRoutes); // For news draft saving
 
 // Root endpoint
 app.get("/", (req, res) => {

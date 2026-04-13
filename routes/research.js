@@ -1408,4 +1408,40 @@ router.get("/admin/all", async (req, res) => {
     }
 });
 
+// Save research form as draft
+router.post('/save-draft', async (req, res) => {
+  try {
+    const { email, form_data, draft_name } = req.body;
+    const data = form_data || req.body;
+
+    const result = await query(
+      `INSERT INTO form_drafts (email, form_type, form_data, draft_name)
+       VALUES ($1, $2, $3, $4)
+       RETURNING id, created_at, updated_at`,
+      [
+        email,
+        'research',
+        JSON.stringify(data),
+        draft_name || `Research Draft - ${new Date().toLocaleDateString()}`
+      ]
+    );
+
+    const draft = result.rows[0];
+
+    res.status(201).json({
+      success: true,
+      message: 'Research form saved as draft!',
+      draft_id: draft.id,
+      saved_at: draft.created_at
+    });
+
+  } catch (error) {
+    console.error('❌ Research draft save error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to save draft: ' + error.message
+    });
+  }
+});
+
 module.exports = router;

@@ -17,23 +17,10 @@ router.get('/test', (req, res) => {
 // Save contact form as draft
 router.post('/save-draft', async (req, res) => {
   try {
-    const { name, email, message } = req.body;
+    const { email, form_data, draft_name } = req.body;
 
-    // Validation - at least email is required
-    if (!email) {
-      return res.status(400).json({
-        success: false,
-        error: 'Email is required to save draft'
-      });
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return res.status(400).json({
-        success: false,
-        error: 'Invalid email format'
-      });
-    }
+    // Use provided form_data or extract from individual fields
+    const data = form_data || req.body;
 
     // Save to form_drafts table
     const result = await query(
@@ -43,8 +30,8 @@ router.post('/save-draft', async (req, res) => {
       [
         email,
         'contact',
-        JSON.stringify({ name: name || '', email, message: message || '' }),
-        `Contact Draft - ${new Date().toLocaleDateString()}`
+        JSON.stringify(data),
+        draft_name || `Contact Draft - ${new Date().toLocaleDateString()}`
       ]
     );
 
