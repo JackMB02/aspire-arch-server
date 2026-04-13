@@ -690,6 +690,28 @@ async function initDb() {
     `);
         console.log("✅ Design projects sector column verified");
 
+        // FORM DRAFTS TABLE - For saving incomplete form submissions
+        await client.query(`
+      CREATE TABLE IF NOT EXISTS form_drafts (
+        id SERIAL PRIMARY KEY,
+        email VARCHAR(255) NOT NULL,
+        form_type VARCHAR(100) NOT NULL,
+        form_data JSONB NOT NULL,
+        status VARCHAR(50) DEFAULT 'draft',
+        draft_name VARCHAR(255),
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+        console.log("✅ Form drafts table created/verified");
+
+        // Create index for faster draft retrieval
+        await client.query(`
+      CREATE INDEX IF NOT EXISTS idx_form_drafts_email_type 
+      ON form_drafts(email, form_type)
+    `);
+        console.log("✅ Form drafts index created/verified");
+
         // Check if admin user exists
         const adminCheck = await client.query(
             "SELECT * FROM admins WHERE username = $1",

@@ -3,6 +3,196 @@ const { query } = require('../db');
 
 const router = express.Router();
 
+// Save membership application as draft
+router.post('/membership/save-draft', async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        error: 'Email is required to save draft'
+      });
+    }
+
+    const result = await query(
+      `INSERT INTO form_drafts (email, form_type, form_data, draft_name)
+       VALUES ($1, $2, $3, $4)
+       RETURNING id, created_at`,
+      [
+        email,
+        'membership',
+        JSON.stringify(req.body),
+        `Membership Application Draft - ${new Date().toLocaleDateString()}`
+      ]
+    );
+
+    res.status(201).json({
+      success: true,
+      message: 'Your membership application has been saved as a draft!',
+      draft_id: result.rows[0].id
+    });
+  } catch (error) {
+    console.error('Membership draft save error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to save draft'
+    });
+  }
+});
+
+// Save donation as draft
+router.post('/donate/save-draft', async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        error: 'Email is required to save draft'
+      });
+    }
+
+    const result = await query(
+      `INSERT INTO form_drafts (email, form_type, form_data, draft_name)
+       VALUES ($1, $2, $3, $4)
+       RETURNING id, created_at`,
+      [
+        email,
+        'donation',
+        JSON.stringify(req.body),
+        `Donation Draft - ${new Date().toLocaleDateString()}`
+      ]
+    );
+
+    res.status(201).json({
+      success: true,
+      message: 'Your donation information has been saved as a draft!',
+      draft_id: result.rows[0].id
+    });
+  } catch (error) {
+    console.error('Donation draft save error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to save draft'
+    });
+  }
+});
+
+// Save feedback as draft
+router.post('/feedback/save-draft', async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        error: 'Email is required to save draft'
+      });
+    }
+
+    const result = await query(
+      `INSERT INTO form_drafts (email, form_type, form_data, draft_name)
+       VALUES ($1, $2, $3, $4)
+       RETURNING id, created_at`,
+      [
+        email,
+        'feedback',
+        JSON.stringify(req.body),
+        `Feedback Draft - ${new Date().toLocaleDateString()}`
+      ]
+    );
+
+    res.status(201).json({
+      success: true,
+      message: 'Your feedback has been saved as a draft!',
+      draft_id: result.rows[0].id
+    });
+  } catch (error) {
+    console.error('Feedback draft save error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to save draft'
+    });
+  }
+});
+
+// Save idea as draft
+router.post('/ideas/save-draft', async (req, res) => {
+  try {
+    const { email, idea_title } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        error: 'Email is required to save draft'
+      });
+    }
+
+    const result = await query(
+      `INSERT INTO form_drafts (email, form_type, form_data, draft_name)
+       VALUES ($1, $2, $3, $4)
+       RETURNING id, created_at`,
+      [
+        email,
+        'idea',
+        JSON.stringify(req.body),
+        idea_title ? `Idea: ${idea_title}` : `Idea Draft - ${new Date().toLocaleDateString()}`
+      ]
+    );
+
+    res.status(201).json({
+      success: true,
+      message: 'Your idea submission has been saved as a draft!',
+      draft_id: result.rows[0].id
+    });
+  } catch (error) {
+    console.error('Idea draft save error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to save draft'
+    });
+  }
+});
+
+// Save partnership inquiry as draft
+router.post('/partnership/save-draft', async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        error: 'Email is required to save draft'
+      });
+    }
+
+    const result = await query(
+      `INSERT INTO form_drafts (email, form_type, form_data, draft_name)
+       VALUES ($1, $2, $3, $4)
+       RETURNING id, created_at`,
+      [
+        email,
+        'partnership',
+        JSON.stringify(req.body),
+        `Partnership Inquiry Draft - ${new Date().toLocaleDateString()}`
+      ]
+    );
+
+    res.status(201).json({
+      success: true,
+      message: 'Your partnership inquiry has been saved as a draft!',
+      draft_id: result.rows[0].id
+    });
+  } catch (error) {
+    console.error('Partnership draft save error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to save draft'
+    });
+  }
+});
+
 // Submit membership application
 router.post('/membership', async (req, res) => {
   try {

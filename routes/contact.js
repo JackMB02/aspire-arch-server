@@ -13,7 +13,60 @@ router.get('/test', (req, res) => {
     timestamp: new Date().toISOString()
   });
 });
-// Get contact information for frontend
+
+// Save contact form as draft
+router.post('/save-draft', async (req, res) => {
+  try {
+    const { name, email, message } = req.body;
+
+    // Validation - at least email is required
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        error: 'Email is required to save draft'
+      });
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid email format'
+      });
+    }
+
+    // Save to form_drafts table
+    const result = await query(
+      `INSERT INTO form_drafts (email, form_type, form_data, draft_name)
+       VALUES ($1, $2, $3, $4)
+       RETURNING id, created_at, updated_at`,
+      [
+        email,
+        'contact',
+        JSON.stringify({ name: name || '', email, message: message || '' }),
+        `Contact Draft - ${new Date().toLocaleDateString()}`
+      ]
+    );
+
+    const draft = result.rows[0];
+
+    res.status(201).json({
+      success: true,
+      message: 'Contact form saved as draft! You can complete it later.',
+      draft_id: draft.id,
+      saved_at: draft.created_at
+    });
+
+  } catch (error) {
+    console.error('❌ Contact draft save error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to save draft'
+    });
+  }
+});
+
+// Get contact info for frontend
 router.get('/info', async (req, res) => {
   let client;
   try {

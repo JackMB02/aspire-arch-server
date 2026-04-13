@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Draft Saving Examples</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1, h2 {
+            color: #333;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        .example {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .code {
+            background: #f8f8f8;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        button:hover {
+            background: #2980b9;
+        }
+
+        button.secondary {
+            background: #95a5a6;
+        }
+
+        button.secondary:hover {
+            background: #7f8c8d;
+        }
+
+        button.danger {
+            background: #e74c3c;
+        }
+
+        button.danger:hover {
+            background: #c0392b;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 15px 0;
+        }
+
+        .note {
+            background: #fffbea;
+            border-left: 4px solid #f39c12;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .success {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+            color: #155724;
+        }
+
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+            color: #004085;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        .draft-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .status-message {
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            display: none;
+        }
+
+        .status-message.visible {
+            display: block;
+        }
+
+        .section {
+            margin: 30px 0;
+        }
+
+        pre {
+            background: #f8f8f8;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            overflow-x: auto;
+            border-radius: 4px;
+        }
+
+        code {
+            font-family: 'Courier New', monospace;
+            color: #d14;
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Draft Saving Integration Guide</h1>
+
+        <!-- Example 1: Contact Form -->
+        <div class="example">
+            <h2>Example 1: Contact Form with Draft Saving</h2>
+            
+            <div class="info-box">
+                ✅ This form automatically saves drafts to the server
+            </div>
+
+            <form id="contactForm">
+                <div class="form-group">
+                    <label for="contactName">Name *</label>
+                    <input 
+                        type="text" 
+                        id="contactName" 
+                        name="name"
+                        required
+                        placeholder="Your full name"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="contactEmail">Email *</label>
+                    <input 
+                        type="email" 
+                        id="contactEmail" 
+                        name="email"
+                        required
+                        placeholder="your.email@example.com"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="contactMessage">Message *</label>
+                    <textarea 
+                        id="contactMessage" 
+                        name="message"
+                        required
+                        placeholder="Your message here..."
+                    ></textarea>
+                </div>
+
+                <div id="contactStatusMessage" class="status-message"></div>
+
+                <div class="button-group">
+                    <button type="button" class="secondary" onclick="contactDraftManager.saveDraft()">
+                        💾 Save as Draft
+                    </button>
+                    <button type="button" class="secondary" onclick="showContactDrafts()">
+                        📋 View My Drafts
+                    </button>
+                    <button type="submit">
+                        ✉️ Submit Form
+                    </button>
+                </div>
+            </form>
+
+            <div id="contactDraftList"></div>
+
+            <div class="code">
+&lt;script src="/draft-manager.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+const contactDraftManager = new DraftManager({
+    apiUrl: '/api',
+    formType: 'contact',
+    formElement: document.getElementById('contactForm'),
+    enableNotifications: true
+});
+
+// Handle form submission
+document.getElementById('contactForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = contactDraftManager.collectFormData();
+    
+    // Submit form or delete draft after success
+    const response = await fetch('/api/contact/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+    });
+    
+    if (response.ok) {
+        contactDraftManager.clearStoredDraft();
+        // Show success message
+    }
+});
+
+async function showContactDrafts() {
+    const drafts = await contactDraftManager.getUserDrafts();
+    // Display drafts to user
+}
+&lt;/script&gt;
+            </div>
+        </div>
+
+        <!-- Example 2: Membership Application -->
+        <div class="example">
+            <h2>Example 2: Membership Application with Draft Saving</h2>
+
+            <div class="info-box">
+                Use this pattern for longer, multi-field forms
+            </div>
+
+            <form id="membershipForm">
+                <div class="form-group">
+                    <label for="memberName">Full Name *</label>
+                    <input 
+                        type="text" 
+                        id="memberName" 
+                        name="full_name"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="memberEmail">Email *</label>
+                    <input 
+                        type="email" 
+                        id="memberEmail" 
+                        name="email"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="memberPhone">Phone</label>
+                    <input 
+                        type="tel" 
+                        id="memberPhone" 
+                        name="phone"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="memberType">Membership Type *</label>
+                    <select id="memberType" name="membership_type" required>
+                        <option value="">Select...</option>
+                        <option value="student">Student</option>
+                        <option value="professional">Professional</option>
+                        <option value="sustaining">Sustaining</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="memberOrg">Organization</label>
+                    <input 
+                        type="text" 
+                        id="memberOrg" 
+                        name="organization"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="memberMessage">Why do you want to join?</label>
+                    <textarea 
+                        id="memberMessage" 
+                        name="message"
+                    ></textarea>
+                </div>
+
+                <div id="membershipStatusMessage" class="status-message"></div>
+
+                <div class="button-group">
+                    <button type="button" class="secondary" onclick="membershipDraftManager.saveDraft()">
+                        💾 Save as Draft
+                    </button>
+                    <button type="button" class="secondary" onclick="showMembershipDrafts()">
+                        📋 View My Drafts
+                    </button>
+                    <button type="submit">
+                        ✅ Complete Application
+                    </button>
+                </div>
+            </form>
+
+            <div id="membershipDraftList"></div>
+
+            <div class="code">
+const membershipDraftManager = new DraftManager({
+    apiUrl: '/api',
+    formType: 'membership',
+    formElement: document.getElementById('membershipForm'),
+    autosaveInterval: 60 // Auto-save every 60 seconds
+});
+            </div>
+
+            <div class="note">
+                💡 Tip: Set <code>autosaveInterval</code> to automatically save drafts at regular intervals 
+                (in seconds). This helps prevent data loss if the user accidentally closes the page.
+            </div>
+        </div>
+
+        <!-- Example 3: Donation Form -->
+        <div class="example">
+            <h2>Example 3: Donation Form (Complex)</h2>
+
+            <form id="donationForm">
+                <div class="form-group">
+                    <label for="donName">Full Name *</label>
+                    <input 
+                        type="text" 
+                        id="donName" 
+                        name="full_name"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="donEmail">Email *</label>
+                    <input 
+                        type="email" 
+                        id="donEmail" 
+                        name="email"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="donAmount">Amount ($) *</label>
+                    <input 
+                        type="text" 
+                        id="donAmount" 
+                        name="amount"
+                        required
+                        placeholder="e.g., 50.00"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="donMethod">Payment Method *</label>
+                    <select id="donMethod" name="payment_method" required>
+                        <option value="">Select...</option>
+                        <option value="credit_card">Credit Card</option>
+                        <option value="bank_transfer">Bank Transfer</option>
+                        <option value="mtn">MTN Mobile Money</option>
+                    </select>
+                </div>
+
+                <div id="donationStatusMessage" class="status-message"></div>
+
+                <div class="button-group">
+                    <button type="button" class="secondary" onclick="donationDraftManager.saveDraft()">
+                        💾 Save as Draft
+                    </button>
+                    <button type="button" class="secondary" onclick="showDonationDrafts()">
+                        📋 View My Drafts
+                    </button>
+                    <button type="submit">
+                        ❤️ Complete Donation
+                    </button>
+                </div>
+            </form>
+
+            <div id="donationDraftList"></div>
+        </div>
+
+        <!-- Initialization Scripts -->
+        <div class="section">
+            <h2>📝 Implementation Examples</h2>
+
+            <div class="info-box">
+                <strong>Required:</strong> Include the DraftManager library in your HTML:
+                <code>&lt;script src="/draft-manager.js"&gt;&lt;/script&gt;</code>
+            </div>
+
+            <h3>Basic Usage</h3>
+            <pre><code>// Initialize for a form
+const draftManager = new DraftManager({
+    apiUrl: '/api',                    // Backend API url
+    formType: 'contact',               // Form type identifier
+    formElement: document.getElementById('contactForm'),
+    enableNotifications: true          // Show success/error messages
+});
+
+// Save form as draft
+draftManager.saveDraft('Optional Draft Name');
+
+// View all drafts
+const drafts = await draftManager.getUserDrafts();
+
+// Load a draft
+draftManager.loadDraft(draftId);
+
+// Delete a draft
+draftManager.deleteDraft(draftId);
+</code></pre>
+
+            <h3>Auto-Save Configuration</h3>
+            <pre><code>const draftManager = new DraftManager({
+    formType: 'membership',
+    formElement: document.getElementById('membershipForm'),
+    autosaveInterval: 60  // Auto-save every 60 seconds
+});
+
+// Manually start/stop autosave
+draftManager.startAutosave();
+draftManager.stopAutosave();
+</code></pre>
+
+            <h3>Form Submission with Draft Cleanup</h3>
+            <pre><code>document.getElementById('myForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const formData = draftManager.collectFormData();
+    
+    // Submit to your API
+    const response = await fetch('/api/my-form/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+    });
+    
+    if (response.ok) {
+        // Clear draft after successful submission
+        draftManager.clearStoredDraft();
+        alert('Form submitted successfully!');
+    }
+});
+</code></pre>
+
+            <h3>Create Draft List UI</h3>
+            <pre><code>async function showMyDrafts() {
+    const drafts = await draftManager.getUserDrafts();
+    
+    const draftList = document.createElement('div');
+    draftList.innerHTML = '&lt;h3&gt;Your Saved Drafts:&lt;/h3&gt;';
+    
+    drafts.forEach(draft => {
+        const item = document.createElement('div');
+        item.innerHTML = `
+            &lt;p&gt;${draft.draft_name}&lt;/p&gt;
+            &lt;button onclick="draftManager.loadDraft(${draft.id})"&gt;
+                Load
+            &lt;/button&gt;
+            &lt;button onclick="draftManager.deleteDraft(${draft.id})"&gt;
+                Delete
+            &lt;/button&gt;
+        `;
+        draftList.appendChild(item);
+    });
+    
+    document.getElementById('drafts').appendChild(draftList);
+}
+</code></pre>
+        </div>
+
+        <!-- Available Endpoints Reference -->
+        <div class="section">
+            <h2>🔌 Available API Endpoints</h2>
+
+            <div class="example">
+                <h3>Form-Specific Endpoints</h3>
+                <pre><code>POST /api/contact/save-draft
+POST /api/get-involved/membership/save-draft
+POST /api/get-involved/donate/save-draft
+POST /api/get-involved/feedback/save-draft
+POST /api/get-involved/ideas/save-draft
+POST /api/get-involved/partnership/save-draft
+</code></pre>
+
+                <h3>Draft Management Endpoints</h3>
+                <pre><code>POST   /api/drafts/save                          # Save/update draft
+GET    /api/drafts/user/:email/:form_type       # Get user drafts by form type
+GET    /api/drafts/user/:email                  # Get all user drafts
+GET    /api/drafts/:draft_id                    # Get specific draft
+DELETE /api/drafts/:draft_id                    # Delete draft
+POST   /api/drafts/:draft_id/submit            # Mark draft as submitted
+</code></pre>
+
+                <div class="note">
+                    All draft endpoints require email parameter for identification. The DraftManager 
+                    automatically handles this from either the form email field or localStorage.
+                </div>
+            </div>
+        </div>
+
+        <!-- Best Practices -->
+        <div class="section">
+            <h2>✨ Best Practices</h2>
+
+            <div class="example">
+                <h3>1. Always Include Email Field</h3>
+                <p>Drafts are identified by email, so make sure your form has an email field:</p>
+                <div class="code">
+&lt;input type="email" name="email" required&gt;
+                </div>
+
+                <h3>2. Use Meaningful Draft Names</h3>
+                <pre><code>draftManager.saveDraft(`Membership - ${new Date().toLocaleDateString()}`);</code></pre>
+
+                <h3>3. Enable Auto-Save for Long Forms</h3>
+                <pre><code>const draftManager = new DraftManager({
+    formType: 'partnership',
+    formElement: document.getElementById('partnershipForm'),
+    autosaveInterval: 30  // Save every 30 seconds
+});
+</code></pre>
+
+                <h3>4. Handle Form Submission Properly</h3>
+                <pre><code>// After successful submission, clear the draft
+if (submitResponse.ok) {
+    draftManager.clearStoredDraft();
+    draftManager.stopAutosave();
+}
+</code></pre>
+
+                <h3>5. Show Draft Recovery on Page Load</h3>
+                <p>The DraftManager automatically checks for saved drafts and prompts the user 
+                to restore them on page load.</p>
+
+                <h3>6. Test Across Browsers</h3>
+                <p>DraftManager uses localStorage and fetch API. Test on modern browsers 
+                (Chrome, Firefox, Safari, Edge).</p>
+            </div>
+        </div>
+
+        <!-- Troubleshooting -->
+        <div class="section">
+            <h2>🔧 Troubleshooting</h2>
+
+            <div class="example">
+                <h3>Drafts Not Saving?</h3>
+                <ul>
+                    <li>✅ Check email field is not empty</li>
+                    <li>✅ Check browser console for errors</li>
+                    <li>✅ Verify API URL is correctly set</li>
+                    <li>✅ Check CORS settings on backend</li>
+                </ul>
+
+                <h3>Drafts Not Loading on Page Reload?</h3>
+                <ul>
+                    <li>✅ Check localStorage is not disabled</li>
+                    <li>✅ Check draft was actually saved (check API response)</li>
+                    <li>✅ Verify email matches between sessions</li>
+                </ul>
+
+                <h3>Enable Debug Logging</h3>
+                <pre><code>// Check localStorage for debug info
+console.log(localStorage);
+
+// Check browser DevTools Network tab for failed requests
+// Check browser Console for JavaScript errors
+</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- Initialize Examples -->
+    <script src="/draft-manager.js"></script>
+    <script>
+        // Contact Form
+        const contactDraftManager = new DraftManager({
+            apiUrl: '/api',
+            formType: 'contact',
+            formElement: document.getElementById('contactForm'),
+            enableNotifications: true
+        });
+
+        document.getElementById('contactForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            alert('Form would submit here. Draft preserved so user can continue later.');
+        });
+
+        async function showContactDrafts() {
+            const draftList = document.getElementById('contactDraftList');
+            draftList.innerHTML = '<p style="color: #666;">Loading drafts...</p>';
+            
+            const drafts = await contactDraftManager.getUserDrafts();
+            
+            if (drafts.length === 0) {
+                draftList.innerHTML = '<p style="color: #999;">No saved drafts yet</p>';
+                return;
+            }
+            
+            let html = '<h4 style="margin-top: 20px;">📋 Your Saved Drafts:</h4><div style="display: flex; flex-direction: column; gap: 10px;">';
+            drafts.forEach(draft => {
+                html += `
+                    <div style="background: #f0f0f0; padding: 10px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <strong>${draft.draft_name}</strong>
+                            <div style="font-size: 0.85em; color: #666;">Saved: ${new Date(draft.updated_at).toLocaleDateString()}</div>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="secondary" onclick="contactDraftManager.loadDraft('${draft.id}')" style="margin: 0;">Load</button>
+                            <button class="danger" onclick="contactDraftManager.deleteDraft('${draft.id}')" style="margin: 0;">Delete</button>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            draftList.innerHTML = html;
+        }
+
+        // Membership Form
+        const membershipDraftManager = new DraftManager({
+            apiUrl: '/api',
+            formType: 'membership',
+            formElement: document.getElementById('membershipForm'),
+            enableNotifications: true
+        });
+
+        document.getElementById('membershipForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            alert('Application would submit here.');
+        });
+
+        async function showMembershipDrafts() {
+            const draftList = document.getElementById('membershipDraftList');
+            draftList.innerHTML = '<p style="color: #666;">Loading drafts...</p>';
+            
+            const drafts = await membershipDraftManager.getUserDrafts();
+            
+            if (drafts.length === 0) {
+                draftList.innerHTML = '<p style="color: #999;">No saved drafts yet</p>';
+                return;
+            }
+            
+            let html = '<h4 style="margin-top: 20px;">📋 Your Saved Drafts:</h4><div style="display: flex; flex-direction: column; gap: 10px;">';
+            drafts.forEach(draft => {
+                html += `
+                    <div style="background: #f0f0f0; padding: 10px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <strong>${draft.draft_name}</strong>
+                            <div style="font-size: 0.85em; color: #666;">Saved: ${new Date(draft.updated_at).toLocaleDateString()}</div>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="secondary" onclick="membershipDraftManager.loadDraft('${draft.id}')" style="margin: 0;">Load</button>
+                            <button class="danger" onclick="membershipDraftManager.deleteDraft('${draft.id}')" style="margin: 0;">Delete</button>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            draftList.innerHTML = html;
+        }
+
+        // Donation Form
+        const donationDraftManager = new DraftManager({
+            apiUrl: '/api',
+            formType: 'donation',
+            formElement: document.getElementById('donationForm'),
+            enableNotifications: true,
+            autosaveInterval: 60
+        });
+
+        document.getElementById('donationForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            alert('Donation would process here.');
+        });
+
+        async function showDonationDrafts() {
+            const draftList = document.getElementById('donationDraftList');
+            draftList.innerHTML = '<p style="color: #666;">Loading drafts...</p>';
+            
+            const drafts = await donationDraftManager.getUserDrafts();
+            
+            if (drafts.length === 0) {
+                draftList.innerHTML = '<p style="color: #999;">No saved drafts yet</p>';
+                return;
+            }
+            
+            let html = '<h4 style="margin-top: 20px;">📋 Your Saved Drafts:</h4><div style="display: flex; flex-direction: column; gap: 10px;">';
+            drafts.forEach(draft => {
+                html += `
+                    <div style="background: #f0f0f0; padding: 10px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <strong>${draft.draft_name}</strong>
+                            <div style="font-size: 0.85em; color: #666;">Saved: ${new Date(draft.updated_at).toLocaleDateString()}</div>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="secondary" onclick="donationDraftManager.loadDraft('${draft.id}')" style="margin: 0;">Load</button>
+                            <button class="danger" onclick="donationDraftManager.deleteDraft('${draft.id}')" style="margin: 0;">Delete</button>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            draftList.innerHTML = html;
+        }
+    </script>
+</body>
+</html>

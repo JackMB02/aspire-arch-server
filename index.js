@@ -16,6 +16,7 @@ const designRoutes = require("./routes/design");
 const homeRoutes = require("./routes/home");
 const newsEventsRoutes = require("./routes/newsevents");
 const newsletterRoutes = require("./routes/newsletter");
+const draftsRoutes = require("./routes/drafts");
 const { initDb, testConnection, getPool } = require("./db");
 const { cacheMiddleware, autoClearCache } = require("./middleware/cache");
 
@@ -157,6 +158,7 @@ app.use("/api/research", autoClearCache('GET:/api/research.*'), cacheMiddleware(
 app.use("/api/design", autoClearCache('GET:/api/design.*'), cacheMiddleware(600), designRoutes); // 10 min cache
 app.use("/api/home", autoClearCache('GET:/api/home.*'), cacheMiddleware(300), homeRoutes); // 5 min cache
 app.use("/api/newsletter", newsletterRoutes);
+app.use("/api/drafts", draftsRoutes); // No caching for user drafts
 app.use("/api/newsevents", autoClearCache('GET:/api/newsevents.*'), cacheMiddleware(300), newsEventsRoutes); // 5 min cache
 
 // Root endpoint
