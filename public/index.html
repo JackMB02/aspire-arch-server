@@ -12357,67 +12357,7 @@
             }
 
             // Edit Design Project Handler
-            async function handleEditDesignProject(event) {
-                event.preventDefault();
-
-                try {
-                    const projectId = document.getElementById(
-                        "editDesignProjectId"
-                    ).value;
-                    const projectData = {
-                        title: document.getElementById("editDesignProjectTitle")
-                            .value,
-                        summary: document.getElementById(
-                            "editDesignProjectSummary"
-                        ).value,
-                        description: document.getElementById(
-                            "editDesignProjectDescription"
-                        ).value,
-                        category: document.getElementById(
-                            "editDesignProjectCategory"
-                        ).value,
-                        sector: document.getElementById(
-                            "editDesignProjectSector"
-                        ).value,
-                        display_order:
-                            parseInt(
-                                document.getElementById(
-                                    "editDesignProjectDisplayOrder"
-                                ).value
-                            ) || 0,
-                        is_featured: document.getElementById(
-                            "editDesignProjectFeatured"
-                        ).checked,
-                        is_published: document.getElementById(
-                            "editDesignProjectPublished"
-                        ).checked,
-                        main_image: null,
-                    };
-
-                    const mainImageFile =
-                        document.getElementById("editMainImageInput").files[0];
-                    if (mainImageFile) {
-                        const uploadedImageUrl = await uploadFile(
-                            mainImageFile,
-                            "design-project"
-                        );
-                        projectData.main_image = uploadedImageUrl;
-                    }
-
-                    await apiRequest(`/design/admin/projects/${projectId}`, {
-                        method: "PUT",
-                        body: JSON.stringify(projectData),
-                    });
-
-                    hideEditDesignProjectModal();
-                    await loadDesignProjects();
-                    alert("Design project updated successfully!");
-                } catch (error) {
-                    console.error("Failed to update design project:", error);
-                    alert("Failed to update design project: " + error.message);
-                }
-            }
-
+            
             // Add Design Project Handler
             async function handleAddDesignProject(event) {
                 event.preventDefault();
@@ -14456,6 +14396,83 @@
                         document.getElementById(
                             "editMainImagePreview"
                         ).innerHTML = `<img src="${projectData.main_image}" alt="Preview" style="max-width: 200px; border-radius: 8px;">`;
+                    }
+
+                    // Load existing content blocks
+                    editContentBlocks.length = 0;
+                    editContentBlockCounter = 0;
+                    const editContainer = document.getElementById("editContentBlocksContainer");
+                    editContainer.innerHTML = '';
+                    
+                    const contentBlocksList = projectData.contentBlocks || projectData.gallery_images || projectData.content_blocks || [];
+                    
+                    if (contentBlocksList && contentBlocksList.length > 0) {
+                        for (const blockData of contentBlocksList) {
+                            if (blockData.type === 'text') {
+                                const blockId = `edit-content-block-${editContentBlockCounter++}`;
+                                const blockDiv = document.createElement('div');
+                                blockDiv.id = blockId;
+                                blockDiv.className = 'content-block';
+                                blockDiv.style.cssText = 'border: 1px solid var(--border-light); border-radius: 8px; padding: 1rem; margin-bottom: 1rem; background: var(--bg-card);';
+                                blockDiv.innerHTML = `
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                        <h4 style="margin: 0; color: var(--accent-light);"><i class="fas fa-heading"></i> Text Block</h4>
+                                        <div style="display: flex; gap: 0.5rem;">
+                                            <button type="button" onclick="moveEditBlockUp('${blockId}')" class="btn-secondary" style="padding: 0.3rem 0.6rem;">
+                                                <i class="fas fa-arrow-up"></i>
+                                            </button>
+                                            <button type="button" onclick="moveEditBlockDown('${blockId}')" class="btn-secondary" style="padding: 0.3rem 0.6rem;">
+                                                <i class="fas fa-arrow-down"></i>
+                                            </button>
+                                            <button type="button" onclick="removeEditContentBlock('${blockId}')" class="btn-secondary" style="padding: 0.3rem 0.6rem; background: var(--danger);">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <input type="text" placeholder="Title (optional)" id="${blockId}-title" value="${blockData.title || ''}" style="width: 100%; padding: 0.5rem; margin-bottom: 0.5rem; background: var(--bg-dark); border: 1px solid var(--border-light); border-radius: 4px; color: var(--text-light);" />
+                                    <textarea placeholder="Enter your text content here..." id="${blockId}-content" style="width: 100%; min-height: 100px; padding: 0.5rem; background: var(--bg-dark); border: 1px solid var(--border-light); border-radius: 4px; color: var(--text-light); font-family: inherit;">${blockData.content || ''}</textarea>
+                                `;
+                                editContainer.appendChild(blockDiv);
+                                editContentBlocks.push({ id: blockId, type: 'text' });
+                            } else if (blockData.type === 'image') {
+                                const blockId = `edit-content-block-${editContentBlockCounter++}`;
+                                const blockDiv = document.createElement('div');
+                                blockDiv.id = blockId;
+                                blockDiv.className = 'content-block';
+                                blockDiv.style.cssText = 'border: 1px solid var(--border-light); border-radius: 8px; padding: 1rem; margin-bottom: 1rem; background: var(--bg-card);';
+                                blockDiv.innerHTML = `
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                        <h4 style="margin: 0; color: var(--accent-light);"><i class="fas fa-image"></i> Image Block</h4>
+                                        <div style="display: flex; gap: 0.5rem;">
+                                            <button type="button" onclick="moveEditBlockUp('${blockId}')" class="btn-secondary" style="padding: 0.3rem 0.6rem;">
+                                                <i class="fas fa-arrow-up"></i>
+                                            </button>
+                                            <button type="button" onclick="moveEditBlockDown('${blockId}')" class="btn-secondary" style="padding: 0.3rem 0.6rem;">
+                                                <i class="fas fa-arrow-down"></i>
+                                            </button>
+                                            <button type="button" onclick="removeEditContentBlock('${blockId}')" class="btn-secondary" style="padding: 0.3rem 0.6rem; background: var(--danger);">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <input type="text" placeholder="Image caption (optional)" id="${blockId}-caption" value="${blockData.caption || ''}" style="width: 100%; padding: 0.5rem; margin-bottom: 0.5rem; background: var(--bg-dark); border: 1px solid var(--border-light); border-radius: 4px; color: var(--text-light);" />
+                                    <div style="display: flex; gap: 1rem; align-items: center;">
+                                        <button type="button" onclick="document.getElementById('${blockId}-input').click()" class="btn-secondary" style="flex-shrink: 0;">
+                                            <i class="fas fa-upload"></i> Choose Image
+                                        </button>
+                                        <span id="${blockId}-filename" style="color: var(--text-muted); font-size: 0.9rem;">No file chosen</span>
+                                    </div>
+                                    <input type="file" id="${blockId}-input" accept="image/*" style="display: none;" onchange="handleEditContentBlockImage('${blockId}')" />
+                                    <div id="${blockId}-preview" style="margin-top: 0.5rem;">
+                                        ${blockData.imageUrl ? `<img src="${blockData.imageUrl}" style="max-width: 100%; border-radius: 8px; margin-top: 0.5rem;" />` : ''}
+                                    </div>
+                                `;
+                                editContainer.appendChild(blockDiv);
+                                editContentBlocks.push({ id: blockId, type: 'image', file: null, existingUrl: blockData.imageUrl || blockData.url || null });
+                            }
+                        }
+                    } else {
+                        editContainer.innerHTML = '<p id="editEmptyContentMessage" style="color: var(--text-muted); text-align: center;">No content blocks yet. Click the buttons above to add text or images.</p>';
                     }
 
                     showEditDesignProjectModal();
